@@ -4,9 +4,9 @@
 ## Project Idea
 **Carpool/Ride-shareing Android App**: Carpool and save the planet
 
-The world is going through a dramatic change in the climate. This is happening because of the carbon emissions that we pump into the atmosphere on a daily basis. Around 30 percent of the total U.S. carbon emissions come from transportation, out of which 60 percent emissions are contributed by cars and light trucks. [(Source)](http://www.ucsusa.org/clean_vehicles/why-clean-cars/global-warming/) Moving to cleaner vehicles is an essential, but a slow, process.
+The world is going through a dramatic change in the climate. This is happening because of the carbon emissions that we pump into the atmosphere on a daily basis. Around 30 percent of the total U.S. carbon emissions come from transportation, out of which 60 percent emissions are contributed by cars and light trucks [(Source)](http://www.ucsusa.org/clean_vehicles/why-clean-cars/global-warming/). Moving to cleaner vehicles is an essential, but a slow, process.
 
-Also, the highways in major cities are overloaded with traffic and are clogged during the peak hours. The annual congestion cost per consumer is more than $1000 in some cities. [(Source)](http://traffic.findthebest.com) This is in addition to the time spent waiting in traffic.
+Also, the highways in major cities are overloaded with traffic and are clogged during the peak hours. The annual congestion cost per consumer is more than $1000 in some cities [(Source)](http://traffic.findthebest.com). This is in addition to the time spent waiting in traffic.
 
 An important facility provided by the government is the carpool lane. By carpooling with other commuters one can:
 - reduce the carbon footprint
