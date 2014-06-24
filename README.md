@@ -38,7 +38,7 @@ A user should be able to:
 
 More details:
 
-USER PROFILE
+### USER PROFILE
 A user should be able to add/see:
  - Username
  - Name
@@ -47,26 +47,26 @@ A user should be able to add/see:
  - Preferred Pick-up and drop-off times
  - Car-pool groups he/she is a part of
 
-FIND
+### FIND
 A user should be able to:
  - See people interested to carpool using the same company email domain name
  - Existing carpool groups in the company
  - xxxx
 
-USER ACTIVITY
+### USER ACTIVITY
 A user should be able to:
  - See their carbon footprint statistics and monthly savings
  - Receive a notification if a person is running late or cancelling their pick-up/drop-off
  - Receive a notification if another user wants to be added
  - Receive a notification when a new user is added to the group
 
-TRACK
+### TRACK
 A user should be able to:
  - See their carbon footprint statistics and monthly savings
  - See the current locations of the carpool group members on the map
  - See pick-up and drop-off times within the group
 
-SOCIAL
+### SOCIAL
 A user should be able to:
  - Link facebook profile
  - Share carbon footprint stats and monthly savings on facebook
