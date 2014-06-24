@@ -23,7 +23,7 @@ When carpooling, the first challenge is to find people to ride along. Scheduling
 2. Register with company's email address to authenticate your identity in order to carpool with co-workers.
 3. Find people offering rides or let the app group you with potential fellow commuters.
 4. Keep a track of your carbon footprint and money you saved.
-5. Share you monthly savings on facebook.
+5. Share your monthly savings on facebook.
 6. Manual/Auto scheduling of pickup and dropoff times.
 7. Show locations on the map of all the people in you carpool group in the window of car pool pickup/dropoff.
 8. Share contact info with fellow carpoolers.
