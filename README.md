@@ -50,8 +50,7 @@ A user should be able to add/see:
 ### FIND
 A user should be able to:
  - See people interested to carpool using the same company email domain name
- - Existing carpool groups in the company
- - xxxx
+ - See existing carpool groups in the company
 
 ### USER ACTIVITY
 A user should be able to:
@@ -75,6 +74,8 @@ A user should be able to:
 
 
 -------------------------
+-------------------------
+
 
 xxxxxx OLD DATA BELOW THIS xxxxxx
 
