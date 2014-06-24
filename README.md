@@ -17,8 +17,67 @@ An important facility provided by the government is the carpool lane. By carpool
 
 When carpooling, the first challenge is to find people to ride along. Scheduling and communicating with fellow commuters can also be a headache if not done right. We propose to solve all the hassles involved with planning out a carpool and make it a fun experience.
 
+-------------------------
+
 ## User Stories
 
+A user should be able to:
+
+1.  signup with the app using the company email.
+2.  provision password with the application.
+3.  link facebook profile with the application.
+4.  add their profile information.
+4.  set home and work locations on the map or address entry.
+5.  find people to carpool with using the same company email domain name.
+6.  see the carbon footprint stats and gas savings per month.
+7.  specify preferred pick-up and drop-off times.
+8.  see the current locations of all the members in the carpool group on the map.
+9.  share the contact information with carpool group members through the application.
+10. share carbon footprint stats on facebook.
+11. communicate using an in-build messenger. (optional)
+12. 
+
+More details:
+
+USER PROFILE
+A user should be able to add/see:
+ - Username
+ - Name
+ - Profile picture
+ - Home address, Work address
+ - Preferred Pick-up and drop-off times
+ - Car-pool groups he/she is a part of
+
+FIND
+A user should be able to:
+ - See people interested to carpool using the same company email domain name
+ - Existing carpool groups in the company
+ - xxxx
+
+USER ACTIVITY
+A user should be able to:
+ - See their carbon footprint statistics and monthly savings
+ - Receive a notification if a person is running late or cancelling their pick-up/drop-off
+ - Receive a notification if another user wants to be added
+ - Receive a notification when a new user is added to the group
+
+TRACK
+A user should be able to:
+ - See their carbon footprint statistics and monthly savings
+ - See the current locations of the carpool group members on the map
+ - See pick-up and drop-off times within the group
+
+SOCIAL
+A user should be able to:
+ - Link facebook profile
+ - Share carbon footprint stats and monthly savings on facebook
+ - Share contact information with carpool group members
+ - Communicate using an in-built messenger with the carpool group
+
+
+
+xxxxxx OLD DATA BELOW THIS xxxxxx
+xxxxxx OLD DATA BELOW THIS xxxxxx
 1. Login username password
 2. Register with company's email address to authenticate your identity in order to carpool with co-workers.
 3. Find people offering rides or let the app group you with potential fellow commuters.
