@@ -1,5 +1,4 @@
 #Codepath - Group Project
--------------------------
 
 ## Project Idea
 **Carpool/Ride-shareing Android App**: Carpool and save the planet
@@ -75,9 +74,10 @@ A user should be able to:
  - Communicate using an in-built messenger with the carpool group
 
 
+-------------------------
 
 xxxxxx OLD DATA BELOW THIS xxxxxx
-xxxxxx OLD DATA BELOW THIS xxxxxx
+
 1. Login username password
 2. Register with company's email address to authenticate your identity in order to carpool with co-workers.
 3. Find people offering rides or let the app group you with potential fellow commuters.
@@ -88,3 +88,4 @@ xxxxxx OLD DATA BELOW THIS xxxxxx
 8. Share contact info with fellow carpoolers.
 9. Messaging platform to communicate. (optional)
 10. Carpool with people near your location but outside your workplace. (optional)
+
