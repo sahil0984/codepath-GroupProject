@@ -1,0 +1,117 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="${packageName}.${activityClass}" >
+
+	<com.facebook.widget.ProfilePictureView 
+	    android:id="@+id/ivProfileImage"
+	    android:layout_width="100dp"
+	    android:layout_height="100dp"
+	    android:layout_alignParentTop="true"
+	    android:layout_alignParentLeft="true"
+	    android:layout_margin="10dp" />
+	
+	
+	
+	<EditText 
+	    android:id="@+id/etFirstName"
+	    android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/ivProfileImage"
+        android:layout_alignTop="@+id/ivProfileImage"
+        android:layout_marginTop="20dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:maxLength="20"
+        android:hint="@string/first_name_hint" />
+
+	<EditText 
+	    android:id="@+id/etLastName"
+	    android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/ivProfileImage"
+        android:layout_below="@+id/etFirstName"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:maxLength="20"
+        android:hint="@string/last_name_hint" />
+	
+	<EditText 
+	    android:id="@+id/etHomeAdd"
+	    android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ivProfileImage"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:lines="2"
+        android:hint="@string/home_address_hint" />
+        
+	<EditText 
+	    android:id="@+id/etWorkAdd"
+	    android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etHomeAdd"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:lines="2"     
+        android:hint="@string/work_address_hint" />
+	
+	<EditText 
+	    android:id="@+id/etPhone"
+	    android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etWorkAdd"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:inputType="phone"
+        android:hint="@string/phone_hint" />
+	
+	<EditText 
+	    android:id="@+id/etPersonalEmail"
+	    android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etPhone"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:inputType="textEmailAddress"
+        android:hint="@string/personal_email_hint" />
+		
+	<EditText 
+	    android:id="@+id/etEmail"
+	    android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etPersonalEmail"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:inputType="textEmailAddress"
+        android:hint="@string/email_hint" />
+	
+	<Button 
+	    android:id="@+id/btnVerifyEmail"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/etPersonalEmail"
+	    android:layout_alignParentRight="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+	    android:onClick="onVerifyEmail"
+	    android:text="@string/verify_email_btn_text" />
+		
+	<Button 
+	    android:id="@+id/btnDone"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/etEmail"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+	    android:onClick="onDone"
+	    android:text="@string/done_btn_text" />
+			
+</RelativeLayout>
