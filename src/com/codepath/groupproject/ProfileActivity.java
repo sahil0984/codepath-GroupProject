@@ -29,6 +29,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.Html;
 import android.view.Menu;
@@ -39,7 +40,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-public class ProfileActivity extends Activity {
+public class ProfileActivity extends ActionBarActivity {
 	
 	private ProfilePictureView ivProfileImage;
 	private EditText etFirstName;
@@ -117,6 +118,11 @@ public class ProfileActivity extends Activity {
 		//Email
 		etEmail.setText(email);
 		etEmail.setFocusable(false);
+		
+		//etEmail.setBackgroundColor(android.graphics.Color.CYAN);
+		//etEmail.setBackgroundResource(0);
+		
+
 	}
 	
 	private void editProfile() {
@@ -142,6 +148,10 @@ public class ProfileActivity extends Activity {
 		//Email
 		etEmail.setFocusableInTouchMode(true);
 		etEmail.setFocusable(true);			
+
+		//etPersonalEmail.setBackgroundResource(R.drawable.backtext);
+		//etEmail.setBackgroundResource(R.drawable.backtext);
+		//etEmail.setBackgroundResource(0);
 
 	}
 	

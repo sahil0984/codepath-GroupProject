@@ -1,11 +1,13 @@
 package com.codepath.groupproject.models;
 
+import java.util.List;
+
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 @ParseClassName("User")
-public class User extends ParseObject {
+public class User extends ParseUser {
 	
 	// Ensure that your subclass has a public default constructor
 	public User() {
@@ -19,6 +21,9 @@ public class User extends ParseObject {
 	}
 	
 	// Use getString and others to access fields
+	//public String getObjectId() {
+	//	return getString("objectId");
+	//}
 	public String getUsername() {
 		return getString("username");
 	}
@@ -39,14 +44,22 @@ public class User extends ParseObject {
 	}
 	public String getPhone() {
 		return getString("phone");
-	}	
+	}
+	public String getFbFriendsCount() {
+		return getString("fbFriendsCount");
+	}
 	// Get the user for this item
 	public ParseUser getUser()  {
 		return getParseUser("owner");
 	}
-	
+	public List<Group> getMembers() {
+		return getList("groups");
+	}	
 	
 	// Use put to modify field values
+	//public void setObjectId(String value) { //This is created by Parse when a new object is created. So you wont need to set this.
+	//	put("objectId", value);
+	//}
 	public void setUsername(String value) {
 		put("username", value);
 	}
@@ -68,10 +81,15 @@ public class User extends ParseObject {
 	public void setPhone(String value) {
 		put("phone", value);
 	}
+	public void setFbFriendsCount(int value) {
+		put("fbFriendsCount", value);
+	}
 	// Associate each item with a user
 	public void setOwner(ParseUser user) {
 		put("owner", user);
 	}
-	
+	public void setGroups(List<Group> value) {
+		put("groups", value);
+	}	
 
 }

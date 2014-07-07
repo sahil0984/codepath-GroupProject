@@ -7,8 +7,8 @@
     <string name="title_activity_profile">ProfileActivity</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_home">HomeActivity</string>
-    
-<!--     Profile Activity strings -->
+
+    <!-- Profile Activity strings -->
     <string name="first_name_hint"><i>First Name</i></string>
     <string name="last_name_hint"><i>Last Name</i></string>
     <string name="home_address_hint"><i>Home Address</i></string>
@@ -18,6 +18,6 @@
     <string name="email_hint"><i>Work Email</i></string>
     <string name="done_btn_text"><i>Go to Home</i></string>
     <string name="verify_email_btn_text"><i>Verify</i></string>
-    
-    
+    <string name="title_activity_create_group">CreateGroupActivity</string>
+
 </resources>

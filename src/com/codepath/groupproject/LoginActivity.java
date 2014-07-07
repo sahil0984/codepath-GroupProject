@@ -1,6 +1,8 @@
 package com.codepath.groupproject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import com.codepath.groupproject.models.Group;
 import com.codepath.groupproject.models.User;
@@ -19,13 +21,14 @@ import com.parse.SignUpCallback;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-public class LoginActivity extends Activity {
+public class LoginActivity extends ActionBarActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +41,6 @@ public class LoginActivity extends Activity {
     	if (currentUser != null && ParseFacebookUtils.isLinked(currentUser)) {
     		// do stuff with the user
     		//signInParseUser(); //Don't do this: User does not need to login if its already cached.
-    		//gotoHomeActivity();
     		gotoProfileActivity();
     	} else {
     		// show the signup or login screen
@@ -94,7 +96,7 @@ public class LoginActivity extends Activity {
 			          ParseUser.getCurrentUser().put("personalEmail", user.asMap().get("email"));
 			          String fbProfileImageUrl = "http://graph.facebook.com/"+user.getId()+"/picture?type=large";
 			          ParseUser.getCurrentUser().put("profileImageUrl", fbProfileImageUrl);
-
+			          
 			          ParseUser.getCurrentUser().saveInBackground();
 			          //gotoProfileActivity();
 			      }
@@ -107,7 +109,7 @@ public class LoginActivity extends Activity {
 	  super.onActivityResult(requestCode, resultCode, data);
 	  ParseFacebookUtils.finishAuthentication(requestCode, resultCode, data);
 	}
-	
+
 	
 // Methods below this are unused but useful for testing	
 //-----------------------------------------------------
