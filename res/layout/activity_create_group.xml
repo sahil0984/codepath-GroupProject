@@ -10,11 +10,20 @@
         android:layout_height="wrap_content"
         android:text="Add a new group" />
     
+    <ImageView
+        android:id="@+id/ivGroupPhoto"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_below="@+id/tvCreateGroup" />
+    
+
+    
     <EditText 
         android:id="@+id/etGroupName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvCreateGroup"
+        android:layout_toRightOf="@+id/ivGroupPhoto"
+        android:layout_alignBottom="@+id/ivGroupPhoto"
         android:hint="Group Name"/>
 
     <EditText 

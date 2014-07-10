@@ -13,7 +13,7 @@
 	android:layout_marginTop="8dp" 
 	android:background="@color/white" >	
     
-    <ImageView
+    <com.parse.ParseImageView
         android:id="@+id/ivGroupImage"
         android:layout_width="40dp"
         android:layout_height="40dp"

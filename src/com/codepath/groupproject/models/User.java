@@ -52,9 +52,9 @@ public class User extends ParseUser {
 	public ParseUser getUser()  {
 		return getParseUser("owner");
 	}
-	public List<Group> getMembers() {
-		return getList("groups");
-	}	
+//	public List<Group> getGroups() { //Don't need groups because each Group has a owner field
+//		return getList("groups");
+//	}	
 	
 	// Use put to modify field values
 	//public void setObjectId(String value) { //This is created by Parse when a new object is created. So you wont need to set this.
@@ -88,8 +88,8 @@ public class User extends ParseUser {
 	public void setOwner(ParseUser user) {
 		put("owner", user);
 	}
-	public void setGroups(List<Group> value) {
-		put("groups", value);
-	}	
+//	public void setGroups(List<Group> value) {
+//		put("groups", value);
+//	}	
 
 }

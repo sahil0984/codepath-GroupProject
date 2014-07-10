@@ -12,6 +12,10 @@ import android.widget.TextView;
 
 import com.codepath.groupproject.R;
 import com.codepath.groupproject.models.Group;
+import com.parse.GetDataCallback;
+import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ParseImageView;
 import com.squareup.picasso.Picasso;
 
 public class GroupArrayAdapter extends ArrayAdapter<Group> {
@@ -35,7 +39,7 @@ public class GroupArrayAdapter extends ArrayAdapter<Group> {
   		convertView = inflater.inflate(R.layout.group_item, parent, false);
   	    holder = new ViewHolder();
   	    
-  	    holder.ivGroupImage = (ImageView) convertView.findViewById(R.id.ivGroupImage);
+  	    holder.ivGroupImage = (ParseImageView) convertView.findViewById(R.id.ivGroupImage);
   	    holder.tvGroupName = (TextView) convertView.findViewById(R.id.tvGroupName);
   	    holder.tvOnwardTime = (TextView) convertView.findViewById(R.id.tvOnwardTime);
   	    holder.tvReturnTime = (TextView) convertView.findViewById(R.id.tvReturnTime);
@@ -50,9 +54,23 @@ public class GroupArrayAdapter extends ArrayAdapter<Group> {
 
    	   }
        
-       holder.ivGroupImage.setImageResource(android.R.color.transparent);
        
-       Picasso.with(context).load("http://i.imgur.com/DvpvklR.png").into(holder.ivGroupImage);
+       ParseFile photoFile = group.getPhotoFile();
+       if (photoFile != null) {
+    	   holder.ivGroupImage.setParseFile(photoFile);
+    	   holder.ivGroupImage.loadInBackground(new GetDataCallback() {
+
+    		   @Override
+    		   public void done(byte[] data, ParseException e) {
+                   // nothing to do
+    		   }
+    	   });
+       } else {
+    	   holder.ivGroupImage.setImageResource(android.R.color.transparent);
+       }
+       
+       //holder.ivGroupImage.setImageResource(android.R.color.transparent);       
+       //Picasso.with(context).load("http://i.imgur.com/DvpvklR.png").into(holder.ivGroupImage);
 
        holder.tvGroupName.setText(group.getName());
        holder.tvOnwardTime.setText(group.getOnwardTime());
@@ -82,7 +100,7 @@ public class GroupArrayAdapter extends ArrayAdapter<Group> {
 	
 	static class ViewHolder {
 		
-		ImageView ivGroupImage;
+		ParseImageView ivGroupImage;
 		TextView tvGroupName;
 		TextView tvOnwardTime;
 		TextView tvReturnTime;

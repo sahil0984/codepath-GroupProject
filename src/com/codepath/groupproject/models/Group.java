@@ -1,10 +1,10 @@
 package com.codepath.groupproject.models;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.parse.ParseClassName;
+import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
@@ -42,7 +42,10 @@ public class Group extends ParseObject {
 	public ParseUser getUser()  {
 		return getParseUser("owner");
 	}	
-	
+    public ParseFile getPhotoFile() {
+        return getParseFile("photoFile");
+    }
+ 
 	
 	// Use put to modify field values
 	//public void setObjectId(String value) { //This is created by Parse when a new object is created. So you wont need to set this.
@@ -64,4 +67,7 @@ public class Group extends ParseObject {
 	public void setOwner(ParseUser user) {
 		put("owner", user);
 	}
+    public void setPhotoFile(ParseFile file) {
+        put("photoFile", file);
+    }
 }

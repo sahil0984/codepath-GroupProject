@@ -41,7 +41,7 @@ public class GroupsListFragment extends Fragment {
 		//Non-view initialization
 		groups = new ArrayList<Group>();
 		aGroups = new GroupArrayAdapter(getActivity(), groups);
-		
+				
 		populateGroups();
 	}
 	

@@ -23,6 +23,7 @@ import com.parse.LogInCallback;
 import com.parse.Parse;
 import com.parse.ParseAnalytics;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -105,13 +106,16 @@ public class HomeActivity extends ActionBarActivity {
         switch (item.getItemId()) {
             case R.id.miProfile:
             	gotoProfileActivity();
-                return true;
+                break;
             case R.id.miCreateGroup:
                 gotoCreateGroup();
-                return true;                
+                break;
+            case R.id.miSavings:
+                break;  
             default:
-                return super.onOptionsItemSelected(item);
+            	break;
         }
+        return super.onOptionsItemSelected(item);
     }
     
     //BOZO: Create a util for this since it is used at multiple places
@@ -135,6 +139,8 @@ public class HomeActivity extends ActionBarActivity {
 	     newGroup.setOwner(ParseUser.getCurrentUser());
 	     newGroup.setOnwardTime(data.getStringExtra("onwardTime"));
 	     newGroup.setReturnTime(data.getStringExtra("returnTime"));
+	     ParseFile photoFile = new ParseFile("group_photo.jpg", data.getByteArrayExtra("photoBytes"));
+	     newGroup.setPhotoFile(photoFile);
 	     
 			Toast.makeText(getApplicationContext(), newGroup.getName(), Toast.LENGTH_SHORT).show();
 
@@ -146,6 +152,7 @@ public class HomeActivity extends ActionBarActivity {
 			        GroupsListFragment groupsListFragment = (GroupsListFragment) getSupportFragmentManager().findFragmentByTag("GroupsListFragment");
 			        groupsListFragment.appendNewGroup(newGroup);
 			        //Toast.makeText(getApplicationContext(), newGroup.getObjectId(), Toast.LENGTH_SHORT).show();
+			        
 				} else {
 					e.printStackTrace();
 				}
