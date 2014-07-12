@@ -1,0 +1,46 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="${packageName}.${activityClass}" >
+
+    <TextView
+        android:id="@+id/tvReturnLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/tvOnwardLocation"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="22dp"
+        android:text="Work" />
+
+    <TextView
+        android:id="@+id/tvOnwardLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="18dp"
+        android:layout_marginTop="49dp"
+        android:text="Home" />
+
+    <Button
+        android:id="@+id/btnSwitch"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tvReturnLocation"
+        android:layout_alignBottom="@+id/tvReturnLocation"
+        android:layout_centerHorizontal="true"
+        android:text="Switch" />
+
+    <FrameLayout
+        android:id="@+id/flUserList"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/btnSwitch" >
+
+    </FrameLayout>
+
+</RelativeLayout>
