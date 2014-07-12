@@ -3,6 +3,8 @@ package com.codepath.groupproject.models;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
+
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -26,6 +28,10 @@ public class Group extends ParseObject {
 //	public String getObjectId() {
 //		return getString("objectId");
 //	}
+	// Get the user for this item
+	public ParseUser getUser()  {
+		return getParseUser("owner");
+	}
 	public String getName() {
 		return getString("name");
 	}
@@ -37,20 +43,28 @@ public class Group extends ParseObject {
 	}
 	public List<User> getMembers() {
 		return getList("members");
-	}	
-	// Get the user for this item
-	public ParseUser getUser()  {
-		return getParseUser("owner");
-	}	
+	}		
     public ParseFile getPhotoFile() {
         return getParseFile("photoFile");
     }
- 
+    public boolean getRecurring() {
+    	return getBoolean("recurring");
+    }
+	public String getOnwardLocation() {
+		return getString("onwardLocation");
+	}
+	public String getReturnLocation() {
+		return getString("returnLocation");
+	} 
 	
 	// Use put to modify field values
 	//public void setObjectId(String value) { //This is created by Parse when a new object is created. So you wont need to set this.
 	//	put("objectId", value);
 	//}
+	// Associate each item with a user
+	public void setOwner(ParseUser user) {
+		put("owner", user);
+	}
 	public void setName(String value) {
 		put("name", value);
 	}
@@ -63,11 +77,16 @@ public class Group extends ParseObject {
 	public void setMembers(List<User> value) {
 		put("members", value);
 	}	
-	// Associate each item with a user
-	public void setOwner(ParseUser user) {
-		put("owner", user);
-	}
     public void setPhotoFile(ParseFile file) {
         put("photoFile", file);
     }
+	public void setRecurring(boolean value) {
+		put("recurring", value);
+	}	
+	public void setOnwardLocation(String value) {
+		put("onwardLocation", value);
+	}
+	public void setReturnLocation(String value) {
+		put("returnLocation", value);
+	}
 }

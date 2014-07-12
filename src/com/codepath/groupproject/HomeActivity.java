@@ -1,10 +1,14 @@
 package com.codepath.groupproject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBar.Tab;
 import android.support.v7.app.ActionBarActivity;
@@ -13,6 +17,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.codepath.groupproject.dialogs.ChoosePhotoDialog;
+import com.codepath.groupproject.dialogs.SavingsDialog;
 import com.codepath.groupproject.fragments.GroupsListFragment;
 import com.codepath.groupproject.listeners.SupportFragmentTabListener;
 import com.codepath.groupproject.models.Group;
@@ -108,9 +114,10 @@ public class HomeActivity extends ActionBarActivity {
             	gotoProfileActivity();
                 break;
             case R.id.miCreateGroup:
-                gotoCreateGroup();
+            	gotoCreateGroupActivity();
                 break;
             case R.id.miSavings:
+            	gotoSavingsDialogFragment();
                 break;  
             default:
             	break;
@@ -124,9 +131,14 @@ public class HomeActivity extends ActionBarActivity {
 		startActivity(i);
 	}
 	
-	public void gotoCreateGroup() {
+	public void gotoCreateGroupActivity() {
 		Intent i = new Intent(getApplicationContext(), CreateGroupActivity.class);
 		startActivityForResult(i, REQUEST_CODE);
+	}
+	public void gotoSavingsDialogFragment() {
+	  	FragmentManager fm = getSupportFragmentManager();
+	  	SavingsDialog savingsDialog = new SavingsDialog();
+	  	savingsDialog.show(fm, "dialog_savings");
 	}
 	
 	@Override
@@ -139,6 +151,9 @@ public class HomeActivity extends ActionBarActivity {
 	     newGroup.setOwner(ParseUser.getCurrentUser());
 	     newGroup.setOnwardTime(data.getStringExtra("onwardTime"));
 	     newGroup.setReturnTime(data.getStringExtra("returnTime"));
+	     newGroup.setRecurring(data.getBooleanExtra("recurring", false));
+	     //newGroup.set
+
 	     ParseFile photoFile = new ParseFile("group_photo.jpg", data.getByteArrayExtra("photoBytes"));
 	     newGroup.setPhotoFile(photoFile);
 	     
@@ -163,8 +178,22 @@ public class HomeActivity extends ActionBarActivity {
 	}
 	
 	
-}
+	public Date stringToDateTime(String dateTime) {
 		
+		Date date;
+		
+		try {
+			date = new SimpleDateFormat("MM/dd/yyyy'T'hh:mm", Locale.ENGLISH).parse(dateTime);
+		} catch (java.text.ParseException e) {
+			date = null;
+			e.printStackTrace();
+		}
+
+		return date;
+	}
+	
+	
+}
 
 
 

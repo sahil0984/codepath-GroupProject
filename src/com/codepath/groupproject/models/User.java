@@ -24,6 +24,10 @@ public class User extends ParseUser {
 	//public String getObjectId() {
 	//	return getString("objectId");
 	//}
+	// Get the user for this item
+	public ParseUser getUser()  {
+		return getParseUser("owner");
+	}
 	public String getUsername() {
 		return getString("username");
 	}
@@ -48,9 +52,11 @@ public class User extends ParseUser {
 	public String getFbFriendsCount() {
 		return getString("fbFriendsCount");
 	}
-	// Get the user for this item
-	public ParseUser getUser()  {
-		return getParseUser("owner");
+	public String getHomeAdd() {
+		return getString("homeAdd");
+	}
+	public String getWorkAdd() {
+		return getString("workAdd");
 	}
 //	public List<Group> getGroups() { //Don't need groups because each Group has a owner field
 //		return getList("groups");
@@ -60,6 +66,10 @@ public class User extends ParseUser {
 	//public void setObjectId(String value) { //This is created by Parse when a new object is created. So you wont need to set this.
 	//	put("objectId", value);
 	//}
+	// Associate each item with a user
+	public void setOwner(ParseUser user) {
+		put("owner", user);
+	}
 	public void setUsername(String value) {
 		put("username", value);
 	}
@@ -84,9 +94,11 @@ public class User extends ParseUser {
 	public void setFbFriendsCount(int value) {
 		put("fbFriendsCount", value);
 	}
-	// Associate each item with a user
-	public void setOwner(ParseUser user) {
-		put("owner", user);
+	public void setHomeAdd(String value) {
+		put("homeAdd", value);
+	}
+	public void setWorkAdd(String value) {
+		put("workAdd", value);
 	}
 //	public void setGroups(List<Group> value) {
 //		put("groups", value);
