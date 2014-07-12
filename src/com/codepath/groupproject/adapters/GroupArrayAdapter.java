@@ -36,10 +36,10 @@ public class GroupArrayAdapter extends ArrayAdapter<Group> {
   	    holder = new ViewHolder();
   	    
   	    holder.ivGroupImage = (ImageView) convertView.findViewById(R.id.ivGroupImage);
-  	    holder.tvGroupName = (TextView) convertView.findViewById(R.id.tvGroupName);
+  	    holder.tvGroupName = (TextView) convertView.findViewById(R.id.tvName);
   	    holder.tvOnwardTime = (TextView) convertView.findViewById(R.id.tvOnwardTime);
   	    holder.tvReturnTime = (TextView) convertView.findViewById(R.id.tvReturnTime);
-  	    holder.tvMembersList = (TextView) convertView.findViewById(R.id.tvMembersList);
+  	    holder.tvMembersList = (TextView) convertView.findViewById(R.id.tvLocation);
 
   		convertView.setTag(holder);
 

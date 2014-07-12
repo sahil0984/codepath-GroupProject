@@ -13,7 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.codepath.groupproject.fragments.GroupsListFragment;
+import com.codepath.groupproject.fragments.GroupListFragment;
 import com.codepath.groupproject.listeners.SupportFragmentTabListener;
 import com.codepath.groupproject.models.Group;
 import com.codepath.groupproject.models.User;
@@ -74,8 +74,8 @@ public class HomeActivity extends ActionBarActivity {
 		    .setText("My Groups")
 		    //.setIcon(R.drawable.ic_profile)
 		    .setTag("GroupsListFragment")
-			.setTabListener(new SupportFragmentTabListener<GroupsListFragment>(R.id.flContainer, this,
-                        "GroupsListFragment", GroupsListFragment.class));
+			.setTabListener(new SupportFragmentTabListener<GroupListFragment>(R.id.flContainer, this,
+                        "GroupsListFragment", GroupListFragment.class));
 
 		actionBar.addTab(tab1);
 		actionBar.selectTab(tab1);
@@ -85,8 +85,8 @@ public class HomeActivity extends ActionBarActivity {
 		    .setText("Timeline")
 		    //.setIcon(R.drawable.ic_profile)
 		    .setTag("TimelineFragment")
-			.setTabListener(new SupportFragmentTabListener<GroupsListFragment>(R.id.flContainer, this,
-                        "TimelineFragment", GroupsListFragment.class));
+			.setTabListener(new SupportFragmentTabListener<GroupListFragment>(R.id.flContainer, this,
+                        "TimelineFragment", GroupListFragment.class));
 		actionBar.addTab(tab2);
 		
 	}
@@ -132,18 +132,19 @@ public class HomeActivity extends ActionBarActivity {
 		  
 	     // Extract name value from result extras
 	     final Group newGroup = new Group(data.getStringExtra("groupName"));
+	     
 	     newGroup.setOwner(ParseUser.getCurrentUser());
 	     newGroup.setOnwardTime(data.getStringExtra("onwardTime"));
 	     newGroup.setReturnTime(data.getStringExtra("returnTime"));
 	     
-			Toast.makeText(getApplicationContext(), newGroup.getName(), Toast.LENGTH_SHORT).show();
+	     Toast.makeText(getApplicationContext(), newGroup.getName(), Toast.LENGTH_SHORT).show();
 
 	     newGroup.saveInBackground(new SaveCallback() {
 			
 			@Override
 			public void done(ParseException e) {
 				if (e == null) {
-			        GroupsListFragment groupsListFragment = (GroupsListFragment) getSupportFragmentManager().findFragmentByTag("GroupsListFragment");
+			        GroupListFragment groupsListFragment = (GroupListFragment) getSupportFragmentManager().findFragmentByTag("GroupsListFragment");
 			        groupsListFragment.appendNewGroup(newGroup);
 			        //Toast.makeText(getApplicationContext(), newGroup.getObjectId(), Toast.LENGTH_SHORT).show();
 				} else {

@@ -39,5 +39,14 @@
         android:onClick="onAddGroup"
         android:text="Create"/>
 
+    <Button
+        android:id="@+id/btnAddUsers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/btnCreate"
+        android:onClick="onAddUsers"
+        android:layout_marginTop="17dp"
+        android:text="Add Users" />
     
 </RelativeLayout>

@@ -19,5 +19,7 @@
     <string name="done_btn_text"><i>Go to Home</i></string>
     <string name="verify_email_btn_text"><i>Verify</i></string>
     <string name="title_activity_create_group">CreateGroupActivity</string>
+    <string name="title_activity_group_detail">GroupDetailActivity</string>
+    <string name="title_activity_add_users">AddUsersActivity</string>
 
 </resources>

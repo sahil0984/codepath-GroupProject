@@ -1,16 +1,10 @@
 package com.codepath.groupproject;
 
-import com.codepath.groupproject.models.Group;
-import com.parse.ParseUser;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 public class CreateGroupActivity extends Activity {
 	
@@ -42,6 +36,10 @@ public class CreateGroupActivity extends Activity {
 		setResult(RESULT_OK, data);
 		finish();
 	}
-
+	public void onAddUsers(View v) {
+		Intent i = new Intent(getApplicationContext(), AddUsersActivity.class);
+		startActivityForResult(i, 20);
+		
+	}
 	
 }

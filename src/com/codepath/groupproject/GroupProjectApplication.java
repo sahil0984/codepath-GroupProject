@@ -1,14 +1,13 @@
 package com.codepath.groupproject;
 
+import android.app.Application;
+import android.content.Context;
+
 import com.codepath.groupproject.models.Group;
 import com.codepath.groupproject.models.User;
 import com.parse.Parse;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseObject;
-
-import android.app.Application;
-import android.content.Context;
-import android.widget.Toast;
 
 public class GroupProjectApplication extends Application {
 	private static Context context;

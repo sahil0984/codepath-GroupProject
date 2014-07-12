@@ -23,7 +23,7 @@
         android:src="@drawable/ic_launcher" />
 
     <TextView
-        android:id="@+id/tvGroupName"
+        android:id="@+id/tvName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -36,7 +36,7 @@
         android:id="@+id/tvOnwardTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvGroupName"
+        android:layout_below="@+id/tvName"
         android:layout_toRightOf="@+id/ivGroupImage"
         android:layout_marginRight="5dp"
         android:layout_marginBottom="5dp"
@@ -46,14 +46,14 @@
         android:id="@+id/tvReturnTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvGroupName"
+        android:layout_below="@+id/tvName"
         android:layout_alignParentRight="true"
         android:layout_marginRight="5dp"
         android:layout_marginBottom="5dp" 
         android:text="Return: 6:00pm" />
     
     <TextView
-        android:id="@+id/tvMembersList"
+        android:id="@+id/tvLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvOnwardTime"
