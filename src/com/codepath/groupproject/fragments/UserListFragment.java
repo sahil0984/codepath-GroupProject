@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -21,8 +23,9 @@ import com.codepath.groupproject.models.User;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
-public class UserListFragment extends Fragment {
+public abstract class UserListFragment extends Fragment {
 	private ArrayList<User> users;
 	private ArrayAdapter<User> aUsers;
 	private ListView lvUsers;
@@ -39,14 +42,7 @@ public class UserListFragment extends Fragment {
 		
 		//populateUsers(getArguments().getString("group"));
 	}
-    public static UserListFragment newInstance(String id)
-    {
-	    UserListFragment fragmentUser = new UserListFragment();
-	    Bundle args = new Bundle();
-	    args.putString("id", id);
-	    fragmentUser.setArguments(args);
-	    return fragmentUser;
-    }
+
 
 	public void populateUsersByGroupId(String groupId) {
 		ParseQuery<Group> queryGroups = ParseQuery.getQuery(Group.class);
@@ -93,40 +89,49 @@ public class UserListFragment extends Fragment {
 		//Assign our view references
 		lvUsers = (ListView) v.findViewById(R.id.lvUsers);
 		lvUsers.setAdapter(aUsers);
-	
+		lvUsers.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				Log.d("MyApp", aUsers.getItem(position).getFirstName());
+				onUserClick(aUsers.getItem(position));
+			}
+		});
 		pbLoading = (ProgressBar) v.findViewById(R.id.pbLoading);
 		
 		
 		//Return the layout view
 		return v;
-	}
+	}	
+	public abstract void onUserClick(User user);
 	public void populateUserByName(String query) {
 		ParseQuery<User> queryUsers = ParseQuery.getQuery(User.class);
 		// Define our query conditions
 		queryUsers.whereEqualTo("firstName", query);
-		
+		Log.d("MyApp", "Query: " + query);
 		// Execute the find asynchronously
 		queryUsers.findInBackground(new FindCallback<User>() {
-			@Override
-			public void done(List<User> userList, ParseException e) {
-		        if (e == null) {
-		        	if (userList.size()!=0) {
-		        		// Access the array of results here
-		        	
-		        		//Toast.makeText(getActivity(), firstItemId, Toast.LENGTH_SHORT).show();
-		        			aUsers.clear();
-		        			aUsers.addAll(userList);
-		        		
-		        		//ParseUser.getCurrentUser().put("groups", groupList);
-		        		//ParseUser.getCurrentUser().saveInBackground();
-		        		
-		        	} else {
-		        		Toast.makeText(getActivity(), "No users found.", Toast.LENGTH_SHORT).show();
-		        	}
-		        } else {
-		            Log.d("item", "Error: " + e.getMessage());
-		        }
-			}
+		  public void done(List<User> users, ParseException e) {
+		    if (e == null) {
+	        	if (users.size()!=0) {
+	        		// Access the array of results here
+	
+	        		//Toast.makeText(getActivity(), firstItemId, Toast.LENGTH_SHORT).show();
+	        		aUsers.clear();
+	        		aUsers.addAll(users);
+
+	        		//ParseUser.getCurrentUser().put("groups", groupList);
+	        		//ParseUser.getCurrentUser().saveInBackground();
+	        		
+	        	} else {
+	        		aUsers.clear();
+	        		Toast.makeText(getActivity(), "No group found.", Toast.LENGTH_SHORT).show();
+	        	}		      
+		    } else {
+		        Log.d("MyApp", "oops");
+		    }
+		  }
 		});
 		
 	}

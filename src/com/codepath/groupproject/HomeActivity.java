@@ -1,10 +1,14 @@
 package com.codepath.groupproject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBar.Tab;
 import android.support.v7.app.ActionBarActivity;
@@ -13,7 +17,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+
 import com.codepath.groupproject.fragments.GroupListFragment;
+
+import com.codepath.groupproject.dialogs.ChoosePhotoDialog;
+import com.codepath.groupproject.dialogs.SavingsDialog;
+
+
 import com.codepath.groupproject.listeners.SupportFragmentTabListener;
 import com.codepath.groupproject.models.Group;
 import com.codepath.groupproject.models.User;
@@ -23,6 +33,7 @@ import com.parse.LogInCallback;
 import com.parse.Parse;
 import com.parse.ParseAnalytics;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -32,13 +43,13 @@ import com.parse.SignUpCallback;
 public class HomeActivity extends ActionBarActivity {
 
 	private final int REQUEST_CODE = 20;
-
+	ArrayList<User> groupMembers;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
-		
+		groupMembers = new ArrayList<User>();
 		setupTabs();
 		
 	}
@@ -105,13 +116,17 @@ public class HomeActivity extends ActionBarActivity {
         switch (item.getItemId()) {
             case R.id.miProfile:
             	gotoProfileActivity();
-                return true;
+                break;
             case R.id.miCreateGroup:
-                gotoCreateGroup();
-                return true;                
+            	gotoCreateGroupActivity();
+                break;
+            case R.id.miSavings:
+            	gotoSavingsDialogFragment();
+                break;  
             default:
-                return super.onOptionsItemSelected(item);
+            	break;
         }
+        return super.onOptionsItemSelected(item);
     }
     
     //BOZO: Create a util for this since it is used at multiple places
@@ -120,11 +135,47 @@ public class HomeActivity extends ActionBarActivity {
 		startActivity(i);
 	}
 	
-	public void gotoCreateGroup() {
+	public void gotoCreateGroupActivity() {
 		Intent i = new Intent(getApplicationContext(), CreateGroupActivity.class);
 		startActivityForResult(i, REQUEST_CODE);
 	}
-	
+	public void gotoSavingsDialogFragment() {
+	  	FragmentManager fm = getSupportFragmentManager();
+	  	SavingsDialog savingsDialog = new SavingsDialog();
+	  	savingsDialog.show(fm, "dialog_savings");
+	}
+
+	public void createUserListfromObjectId(ArrayList<String> userListStr)
+	{
+		int i;
+		ArrayList<User> userList = new ArrayList<User>();
+		for (i = 0; i < userListStr.size(); i++)
+		{
+			ParseQuery<User> queryUsers = ParseQuery.getQuery(User.class);
+			String objectId = userListStr.get(i);
+			// Define our query conditions
+			Log.d("geUserFromObjectId", "objectId: " + objectId);
+			
+			// Execute the find asynchronously
+			
+			queryUsers.getInBackground(objectId,new GetCallback<User>() {
+			  public void done(User user, ParseException e) {
+			    if (e == null) {
+		        		// Access the array of results here
+			    		groupMembers.add(user);
+		        		Log.d("MyApp", user.toString());
+		        		
+		        		//ParseUser.getCurrentUser().put("groups", groupList);
+		        		//ParseUser.getCurrentUser().saveInBackground();
+		        			      
+			    } else {
+			        Log.d("MyApp", "oops");
+			    }
+			  }
+			});
+		}
+		
+	}
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 	  // REQUEST_CODE is defined above
@@ -136,6 +187,13 @@ public class HomeActivity extends ActionBarActivity {
 	     newGroup.setOwner(ParseUser.getCurrentUser());
 	     newGroup.setOnwardTime(data.getStringExtra("onwardTime"));
 	     newGroup.setReturnTime(data.getStringExtra("returnTime"));
+	     newGroup.setRecurring(data.getBooleanExtra("recurring", false));
+	     createUserListfromObjectId(data.getStringArrayListExtra("groupMembers"));
+	     newGroup.setMembers(groupMembers);
+	     //newGroup.set
+
+	     ParseFile photoFile = new ParseFile("group_photo.jpg", data.getByteArrayExtra("photoBytes"));
+	     newGroup.setPhotoFile(photoFile);
 	     
 	     Toast.makeText(getApplicationContext(), newGroup.getName(), Toast.LENGTH_SHORT).show();
 
@@ -147,6 +205,7 @@ public class HomeActivity extends ActionBarActivity {
 			        GroupListFragment groupsListFragment = (GroupListFragment) getSupportFragmentManager().findFragmentByTag("GroupsListFragment");
 			        groupsListFragment.appendNewGroup(newGroup);
 			        //Toast.makeText(getApplicationContext(), newGroup.getObjectId(), Toast.LENGTH_SHORT).show();
+			        
 				} else {
 					e.printStackTrace();
 				}
@@ -157,8 +216,22 @@ public class HomeActivity extends ActionBarActivity {
 	}
 	
 	
-}
+	public Date stringToDateTime(String dateTime) {
 		
+		Date date;
+		
+		try {
+			date = new SimpleDateFormat("MM/dd/yyyy'T'hh:mm", Locale.ENGLISH).parse(dateTime);
+		} catch (java.text.ParseException e) {
+			date = null;
+			e.printStackTrace();
+		}
+
+		return date;
+	}
+	
+	
+}
 
 
 

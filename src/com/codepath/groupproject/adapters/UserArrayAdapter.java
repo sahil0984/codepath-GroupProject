@@ -55,9 +55,10 @@ public class UserArrayAdapter extends ArrayAdapter<User> {
        
        Picasso.with(context).load("http://i.imgur.com/DvpvklR.png").into(holder.ivProfileImage);
 
-       holder.tvName.setText(user.getUsername());
+       holder.tvName.setText(user.getFirstName() + " " + user.getLastName());
        holder.tvOnwardTime.setText("Estimated");
        holder.tvReturnTime.setText("Estimated");
+       holder.tvLocation.setText(user.getHomeAdd());
        
 		
 		// Return the completed view to render on screen

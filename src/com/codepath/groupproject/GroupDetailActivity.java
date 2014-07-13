@@ -15,11 +15,11 @@ public class GroupDetailActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_group_detail);
 		
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        /*FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         UserListFragment utF = UserListFragment.newInstance(getIntent().getStringExtra("group"));
         ft.replace(R.id.flUserList, utF);
         ft.commit();
-
+*/
 
 	}
 }

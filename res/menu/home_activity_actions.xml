@@ -9,11 +9,20 @@
         android:title="Edit Profile">
     </item>
 
+
+    
     <item
         android:id="@+id/miCreateGroup"
         android:icon="@drawable/ic_create_group"
         myapp:showAsAction="withText|always"
-        android:title="Done">
+        android:title="Create Group">
+    </item> 
+    
+    <item
+        android:id="@+id/miSavings"
+        android:icon="@drawable/ic_savings"
+        myapp:showAsAction="always"
+        android:title="Savings">
     </item> 
     
 </menu>
