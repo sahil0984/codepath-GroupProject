@@ -64,7 +64,7 @@ public class ProfileActivity extends ActionBarActivity {
 	private ParseGeoPoint homeLatLng;
 	private ParseGeoPoint workLatLng;
 	private int oneAddressVerifDoneFlag;
-	private int State_DoneEditProfile;
+	private int State_GeoCodeTask;
 	private String homeAdd;
 	private String workAdd;
 
@@ -74,8 +74,8 @@ public class ProfileActivity extends ActionBarActivity {
 		setContentView(R.layout.activity_profile);
 		
 		oneAddressVerifDoneFlag = 0;
-		State_DoneEditProfile = 0;
-		setupViews();		
+		State_GeoCodeTask = 0;
+		setupViews();
 	}
 
 	private void setupViews() {
@@ -97,7 +97,7 @@ public class ProfileActivity extends ActionBarActivity {
 
 		etPhone.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
 		
-		State_DoneEditProfile = 2;
+		State_GeoCodeTask = 2;
 		doDoneEditProfileTasks();
 		
 	}
@@ -212,8 +212,14 @@ public class ProfileActivity extends ActionBarActivity {
 	}
 	
 	public void onDone (View v) {
-		Intent i = new Intent(getApplicationContext(), HomeActivity.class);
-		startActivity(i);
+		
+		//if (etHomeAdd.getText().equals("") || etWorkAdd.getText().equals("") ) {
+			Intent i = new Intent(getApplicationContext(), HomeActivity.class);
+			startActivity(i);			
+		//} else {
+		//	Toast.makeText(getApplicationContext(), "Please enter the required fields.", Toast.LENGTH_SHORT).show();
+		//}
+
 	}
 	
 	public void saveUpdatedInfo() {
@@ -234,7 +240,7 @@ public class ProfileActivity extends ActionBarActivity {
 			
 			@Override
 			public void done(ParseException arg0) {
-				State_DoneEditProfile = 2;
+				State_GeoCodeTask = 2;
 				doDoneEditProfileTasks();
 			}
 		});
@@ -287,7 +293,7 @@ public class ProfileActivity extends ActionBarActivity {
     }
     
     public void doDoneEditProfileTasks() {
-    	switch (State_DoneEditProfile) {
+    	switch (State_GeoCodeTask) {
 		case 0:
 			oneAddressVerifDoneFlag = 0;
 	        showOption(R.id.miEditProfile);
@@ -305,7 +311,7 @@ public class ProfileActivity extends ActionBarActivity {
 	        break;
 		case 3:
 			oneAddressVerifDoneFlag = 0;
-			State_DoneEditProfile = 0;
+			State_GeoCodeTask = 0;
 	        stopEditProfile(); 			
 			break;
 		default:
@@ -366,13 +372,6 @@ public class ProfileActivity extends ActionBarActivity {
 				}				
 				//Toast.makeText(getApplicationContext(), checkedAdd + ":" + lat + "," + lng, Toast.LENGTH_SHORT).show();
 				
-				if (oneAddressVerifDoneFlag==1) {
-					State_DoneEditProfile = 1;
-					doDoneEditProfileTasks();
-				} else {
-			    	oneAddressVerifDoneFlag = oneAddressVerifDoneFlag + 1;
-				}
-				
 			}
 
 			@Override
@@ -393,6 +392,13 @@ public class ProfileActivity extends ActionBarActivity {
     	} else if (tag.equals("work")) {
     		workLatLng = new ParseGeoPoint(Double.parseDouble(lat), Double.parseDouble(lng));
     	}
+    	
+		if (oneAddressVerifDoneFlag==1) {
+			State_GeoCodeTask = 1;
+			doDoneEditProfileTasks();
+		} else {
+	    	oneAddressVerifDoneFlag = oneAddressVerifDoneFlag + 1;
+		}
     }
     
     public String getAddFromCoor(final String tag, ParseGeoPoint pCoord) {
@@ -432,13 +438,6 @@ public class ProfileActivity extends ActionBarActivity {
 					return;
 				}				
 				//Toast.makeText(getApplicationContext(), checkedAdd + ":" + lat + "," + lng, Toast.LENGTH_SHORT).show();
-
-				if (oneAddressVerifDoneFlag==1) {
-					State_DoneEditProfile = 3;
-					doDoneEditProfileTasks();
-				} else {
-			    	oneAddressVerifDoneFlag = oneAddressVerifDoneFlag + 1;
-				}
 				
 			}
 			
@@ -458,6 +457,14 @@ public class ProfileActivity extends ActionBarActivity {
     		homeAdd = checkedAdd;
     	} else if (tag.equals("work")) {
     		workAdd = checkedAdd;
-    	}
+    	}  	
+
+		if (oneAddressVerifDoneFlag==1) {
+			State_GeoCodeTask = 3;
+			doDoneEditProfileTasks();
+		} else {
+	    	oneAddressVerifDoneFlag = oneAddressVerifDoneFlag + 1;
+		}
+		
     }
 }
