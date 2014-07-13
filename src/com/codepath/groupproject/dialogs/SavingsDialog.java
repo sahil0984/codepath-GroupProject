@@ -20,6 +20,7 @@ import com.codepath.groupproject.R;
 import com.codepath.groupproject.models.Group;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
@@ -96,11 +97,11 @@ public class SavingsDialog extends DialogFragment {
 		        		for (int i=0; i<groupList.size(); i++) {
 		        			String onwardTime = groupList.get(i).getString("onwardTime");
 		        			String returnTime = groupList.get(i).getString("returnTime");
-		        			String onwardLocation = groupList.get(i).getString("onwardLocation");
-		        			String returnLocation = groupList.get(i).getString("returnLocation");
+		        			ParseGeoPoint onwardLocation = groupList.get(i).getOnwardLocation();
+		        			ParseGeoPoint returnLocation = groupList.get(i).getReturnLocation();
 		        			
-		        			String homeAdd = ParseUser.getCurrentUser().getString("homeAdd");
-		        			String workAdd = ParseUser.getCurrentUser().getString("workAdd");
+		        			ParseGeoPoint homeAdd = ParseUser.getCurrentUser().getParseGeoPoint("homeAdd");
+		        			ParseGeoPoint workAdd = ParseUser.getCurrentUser().getParseGeoPoint("workAdd");
 		        			
 		        			//total distance = homeAdd - workAdd;
 		        			//Average miles/year / Average mpg = Gallons per year

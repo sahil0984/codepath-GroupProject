@@ -9,10 +9,19 @@ import java.lang.reflect.Array;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+
+import org.apache.http.Header;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.codepath.groupproject.dialogs.ChoosePhotoDialog;
 import com.codepath.groupproject.dialogs.ChoosePhotoDialog.OnDataPass;
 import com.codepath.groupproject.models.Group;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.parse.ParseFile;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseUser;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -67,6 +76,10 @@ public class CreateGroupActivity extends FragmentActivity implements OnDataPass 
 	private CheckBox cbSaturday;
 	private CheckBox cbSunday;
 	
+	private TextView etOnwardLocation;
+	private TextView etReturnLocation;
+	
+	private Button btnCreate;
 	
 	private String onwardTime;
 	private String returnTime;
@@ -82,12 +95,21 @@ public class CreateGroupActivity extends FragmentActivity implements OnDataPass 
 	
 	byte[] byteArray;
 	ParseFile photoFile;
+	
+	private ParseGeoPoint onwardLatLng;
+	private ParseGeoPoint returnLatLng;
+	private int oneAddressVerifDoneFlag;
+	private int State_GeoCodeTask;
+	//private String onwardAdd;
+	//private String returnAdd;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_create_group);
 		
+		oneAddressVerifDoneFlag = 0;
+		State_GeoCodeTask = 0;
 		setupViews();
 		
 	}
@@ -112,7 +134,11 @@ public class CreateGroupActivity extends FragmentActivity implements OnDataPass 
 		cbSaturday = (CheckBox) findViewById(R.id.cbSaturday);
 		cbSunday = (CheckBox) findViewById(R.id.cbSunday);
 		
-
+		etOnwardLocation = (EditText) findViewById(R.id.etOnwardLocation);
+		etReturnLocation = (EditText) findViewById(R.id.etReturnLocation);
+		
+		btnCreate = (Button) findViewById(R.id.btnCreate);
+		
 		ivGroupPhoto.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -120,6 +146,14 @@ public class CreateGroupActivity extends FragmentActivity implements OnDataPass 
 			  	FragmentManager fm = getSupportFragmentManager();
 			  	ChoosePhotoDialog photoDialog = new ChoosePhotoDialog();
 			  	photoDialog.show(fm, "dialog_choose_photo");
+			}
+		});
+		
+		btnCreate.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				onAddGroupTasks();
 			}
 		});
 	}
@@ -196,7 +230,27 @@ public class CreateGroupActivity extends FragmentActivity implements OnDataPass 
 //----- End of Pick Time Fragment -----
 	
 	
-	public void onAddGroup(View v) {
+	public void onAddGroupTasks() {
+		
+		switch (State_GeoCodeTask) {
+		case 0:
+			oneAddressVerifDoneFlag = 0;
+			getVerifySetAdd("onward", etOnwardLocation.getText().toString());
+			getVerifySetAdd("return", etReturnLocation.getText().toString());
+			break;
+		case 1:
+			oneAddressVerifDoneFlag = 0;
+			State_GeoCodeTask = 0;
+			prepareIntent();
+			finish();
+	        break;
+		default:
+			break;
+		}
+		
+	}
+	
+	public void prepareIntent() {
 		String tmpDate;
 		if (cbRecurring.isChecked()) {
 			tmpDate = tvDate.getText().toString();
@@ -211,12 +265,15 @@ public class CreateGroupActivity extends FragmentActivity implements OnDataPass 
 		data.putExtra("recurring", cbRecurring.isChecked());
 		data.putExtra("daysOfWeek", daysOfWeek());
 		data.putExtra("photoBytes", byteArray);
+		data.putExtra("onwardLat", onwardLatLng.getLatitude());
+		data.putExtra("onwardLng", onwardLatLng.getLongitude());
+		data.putExtra("returnLat", returnLatLng.getLatitude());
+		data.putExtra("returnLng", returnLatLng.getLongitude());
 		data.putExtra("groupMembers",groupMembers);
-		
+				
 		setResult(RESULT_OK, data);
-		finish();
 	}
-
+	
 	public void onAddUsers(View v) {
 		Intent i = new Intent(getApplicationContext(), AddUsersActivity.class);
 		startActivityForResult(i, ADD_USERS_REQUEST_CODE);	
@@ -316,4 +373,77 @@ public class CreateGroupActivity extends FragmentActivity implements OnDataPass 
 		}
 			
 	}
+	
+	
+//Logic for setting GeoLocation - BOZO: combine this with usage in ProfileActivity and make it a common class
+	public void getVerifySetAdd (final String tag, String address) {
+		
+		String formattedAddress = address.trim().replaceAll(" +", "+");
+		//Toast.makeText(getApplicationContext(), formattedAddress, Toast.LENGTH_LONG).show();
+
+    	//https://developers.google.com/maps/documentation/geocoding/
+	    String url = "http://maps.google.com/maps/api/geocode/json?address=" + formattedAddress;
+	    AsyncHttpClient client = new AsyncHttpClient();
+	    client.get(url, null, new JsonHttpResponseHandler() {
+	    	
+			@Override
+			public void onSuccess(int statusCode, Header[] headers,
+					JSONObject response) {
+				
+				String status = null;
+				JSONArray results;
+				String checkedAdd = null;
+				String lat = null;
+				String lng = null;
+				String latLng = null;
+				try {
+					status = response.getString("status");
+					results = response.getJSONArray("results");
+					//Toast.makeText(getApplicationContext(), "Length:" + results.length() + " Status="+ status, Toast.LENGTH_SHORT).show();
+
+					if (status.equals("OK") && results.length()>0) {
+						checkedAdd = results.getJSONObject(0).getString("formatted_address");
+						lat = results.getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getString("lat");
+						lng = results.getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getString("lng");
+						//latLng = lat + "," + lng;
+						
+						setCoord(tag, lat, lng);
+						
+					}
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					Toast.makeText(getApplicationContext(), "Error checking address", Toast.LENGTH_SHORT).show();
+					return;
+				}				
+				//Toast.makeText(getApplicationContext(), checkedAdd + ":" + lat + "," + lng, Toast.LENGTH_SHORT).show();
+				
+			}
+
+			@Override
+			public void onFailure(int statusCode, Header[] headers,
+					Throwable throwable, JSONObject errorResponse) {
+				Toast.makeText(getApplicationContext(), "Error checking address", Toast.LENGTH_SHORT).show();
+				//BOZO: Handle failure by asking user to try again. And resetting to edit profile state.
+			}
+
+	    });
+	    
+    }
+	
+    public void setCoord(String tag, String lat, String lng) {    	
+    	
+    	if (tag.equals("onward")) {
+    		onwardLatLng = new ParseGeoPoint(Double.parseDouble(lat), Double.parseDouble(lng));
+    	} else if (tag.equals("return")) {
+    		returnLatLng = new ParseGeoPoint(Double.parseDouble(lat), Double.parseDouble(lng));
+    	}
+    	
+		if (oneAddressVerifDoneFlag==1) {
+			State_GeoCodeTask = 1;
+			onAddGroupTasks();
+		} else {
+	    	oneAddressVerifDoneFlag = oneAddressVerifDoneFlag + 1;
+		}
+    }
 }

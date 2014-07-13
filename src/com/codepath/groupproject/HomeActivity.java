@@ -34,6 +34,7 @@ import com.parse.Parse;
 import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -188,7 +189,13 @@ public class HomeActivity extends ActionBarActivity {
 	     newGroup.setOnwardTime(data.getStringExtra("onwardTime"));
 	     newGroup.setReturnTime(data.getStringExtra("returnTime"));
 	     newGroup.setRecurring(data.getBooleanExtra("recurring", false));
-	     createUserListfromObjectId(data.getStringArrayListExtra("groupMembers"));
+	     ParseGeoPoint onwardLocation = new ParseGeoPoint(data.getDoubleExtra("onwardLat", 0), 
+	    		 										  data.getDoubleExtra("onwardLng", 0));
+	     newGroup.setOnwardLocation(onwardLocation);
+	     ParseGeoPoint returnLocation = new ParseGeoPoint(data.getDoubleExtra("returnLat", 0), 
+				  										  data.getDoubleExtra("returnLng", 0));
+	     newGroup.setReturnLocation(returnLocation);
+	     //createUserListfromObjectId(data.getStringArrayListExtra("groupMembers"));//Need to handle 0 members
 	     newGroup.setMembers(groupMembers);
 	     //newGroup.set
 

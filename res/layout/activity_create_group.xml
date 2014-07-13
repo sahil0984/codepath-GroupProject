@@ -145,7 +145,7 @@
         </LinearLayout>
 
         <EditText
-            android:id="@+id/etStartAdd"
+            android:id="@+id/etOnwardLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/llCheckBoxDays"
@@ -156,10 +156,10 @@
             android:lines="2" />
 
         <EditText
-            android:id="@+id/etEndAdd"
+            android:id="@+id/etReturnLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/etStartAdd"
+            android:layout_below="@+id/etOnwardLocation"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:hint="End Address.."
@@ -169,8 +169,7 @@
             android:id="@+id/btnCreate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/etEndAdd"
-            android:onClick="onAddGroup"
+            android:layout_below="@+id/etReturnLocation"
             android:text="Create" />
 
         <Button

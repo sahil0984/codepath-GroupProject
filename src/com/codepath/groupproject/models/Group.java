@@ -7,6 +7,7 @@ import org.json.JSONArray;
 
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
@@ -50,11 +51,11 @@ public class Group extends ParseObject {
     public boolean getRecurring() {
     	return getBoolean("recurring");
     }
-	public String getOnwardLocation() {
-		return getString("onwardLocation");
+	public ParseGeoPoint getOnwardLocation() {
+		return getParseGeoPoint("onwardLocation");
 	}
-	public String getReturnLocation() {
-		return getString("returnLocation");
+	public ParseGeoPoint getReturnLocation() {
+		return getParseGeoPoint("returnLocation");
 	} 
 	
 	// Use put to modify field values
@@ -83,10 +84,10 @@ public class Group extends ParseObject {
 	public void setRecurring(boolean value) {
 		put("recurring", value);
 	}	
-	public void setOnwardLocation(String value) {
+	public void setOnwardLocation(ParseGeoPoint value) {
 		put("onwardLocation", value);
 	}
-	public void setReturnLocation(String value) {
+	public void setReturnLocation(ParseGeoPoint value) {
 		put("returnLocation", value);
 	}
 }
