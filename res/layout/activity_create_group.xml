@@ -1,159 +1,187 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="${packageName}.${activityClass}" >
+    android:layout_height="match_parent" >
 
-    <TextView
-        android:id="@+id/tvCreateGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add a new group" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="${packageName}.${activityClass}" >
 
-    <ImageView
-        android:id="@+id/ivGroupPhoto"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_below="@+id/tvCreateGroup" />
+        <TextView
+            android:id="@+id/tvCreateGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add a new group" />
 
-    <EditText
-        android:id="@+id/etGroupName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/ivGroupPhoto"
-        android:layout_toRightOf="@+id/ivGroupPhoto"
-        android:hint="Group Name" />
-    
-    
-    <LinearLayout
-        android:id="@+id/llOnwardTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/etGroupName"
-        android:orientation="horizontal" >
-        
-	    <TextView
-	        android:id="@+id/tvOnwardTime"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:hint="Onward Time" />
-	    
-	    <Button 
-	        android:id="@+id/btnPickOnwardTime"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:onClick="onPickTime"
-	        android:text="Pick Time" />
-        
-    </LinearLayout>
-    
-    <LinearLayout
-        android:id="@+id/llReturnTime"
-   	    android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/llOnwardTime"
-        android:orientation="horizontal" >
+        <ImageView
+            android:id="@+id/ivGroupPhoto"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_below="@+id/tvCreateGroup" />
 
-	    <TextView
-	        android:id="@+id/tvReturnTime"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:hint="Return Time" />
-	    
-	    <Button 
-	        android:id="@+id/btnPickReturnTime"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:onClick="onPickTime"
-	        android:text="Pick Time" />
-	    
-    </LinearLayout>
-    
-    <CheckBox
-        android:id="@+id/cbRecurring"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/llReturnTime"
-        android:text="Recurring?" />
-    
-    <Button 
-        android:id="@+id/btnPickDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/llReturnTime"
-        android:layout_toRightOf="@+id/cbRecurring"
-        android:onClick="onPickDate"
-        android:text="Pick Date" />
+        <EditText
+            android:id="@+id/etGroupName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/ivGroupPhoto"
+            android:layout_toRightOf="@+id/ivGroupPhoto"
+            android:hint="Group Name" />
 
-    <TextView
-	    android:id="@+id/tvDate"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_below="@+id/llReturnTime"
-	    android:layout_toRightOf="@+id/btnPickDate"
-	    android:hint="Date" />
-    	    
-    <LinearLayout
-        android:id="@+id/llCheckBoxDays"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/cbRecurring"
-        android:orientation="horizontal" >
+        <LinearLayout
+            android:id="@+id/llOnwardTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/etGroupName"
+            android:orientation="horizontal" >
 
-        <CheckBox
-            android:id="@+id/cbMonday"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="M" />
-        <CheckBox
-            android:id="@+id/cbTuesday"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="T" />
-        <CheckBox
-            android:id="@+id/cbWednesday"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="W" />
-        <CheckBox
-            android:id="@+id/cbThursday"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="T" />
-        <CheckBox
-            android:id="@+id/cbFriday"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="F" />
-        <CheckBox
-            android:id="@+id/cbSaturday"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sa" />
-        <CheckBox
-            android:id="@+id/cbSunday"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Su" />
+            <TextView
+                android:id="@+id/tvOnwardTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Onward Time" />
+
+            <Button
+                android:id="@+id/btnPickOnwardTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onPickTime"
+                android:text="Pick Time" />
         </LinearLayout>
 
-    <Button
-        android:id="@+id/btnCreate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/llCheckBoxDays"
-        android:onClick="onAddGroup"
-        android:text="Create" />
+        <LinearLayout
+            android:id="@+id/llReturnTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/llOnwardTime"
+            android:orientation="horizontal" >
 
-    <Button
-        android:id="@+id/btnAddUsers"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/btnCreate"
-        android:onClick="onAddUsers"
-        android:layout_marginTop="17dp"
-        android:text="Add Users" />
-    
-</RelativeLayout>
+            <TextView
+                android:id="@+id/tvReturnTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Return Time" />
 
+            <Button
+                android:id="@+id/btnPickReturnTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onPickTime"
+                android:text="Pick Time" />
+        </LinearLayout>
+
+        <CheckBox
+            android:id="@+id/cbRecurring"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/llReturnTime"
+            android:text="Recurring?" />
+
+        <Button
+            android:id="@+id/btnPickDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/llReturnTime"
+            android:layout_toRightOf="@+id/cbRecurring"
+            android:onClick="onPickDate"
+            android:text="Pick Date" />
+
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/llReturnTime"
+            android:layout_toRightOf="@+id/btnPickDate"
+            android:hint="Date" />
+
+        <LinearLayout
+            android:id="@+id/llCheckBoxDays"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/cbRecurring"
+            android:orientation="horizontal" >
+
+            <CheckBox
+                android:id="@+id/cbMonday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="M" />
+
+            <CheckBox
+                android:id="@+id/cbTuesday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="T" />
+
+            <CheckBox
+                android:id="@+id/cbWednesday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="W" />
+
+            <CheckBox
+                android:id="@+id/cbThursday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="T" />
+
+            <CheckBox
+                android:id="@+id/cbFriday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="F" />
+
+            <CheckBox
+                android:id="@+id/cbSaturday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sa" />
+
+            <CheckBox
+                android:id="@+id/cbSunday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Su" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/etStartAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/llCheckBoxDays"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:hint="Start Address.."
+            android:lines="2" />
+
+        <EditText
+            android:id="@+id/etEndAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/etStartAdd"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:hint="End Address.."
+            android:lines="2" />
+
+        <Button
+            android:id="@+id/btnCreate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/etEndAdd"
+            android:onClick="onAddGroup"
+            android:text="Create" />
+
+        <Button
+            android:id="@+id/btnAddUsers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/btnCreate"
+            android:layout_marginTop="17dp"
+            android:onClick="onAddUsers"
+            android:text="Add Users" />
+    </RelativeLayout>
+
+</ScrollView>

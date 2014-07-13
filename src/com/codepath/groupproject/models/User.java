@@ -3,6 +3,7 @@ package com.codepath.groupproject.models;
 import java.util.List;
 
 import com.parse.ParseClassName;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
@@ -52,11 +53,11 @@ public class User extends ParseUser {
 	public String getFbFriendsCount() {
 		return getString("fbFriendsCount");
 	}
-	public String getHomeAdd() {
-		return getString("homeAdd");
+	public ParseGeoPoint getHomeAdd() {
+		return getParseGeoPoint("homeAdd");
 	}
-	public String getWorkAdd() {
-		return getString("workAdd");
+	public ParseGeoPoint getWorkAdd() {
+		return getParseGeoPoint("workAdd");
 	}
 //	public List<Group> getGroups() { //Don't need groups because each Group has a owner field
 //		return getList("groups");
@@ -94,10 +95,10 @@ public class User extends ParseUser {
 	public void setFbFriendsCount(int value) {
 		put("fbFriendsCount", value);
 	}
-	public void setHomeAdd(String value) {
+	public void setHomeAdd(ParseGeoPoint value) {
 		put("homeAdd", value);
 	}
-	public void setWorkAdd(String value) {
+	public void setWorkAdd(ParseGeoPoint value) {
 		put("workAdd", value);
 	}
 //	public void setGroups(List<Group> value) {

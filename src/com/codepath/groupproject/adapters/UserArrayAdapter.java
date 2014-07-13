@@ -58,7 +58,7 @@ public class UserArrayAdapter extends ArrayAdapter<User> {
        holder.tvName.setText(user.getFirstName() + " " + user.getLastName());
        holder.tvOnwardTime.setText("Estimated");
        holder.tvReturnTime.setText("Estimated");
-       holder.tvLocation.setText(user.getHomeAdd());
+       holder.tvLocation.setText(user.getHomeAdd().toString());
        
 		
 		// Return the completed view to render on screen

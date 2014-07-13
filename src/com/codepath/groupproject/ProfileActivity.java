@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -17,7 +18,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.facebook.widget.ProfilePictureView;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -55,13 +60,22 @@ public class ProfileActivity extends ActionBarActivity {
 	private Button btnGoHome;
 	
 	private Menu mOptionsMenu;
+	
+	private ParseGeoPoint homeLatLng;
+	private ParseGeoPoint workLatLng;
+	private int oneAddressVerifDoneFlag;
+	private int State_DoneEditProfile;
+	private String homeAdd;
+	private String workAdd;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_profile);
 		
-		setupViews();
+		oneAddressVerifDoneFlag = 0;
+		State_DoneEditProfile = 0;
+		setupViews();		
 	}
 
 	private void setupViews() {
@@ -83,16 +97,21 @@ public class ProfileActivity extends ActionBarActivity {
 
 		etPhone.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
 		
-		stopEditProfile();
+		State_DoneEditProfile = 2;
+		doDoneEditProfileTasks();
 		
 	}
 	
 	public void stopEditProfile() {
 		
+		//This sends a request and callback changes the states and call this function to finish things.
+		//String homeAdd = getAddFromCoor((ParseGeoPoint) ParseUser.getCurrentUser().get("homeAdd"));
+		//String workAdd = getAddFromCoor((ParseGeoPoint) ParseUser.getCurrentUser().get("workAdd"));
+		
 		String firstName = (String) ParseUser.getCurrentUser().get("firstName");
 		String lastName = (String) ParseUser.getCurrentUser().get("lastName");
-		String homeAdd = (String) ParseUser.getCurrentUser().get("homeAdd");
-		String workAdd = (String) ParseUser.getCurrentUser().get("workAdd");
+		String homeAdd = this.homeAdd;
+		String workAdd = this.workAdd;
 		String phone = (String) ParseUser.getCurrentUser().get("phone");
 		String personalEmail = (String) ParseUser.getCurrentUser().get("personalEmail");
 		String email = (String) ParseUser.getCurrentUser().get("email");
@@ -193,7 +212,6 @@ public class ProfileActivity extends ActionBarActivity {
 	}
 	
 	public void onDone (View v) {
-		
 		Intent i = new Intent(getApplicationContext(), HomeActivity.class);
 		startActivity(i);
 	}
@@ -201,12 +219,25 @@ public class ProfileActivity extends ActionBarActivity {
 	public void saveUpdatedInfo() {
 		ParseUser.getCurrentUser().put("firstName", etFirstName.getText().toString());
 		ParseUser.getCurrentUser().put("lastName", etLastName.getText().toString());
-		ParseUser.getCurrentUser().put("homeAdd", etHomeAdd.getText().toString());
-		ParseUser.getCurrentUser().put("workAdd", etWorkAdd.getText().toString());
+		//ParseUser.getCurrentUser().put("homeAdd", etHomeAdd.getText().toString());
+		//ParseUser.getCurrentUser().put("workAdd", etWorkAdd.getText().toString());
+		if (homeLatLng != null) {
+			ParseUser.getCurrentUser().put("homeAdd", homeLatLng);			
+		}
+		if (workLatLng != null) {
+			ParseUser.getCurrentUser().put("workAdd", workLatLng);			
+		}		
 		ParseUser.getCurrentUser().put("phone", etPhone.getText().toString());
 		ParseUser.getCurrentUser().put("personalEmail", etPersonalEmail.getText().toString());
 		ParseUser.getCurrentUser().put("email", etEmail.getText().toString());
-		ParseUser.getCurrentUser().saveInBackground();
+		ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
+			
+			@Override
+			public void done(ParseException arg0) {
+				State_DoneEditProfile = 2;
+				doDoneEditProfileTasks();
+			}
+		});
 	}
 	
     @Override
@@ -237,25 +268,195 @@ public class ProfileActivity extends ActionBarActivity {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
             case R.id.miEditProfile:
-                hideOption(R.id.miEditProfile);
-                showOption(R.id.miDoneEditProfile);
-                btnVerifyEmail.setEnabled(true);
-                btnGoHome.setEnabled(false);
-                editProfile();
+            	doEditProfileTasks();
                 return true;
             case R.id.miDoneEditProfile:
-                showOption(R.id.miEditProfile);
-                hideOption(R.id.miDoneEditProfile);
-                btnVerifyEmail.setEnabled(false);
-                btnGoHome.setEnabled(true);
-                saveUpdatedInfo();
-                stopEditProfile();
+            	doDoneEditProfileTasks();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+    
+    public void doEditProfileTasks() {
+        hideOption(R.id.miEditProfile);
+        showOption(R.id.miDoneEditProfile);
+        btnVerifyEmail.setEnabled(true);
+        btnGoHome.setEnabled(false);
+        editProfile();
+    }
+    
+    public void doDoneEditProfileTasks() {
+    	switch (State_DoneEditProfile) {
+		case 0:
+			oneAddressVerifDoneFlag = 0;
+	        showOption(R.id.miEditProfile);
+	        hideOption(R.id.miDoneEditProfile);
+	        btnVerifyEmail.setEnabled(false);
+	        btnGoHome.setEnabled(true);
+	        checkAddresses();
+			break;
+		case 1:
+			oneAddressVerifDoneFlag = 0;
+	        saveUpdatedInfo();
+	        break;
+		case 2:
+	        updateAddresses();
+	        break;
+		case 3:
+			oneAddressVerifDoneFlag = 0;
+			State_DoneEditProfile = 0;
+	        stopEditProfile(); 			
+			break;
+		default:
+			break;
+		}
+    }
 
 
-	
+    private void checkAddresses() {
+		getVerifySetAdd("home", etHomeAdd.getText().toString());
+		getVerifySetAdd("work", etWorkAdd.getText().toString());
+	}
+    private void updateAddresses() {
+		getAddFromCoor("home", (ParseGeoPoint) ParseUser.getCurrentUser().get("homeAdd"));
+		getAddFromCoor("work", (ParseGeoPoint) ParseUser.getCurrentUser().get("workAdd"));
+	}
+    
+	public void getVerifySetAdd (final String tag, String address) {
+		
+		String formattedAddress = address.trim().replaceAll(" +", "+");
+		//Toast.makeText(getApplicationContext(), formattedAddress, Toast.LENGTH_LONG).show();
+
+    	//https://developers.google.com/maps/documentation/geocoding/
+	    String url = "http://maps.google.com/maps/api/geocode/json?address=" + formattedAddress;
+	    AsyncHttpClient client = new AsyncHttpClient();
+	    client.get(url, null, new JsonHttpResponseHandler() {
+	    	
+			@Override
+			public void onSuccess(int statusCode, Header[] headers,
+					JSONObject response) {
+				
+				String status = null;
+				JSONArray results;
+				String checkedAdd = null;
+				String lat = null;
+				String lng = null;
+				String latLng = null;
+				try {
+					status = response.getString("status");
+					results = response.getJSONArray("results");
+					//Toast.makeText(getApplicationContext(), "Length:" + results.length() + " Status="+ status, Toast.LENGTH_SHORT).show();
+
+					if (status.equals("OK") && results.length()>0) {
+						checkedAdd = results.getJSONObject(0).getString("formatted_address");
+						lat = results.getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getString("lat");
+						lng = results.getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getString("lng");
+						//latLng = lat + "," + lng;
+						
+						setCoord(tag, lat, lng);
+						
+					}
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					Toast.makeText(getApplicationContext(), "Error checking address", Toast.LENGTH_SHORT).show();
+					return;
+				}				
+				//Toast.makeText(getApplicationContext(), checkedAdd + ":" + lat + "," + lng, Toast.LENGTH_SHORT).show();
+				
+				if (oneAddressVerifDoneFlag==1) {
+					State_DoneEditProfile = 1;
+					doDoneEditProfileTasks();
+				} else {
+			    	oneAddressVerifDoneFlag = oneAddressVerifDoneFlag + 1;
+				}
+				
+			}
+
+			@Override
+			public void onFailure(int statusCode, Header[] headers,
+					Throwable throwable, JSONObject errorResponse) {
+				Toast.makeText(getApplicationContext(), "Error checking address", Toast.LENGTH_SHORT).show();
+				//BOZO: Handle failure by asking user to try again. And resetting to edit profile state.
+			}
+
+	    });
+	    
+    }
+    
+    public void setCoord(String tag, String lat, String lng) {    	
+    	
+    	if (tag.equals("home")) {
+    		homeLatLng = new ParseGeoPoint(Double.parseDouble(lat), Double.parseDouble(lng));
+    	} else if (tag.equals("work")) {
+    		workLatLng = new ParseGeoPoint(Double.parseDouble(lat), Double.parseDouble(lng));
+    	}
+    }
+    
+    public String getAddFromCoor(final String tag, ParseGeoPoint pCoord) {
+    	Double lat = pCoord.getLatitude();
+    	Double lng = pCoord.getLongitude();
+	    String url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lng;
+	    AsyncHttpClient client = new AsyncHttpClient();
+	    client.get(url, null, new JsonHttpResponseHandler() {
+	    	
+			@Override
+			public void onSuccess(int statusCode, Header[] headers,
+					JSONObject response) {
+				
+				String status = null;
+				JSONArray results;
+				String checkedAdd = null;
+				String lat = null;
+				String lng = null;
+				String latLng = null;
+				try {
+					status = response.getString("status");
+					results = response.getJSONArray("results");
+					//Toast.makeText(getApplicationContext(), "Length:" + results.length() + " Status="+ status, Toast.LENGTH_SHORT).show();
+
+					if (status.equals("OK") && results.length()>0) {
+						checkedAdd = results.getJSONObject(0).getString("formatted_address");
+						//lat = results.getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getString("lat");
+						//lng = results.getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getString("lng");
+						//latLng = lat + "," + lng;
+						
+						setAddress(tag, checkedAdd);
+						
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+					Toast.makeText(getApplicationContext(), "Error checking address", Toast.LENGTH_SHORT).show();
+					return;
+				}				
+				//Toast.makeText(getApplicationContext(), checkedAdd + ":" + lat + "," + lng, Toast.LENGTH_SHORT).show();
+
+				if (oneAddressVerifDoneFlag==1) {
+					State_DoneEditProfile = 3;
+					doDoneEditProfileTasks();
+				} else {
+			    	oneAddressVerifDoneFlag = oneAddressVerifDoneFlag + 1;
+				}
+				
+			}
+			
+			@Override
+			public void onFailure(int statusCode, Header[] headers,
+					Throwable throwable, JSONObject errorResponse) {
+				Toast.makeText(getApplicationContext(), "Error retrieving address", Toast.LENGTH_SHORT).show();
+				//BOZO: Handle failure by asking user to try again. And resetting to edit profile state.
+			}
+	    });
+    	return null;
+    }
+    
+    public void setAddress(String tag, String checkedAdd) {    	
+    	
+    	if (tag.equals("home")) {
+    		homeAdd = checkedAdd;
+    	} else if (tag.equals("work")) {
+    		workAdd = checkedAdd;
+    	}
+    }
 }
