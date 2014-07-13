@@ -25,3 +25,7 @@ proguard/
 # Log Files
 *.log
 
+# Eclipse generated files #
+###########################
+.settings/org.eclipse.jdt.core.prefs
+project.properties
