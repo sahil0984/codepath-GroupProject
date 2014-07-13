@@ -1,32 +1,22 @@
 package com.codepath.groupproject;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
-import com.codepath.groupproject.models.Group;
-import com.codepath.groupproject.models.User;
-import com.facebook.Request;
-import com.facebook.Response;
-import com.facebook.model.GraphUser;
-import com.parse.LogInCallback;
-import com.parse.Parse;
-import com.parse.ParseException;
-import com.parse.ParseFacebookUtils;
-import com.parse.ParseFacebookUtils.Permissions;
-import com.parse.ParseObject;
-import com.parse.ParseUser;
-import com.parse.SignUpCallback;
-
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+
+import com.facebook.Request;
+import com.facebook.Response;
+import com.facebook.model.GraphUser;
+import com.parse.LogInCallback;
+import com.parse.ParseException;
+import com.parse.ParseFacebookUtils;
+import com.parse.ParseUser;
+import com.parse.SignUpCallback;
 
 public class LoginActivity extends ActionBarActivity {
 

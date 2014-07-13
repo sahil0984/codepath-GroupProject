@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+
 import com.codepath.groupproject.R;
 import com.codepath.groupproject.adapters.GroupArrayAdapter.ViewHolder;
 import com.codepath.groupproject.models.Group;

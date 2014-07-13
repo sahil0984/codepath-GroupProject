@@ -319,6 +319,7 @@ public class ProfileActivity extends ActionBarActivity {
 		getVerifySetAdd("work", etWorkAdd.getText().toString());
 	}
     private void updateAddresses() {
+    	//Trying this checkin
 		getAddFromCoor("home", (ParseGeoPoint) ParseUser.getCurrentUser().get("homeAdd"));
 		getAddFromCoor("work", (ParseGeoPoint) ParseUser.getCurrentUser().get("workAdd"));
 	}
