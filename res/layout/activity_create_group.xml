@@ -18,7 +18,8 @@
             android:id="@+id/ivGroupPhoto"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_below="@+id/tvCreateGroup" />
+            android:layout_below="@+id/tvCreateGroup"
+            android:src="@drawable/ic_launcher" />
 
         <EditText
             android:id="@+id/etGroupName"

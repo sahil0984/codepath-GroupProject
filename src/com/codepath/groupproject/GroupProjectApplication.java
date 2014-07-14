@@ -7,7 +7,9 @@ import com.codepath.groupproject.models.Group;
 import com.codepath.groupproject.models.User;
 import com.parse.Parse;
 import com.parse.ParseFacebookUtils;
+import com.parse.ParseInstallation;
 import com.parse.ParseObject;
+import com.parse.PushService;
 
 public class GroupProjectApplication extends Application {
 	private static Context context;
@@ -23,6 +25,10 @@ public class GroupProjectApplication extends Application {
 		Parse.initialize(this, "BnDnWs760QS13U0gD2cKZYTWXBtGoR0LepOHyKp6", "njtWAdurtwc23F0CDaRbYPL30MJJUhCsH0sRC3H1");
 		
 		ParseFacebookUtils.initialize(getString(R.string.app_id));
+		
+		
+		PushService.setDefaultPushCallback(this, HomeActivity.class);
+		ParseInstallation.getCurrentInstallation().saveInBackground();
         
 		//Toast.makeText(getApplicationContext(), "First thing.", Toast.LENGTH_SHORT).show();
 

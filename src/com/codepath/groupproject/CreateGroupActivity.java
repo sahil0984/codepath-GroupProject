@@ -22,6 +22,9 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
+import com.parse.ParseInstallation;
+import com.parse.ParsePush;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -238,6 +241,9 @@ public class CreateGroupActivity extends FragmentActivity implements OnDataPass 
 			getVerifySetAdd("return", etReturnLocation.getText().toString());
 			break;
 		case 1:
+			sendPushNotification();
+			break;
+		case 2:
 			prepareIntent();
 			finish();
 	        break;
@@ -247,6 +253,31 @@ public class CreateGroupActivity extends FragmentActivity implements OnDataPass 
 		
 	}
 	
+	private void sendPushNotification() {
+		JSONObject obj;
+		try {
+			obj = new JSONObject();
+			obj.put("alert", "Added to a new group!");
+			obj.put("action", MyCustomReceiver.intentAction);
+			obj.put("customdata","Added to group");
+
+			ParsePush push = new ParsePush();
+			ParseQuery<ParseInstallation> query = ParseInstallation.getQuery();
+
+			// Push the notification to Android users
+			query.whereEqualTo("deviceType", "android");
+			push.setQuery(query);
+			push.setData(obj);
+			push.sendInBackground(); 
+		} catch (JSONException e) {
+
+			e.printStackTrace();
+		}
+		oneAddressVerifDoneFlag = 0;
+		State_GeoCodeTask = 2;
+		onAddGroupTasks();
+	}
+
 	public void prepareIntent() {
 		String tmpDate;
 		if (cbRecurring.isChecked()) {

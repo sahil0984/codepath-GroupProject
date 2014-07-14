@@ -33,6 +33,10 @@ public class SavingsDialog extends DialogFragment {
 	private Float savingsLbsCarbonDioxide;
 	private Float savingsDollars;
 	
+	private ParseGeoPoint homeAdd;
+	private ParseGeoPoint workAdd;
+	
+	
 	public SavingsDialog () {
 		//Empty constructor required for Dialog Fragment
 	}
@@ -41,8 +45,16 @@ public class SavingsDialog extends DialogFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.dialog_savings, container);
-			
+		
+		
+		homeAdd = ParseUser.getCurrentUser().getParseGeoPoint("homeAdd");
+		workAdd = ParseUser.getCurrentUser().getParseGeoPoint("workAdd");
+		
 		setupViews(view);
+
+		savingsLbsCarbonDioxide = (float) 0;
+		savingsDollars = (float) 0;
+		calculateSavings();
 		
 		return view;
 
@@ -53,10 +65,7 @@ public class SavingsDialog extends DialogFragment {
 		tvDollarSavings = (TextView) view.findViewById(R.id.tvDollarSavings);
 		btnGoGack = (Button) view.findViewById(R.id.btnGoBack);
 		
-		tvCarbonFootprint.setText("Carbon Foorprint: 0.2 k tons CO2 per year");
-		tvDollarSavings.setText("Dollars Saved: $600");
-		
-		calculateSavings();
+		updateSavings();
 		
 		btnGoGack.setOnClickListener(new OnClickListener() {
 			
@@ -102,23 +111,20 @@ public class SavingsDialog extends DialogFragment {
 		        			ParseGeoPoint onwardLocation = groupList.get(i).getOnwardLocation();
 		        			ParseGeoPoint returnLocation = groupList.get(i).getReturnLocation();
 		        			
-		        			ParseGeoPoint homeAdd = ParseUser.getCurrentUser().getParseGeoPoint("homeAdd");
-		        			ParseGeoPoint workAdd = ParseUser.getCurrentUser().getParseGeoPoint("workAdd");
-		        			
 		        			
 		        			Double onwardMiles = homeAdd.distanceInMilesTo(returnLocation);
-		        			Toast.makeText(getActivity(), "Dist;"+onwardMiles.toString()+"miles", Toast.LENGTH_SHORT).show();
+		        			//Toast.makeText(getActivity(), "Dist;"+onwardMiles.toString()+"miles", Toast.LENGTH_SHORT).show();
 		        			
 		        			float avgMilesPerYear = (float) (onwardMiles*2*53*5); //x2 return journey; x53 weeks; x5 days
 		        			
 		        			float avgMilesPerGallon = 24;
-		        			float gallonsPerYear = (float) (avgMilesPerYear/avgMilesPerGallon);
+		        			float avgGallonsPerYear = (float) (avgMilesPerYear/avgMilesPerGallon);
 		        			
-		        			savingsLbsCarbonDioxide = (float) (19.8 * gallonsPerYear);
+		        			savingsLbsCarbonDioxide = savingsLbsCarbonDioxide + (float) (19.8 * avgGallonsPerYear);
 		        			
 		        			
 		        			float gasPrice = (float) 4.50;
-		        			savingsDollars = avgMilesPerYear * gasPrice;
+			        		savingsDollars = savingsDollars + (avgGallonsPerYear * gasPrice);
 		        			
 		        			//total distance = homeAdd - workAdd;
 		        			//Average miles/year / Average mpg = Gallons per year
@@ -130,7 +136,7 @@ public class SavingsDialog extends DialogFragment {
 		        		}
 		        		
 		        		
-		        		
+		        		updateSavings();
 		        	} else {
 		        		Toast.makeText(getActivity(), "No group found.", Toast.LENGTH_SHORT).show();
 		        	}
@@ -139,6 +145,11 @@ public class SavingsDialog extends DialogFragment {
 		        }
 			}
 		});
+	}
+
+	protected void updateSavings() {
+		tvCarbonFootprint.setText("You contribute: " + savingsLbsCarbonDioxide  + "lbs of CO2 per year");
+		tvDollarSavings.setText("You save: $" + savingsDollars + " per year");
 	}
 	
 	
