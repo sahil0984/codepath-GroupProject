@@ -60,18 +60,16 @@ public class LoginActivity extends ActionBarActivity {
 				} else if (user.isNew()) {
 					Log.d("MyApp", "User signed up and logged in through Facebook!");
 					getFacebookDetailsInBackground();
-					gotoProfileActivity(); //Not the right place. Add it onCompleted of newMeRequest
 				} else {
 					Log.d("MyApp", "User logged in through Facebook!");
 					getFacebookDetailsInBackground();
-					gotoProfileActivity(); //Not the right place. Add it onCompleted of newMeRequest
 				}
 			}
 		});
 	}
 	
 	
-	private static void getFacebookDetailsInBackground() {
+	private void getFacebookDetailsInBackground() {
 		
 		  Request.newMeRequest(ParseFacebookUtils.getSession(), new Request.GraphUserCallback() {
 			  
@@ -88,10 +86,12 @@ public class LoginActivity extends ActionBarActivity {
 			          ParseUser.getCurrentUser().put("profileImageUrl", fbProfileImageUrl);
 			          
 			          ParseUser.getCurrentUser().saveInBackground();
-			          //gotoProfileActivity();
+			          gotoProfileActivity();
+			          
 			      }
 			  }
 			}).executeAsync();
+		  
 		}
 	
 	@Override

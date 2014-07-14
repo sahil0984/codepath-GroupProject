@@ -108,8 +108,6 @@ public class CreateGroupActivity extends FragmentActivity implements OnDataPass 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_create_group);
 		
-		oneAddressVerifDoneFlag = 0;
-		State_GeoCodeTask = 0;
 		setupViews();
 		
 	}
@@ -153,6 +151,8 @@ public class CreateGroupActivity extends FragmentActivity implements OnDataPass 
 			
 			@Override
 			public void onClick(View v) {
+				oneAddressVerifDoneFlag = 0;
+				State_GeoCodeTask = 0;
 				onAddGroupTasks();
 			}
 		});
@@ -234,13 +234,10 @@ public class CreateGroupActivity extends FragmentActivity implements OnDataPass 
 		
 		switch (State_GeoCodeTask) {
 		case 0:
-			oneAddressVerifDoneFlag = 0;
 			getVerifySetAdd("onward", etOnwardLocation.getText().toString());
 			getVerifySetAdd("return", etReturnLocation.getText().toString());
 			break;
 		case 1:
-			oneAddressVerifDoneFlag = 0;
-			State_GeoCodeTask = 0;
 			prepareIntent();
 			finish();
 	        break;
@@ -417,7 +414,14 @@ public class CreateGroupActivity extends FragmentActivity implements OnDataPass 
 					return;
 				}				
 				//Toast.makeText(getApplicationContext(), checkedAdd + ":" + lat + "," + lng, Toast.LENGTH_SHORT).show();
-				
+				if (oneAddressVerifDoneFlag==1) {
+					
+					oneAddressVerifDoneFlag = 0;
+					State_GeoCodeTask = 1;
+					onAddGroupTasks();
+				} else {
+			    	oneAddressVerifDoneFlag = oneAddressVerifDoneFlag + 1;
+				}
 			}
 
 			@Override
@@ -439,11 +443,5 @@ public class CreateGroupActivity extends FragmentActivity implements OnDataPass 
     		returnLatLng = new ParseGeoPoint(Double.parseDouble(lat), Double.parseDouble(lng));
     	}
     	
-		if (oneAddressVerifDoneFlag==1) {
-			State_GeoCodeTask = 1;
-			onAddGroupTasks();
-		} else {
-	    	oneAddressVerifDoneFlag = oneAddressVerifDoneFlag + 1;
-		}
     }
 }

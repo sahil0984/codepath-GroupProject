@@ -30,6 +30,8 @@ public class SavingsDialog extends DialogFragment {
 	private TextView tvDollarSavings;
 	private Button btnGoGack;
 
+	private Float savingsLbsCarbonDioxide;
+	private Float savingsDollars;
 	
 	public SavingsDialog () {
 		//Empty constructor required for Dialog Fragment
@@ -102,6 +104,21 @@ public class SavingsDialog extends DialogFragment {
 		        			
 		        			ParseGeoPoint homeAdd = ParseUser.getCurrentUser().getParseGeoPoint("homeAdd");
 		        			ParseGeoPoint workAdd = ParseUser.getCurrentUser().getParseGeoPoint("workAdd");
+		        			
+		        			
+		        			Double onwardMiles = homeAdd.distanceInMilesTo(returnLocation);
+		        			Toast.makeText(getActivity(), "Dist;"+onwardMiles.toString()+"miles", Toast.LENGTH_SHORT).show();
+		        			
+		        			float avgMilesPerYear = (float) (onwardMiles*2*53*5); //x2 return journey; x53 weeks; x5 days
+		        			
+		        			float avgMilesPerGallon = 24;
+		        			float gallonsPerYear = (float) (avgMilesPerYear/avgMilesPerGallon);
+		        			
+		        			savingsLbsCarbonDioxide = (float) (19.8 * gallonsPerYear);
+		        			
+		        			
+		        			float gasPrice = (float) 4.50;
+		        			savingsDollars = avgMilesPerYear * gasPrice;
 		        			
 		        			//total distance = homeAdd - workAdd;
 		        			//Average miles/year / Average mpg = Gallons per year
