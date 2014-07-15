@@ -50,6 +50,7 @@ public class GroupListFragment extends Fragment {
 		ParseQuery<Group> queryGroups = ParseQuery.getQuery(Group.class);
 		// Define our query conditions
 		queryGroups.whereEqualTo("owner", ParseUser.getCurrentUser());
+		queryGroups.include("members");
 		// Execute the find asynchronously
 		queryGroups.findInBackground(new FindCallback<Group>() {
 			@Override

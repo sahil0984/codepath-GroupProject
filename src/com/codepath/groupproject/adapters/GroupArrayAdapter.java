@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.codepath.groupproject.R;
 import com.codepath.groupproject.models.Group;
@@ -84,7 +85,7 @@ public class GroupArrayAdapter extends ArrayAdapter<Group> {
     	   groupMemberCount = 0;
     	   e.printStackTrace();
        }
-       
+              
        String membersList = "";
        for (int i=0; i<groupMemberCount; i++) {
     	   Log.d("MyApp", "GroupMembers: " + group.getMembers().toString());

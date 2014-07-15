@@ -6,9 +6,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBar.Tab;
 import android.support.v7.app.ActionBarActivity;
@@ -46,6 +50,9 @@ public class HomeActivity extends ActionBarActivity {
 	private final int REQUEST_CODE = 20;
 	ArrayList<User> groupMembers;
 	
+	Group newGroup;
+	int queriesReturned;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -55,7 +62,27 @@ public class HomeActivity extends ActionBarActivity {
 		
 	}
 	
-	
+//	private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+//
+//        @Override
+//        public void onReceive(Context context, Intent intent) {        	
+//        	Toast.makeText(getApplicationContext(), "onReceive invoked!", Toast.LENGTH_LONG).show();
+//        }
+//    };
+//    
+//	@Override
+//    public void onPause() {
+//        super.onPause();
+//
+//        LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver);
+//    }
+//    
+//	@Override
+//    public void onResume() {
+//        super.onResume();
+//        
+//        LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver, new IntentFilter(MyCustomReceiver.intentAction));
+//    }
 	
 	//Following helper methods need to be updated whenever we update the User model and User ParseObject
 	//BOZO: Move it to utils??
@@ -150,7 +177,9 @@ public class HomeActivity extends ActionBarActivity {
 	{
 		int i;
 		ArrayList<User> userList = new ArrayList<User>();
-		for (i = 0; i < userListStr.size(); i++)
+		final int userListSize = userListStr.size();
+		queriesReturned=0;
+		for (i = 0; i < userListSize; i++)
 		{
 			ParseQuery<User> queryUsers = ParseQuery.getQuery(User.class);
 			String objectId = userListStr.get(i);
@@ -166,15 +195,24 @@ public class HomeActivity extends ActionBarActivity {
 			    		groupMembers.add(user);
 		        		Log.d("MyApp", user.toString());
 		        		
+
+		        		
 		        		//ParseUser.getCurrentUser().put("groups", groupList);
 		        		//ParseUser.getCurrentUser().saveInBackground();
-		        			      
+		        		
+		        		if (queriesReturned==userListSize-1) {
+		        			newGroup.setMembers(groupMembers);
+		        			saveGroupToParse();
+		        		} else {
+			        		queriesReturned = queriesReturned + 1;
+		        		}
 			    } else {
 			        Log.d("MyApp", "oops");
 			    }
 			  }
 			});
 		}
+
 		
 	}
 	@Override
@@ -183,7 +221,8 @@ public class HomeActivity extends ActionBarActivity {
 	  if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
 		  
 	     // Extract name value from result extras
-	     final Group newGroup = new Group(data.getStringExtra("groupName"));
+	     //final Group 
+	     newGroup = new Group(data.getStringExtra("groupName"));
 	     
 	     newGroup.setOwner(ParseUser.getCurrentUser());
 	     newGroup.setOnwardTime(data.getStringExtra("onwardTime"));
@@ -195,20 +234,31 @@ public class HomeActivity extends ActionBarActivity {
 	     ParseGeoPoint returnLocation = new ParseGeoPoint(data.getDoubleExtra("returnLat", 0), 
 				  										  data.getDoubleExtra("returnLng", 0));
 	     newGroup.setReturnLocation(returnLocation);
+
 	     //Hack to add current user
 	     ArrayList<String> groupMembersStr =  data.getStringArrayListExtra("groupMembers");
 	     groupMembersStr.add(ParseUser.getCurrentUser().getObjectId());
-	     createUserListfromObjectId(groupMembersStr);
 	     
-	     newGroup.setMembers(groupMembers);
-	     //newGroup.set
+	     try {
+	    	 createUserListfromObjectId(groupMembersStr);
+	     } catch (Exception e) {
+	    	 e.printStackTrace();
+	     }
+	   
+	     //newGroup.set	     
+	     if (data.getByteArrayExtra("photoBytes") != null) {
+		     ParseFile photoFile = new ParseFile("group_photo.jpg", data.getByteArrayExtra("photoBytes"));
+		     newGroup.setPhotoFile(photoFile);	    	 
+	     }
 
-	     ParseFile photoFile = new ParseFile("group_photo.jpg", data.getByteArrayExtra("photoBytes"));
-	     newGroup.setPhotoFile(photoFile);
 	     
-	     Toast.makeText(getApplicationContext(), newGroup.getName(), Toast.LENGTH_SHORT).show();
+	     //Toast.makeText(getApplicationContext(), newGroup.getName(), Toast.LENGTH_SHORT).show();
+	     
+	  }
+	}
 
-	     newGroup.saveInBackground(new SaveCallback() {
+	public void saveGroupToParse() {
+	    newGroup.saveInBackground(new SaveCallback() {
 			
 			@Override
 			public void done(ParseException e) {
@@ -222,10 +272,7 @@ public class HomeActivity extends ActionBarActivity {
 				}
 			}
 		});
-	     
-	  }
 	}
-	
 	
 	public Date stringToDateTime(String dateTime) {
 		
