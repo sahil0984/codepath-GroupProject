@@ -97,7 +97,13 @@
                 <category android:name="com.codepath.groupproject" />
             </intent-filter>
         </receiver>
-
+        <receiver android:name="com.codepath.groupproject.MyCustomReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.USER_PRESENT" />
+                <action android:name="SEND_PUSH" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

@@ -62,27 +62,27 @@ public class HomeActivity extends ActionBarActivity {
 		
 	}
 	
-//	private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
-//
-//        @Override
-//        public void onReceive(Context context, Intent intent) {        	
-//        	Toast.makeText(getApplicationContext(), "onReceive invoked!", Toast.LENGTH_LONG).show();
-//        }
-//    };
-//    
-//	@Override
-//    public void onPause() {
-//        super.onPause();
-//
-//        LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver);
-//    }
-//    
-//	@Override
-//    public void onResume() {
-//        super.onResume();
-//        
-//        LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver, new IntentFilter(MyCustomReceiver.intentAction));
-//    }
+	private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {        	
+        	Toast.makeText(getApplicationContext(), "onReceive invoked!", Toast.LENGTH_LONG).show();
+        }
+    };
+    
+	@Override
+    public void onPause() {
+        super.onPause();
+
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver);
+    }
+    
+	@Override
+    public void onResume() {
+        super.onResume();
+        
+        LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver, new IntentFilter(MyCustomReceiver.intentAction));
+    }
 	
 	//Following helper methods need to be updated whenever we update the User model and User ParseObject
 	//BOZO: Move it to utils??
@@ -256,6 +256,7 @@ public class HomeActivity extends ActionBarActivity {
 	     
 	  }
 	}
+	
 
 	public void saveGroupToParse() {
 	    newGroup.saveInBackground(new SaveCallback() {

@@ -45,37 +45,12 @@ public class GroupDetailActivity extends FragmentActivity {
 		} else {
 			Toast.makeText(this, "Error - Map Fragment was null!!", Toast.LENGTH_SHORT).show();
 		}
-        
-        
-        ParseQuery<Group> queryGroup = ParseQuery.getQuery(Group.class);
-		String gobjectId = getIntent().getStringExtra("group");
-		// Define our query conditions
-		Log.d("MyApp", "gobjectId: " + gobjectId);
-		
-		// Execute the find asynchronously
-		
-		queryGroup.getInBackground(gobjectId,new GetCallback<Group>() {
-		  @Override
-		  public void done(Group group, ParseException e) {
-		    if (e == null) {
-	        		// Access the array of results here
-		    		Log.d("MyApp","Loading: " + group.getName());
-		    		currentGroup = group;	 
-		    		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		            GroupMemberListFragment gmlF = new GroupMemberListFragment();
-		            User user_0 = group.getMembers().get(0);
-		            gmlF.appendUser(user_0);
-		            ft.replace(R.id.flUserList, gmlF);
-		            ft.commit();
-		            
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		String groupObjectId = getIntent().getStringExtra("group");
+        GroupMemberListFragment gmlF = GroupMemberListFragment.newInstance(groupObjectId);
+        ft.replace(R.id.flUserList, gmlF);
+        ft.commit();
 
-		   
-		            
-		    } else {
-		        Log.d("MyApp", "oops");
-		    }
-		  }
-		});
 
 
 	}

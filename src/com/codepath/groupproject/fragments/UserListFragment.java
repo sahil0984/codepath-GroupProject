@@ -39,7 +39,7 @@ public abstract class UserListFragment extends Fragment {
 		//Non-view initialization
 		users = new ArrayList<User>();
 		aUsers = new UserArrayAdapter(getActivity(), users);
-		lvUsers.setAdapter(aUsers);
+		
 
 		//populateUsers(getArguments().getString("group"));
 	}
@@ -63,6 +63,7 @@ public abstract class UserListFragment extends Fragment {
 		View v = inflater.inflate(R.layout.fragment_users_list, container, false);
 		//Assign our view references
 		lvUsers = (ListView) v.findViewById(R.id.lvUsers);
+		lvUsers.setAdapter(aUsers);
 		lvUsers.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
