@@ -39,48 +39,23 @@ public abstract class UserListFragment extends Fragment {
 		//Non-view initialization
 		users = new ArrayList<User>();
 		aUsers = new UserArrayAdapter(getActivity(), users);
-		
+		lvUsers.setAdapter(aUsers);
+
 		//populateUsers(getArguments().getString("group"));
 	}
 
-
-	public void populateUsersByGroupId(String groupId) {
-		ParseQuery<Group> queryGroups = ParseQuery.getQuery(Group.class);
-		// Define our query conditions
-		queryGroups.whereEqualTo("objectId", groupId);
-		Log.d("MyApp","My groupId is" + groupId);
-		// Execute the find asynchronously
-		queryGroups.findInBackground(new FindCallback<Group>() {
-			@Override
-			public void done(List<Group> groupList, ParseException e) {
-		        if (e == null) {
-		        	if (groupList.size()!=0) {
-		        		// Access the array of results here
-		        		ArrayList<User> groupUsers = (ArrayList<User>) groupList.get(0).getMembers();
-		        		//Toast.makeText(getActivity(), firstItemId, Toast.LENGTH_SHORT).show();
-		        		if (groupUsers != null)
-		        		{
-		        			aUsers.addAll(groupUsers);
-		        		}
-		        		//ParseUser.getCurrentUser().put("groups", groupList);
-		        		//ParseUser.getCurrentUser().saveInBackground();
-		        		
-		        	} else {
-		        		Toast.makeText(getActivity(), "No group found.", Toast.LENGTH_SHORT).show();
-		        	}
-		        } else {
-		            Log.d("item", "Error: " + e.getMessage());
-		        }
-			}
-		});
-
-	}
-	
 	public void appendUser(User newUser) {
 		aUsers.add(newUser);
 	}
 
-
+	public void addAll(ArrayList<User> users)
+	{
+		aUsers.addAll(users);
+	}
+	public void clearList()
+	{
+		aUsers.clear();
+	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -88,7 +63,6 @@ public abstract class UserListFragment extends Fragment {
 		View v = inflater.inflate(R.layout.fragment_users_list, container, false);
 		//Assign our view references
 		lvUsers = (ListView) v.findViewById(R.id.lvUsers);
-		lvUsers.setAdapter(aUsers);
 		lvUsers.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override

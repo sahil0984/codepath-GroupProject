@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.codepath.groupproject.fragments.AddUserListFragment;
 import com.codepath.groupproject.models.User;
+import com.parse.ParseUser;
 
 public class AddUsersActivity extends FragmentActivity implements AddUserListFragment.OnItemSelectedListener {
 	private SearchView searchView;

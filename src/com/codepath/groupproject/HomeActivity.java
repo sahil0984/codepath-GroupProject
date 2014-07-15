@@ -234,14 +234,18 @@ public class HomeActivity extends ActionBarActivity {
 	     ParseGeoPoint returnLocation = new ParseGeoPoint(data.getDoubleExtra("returnLat", 0), 
 				  										  data.getDoubleExtra("returnLng", 0));
 	     newGroup.setReturnLocation(returnLocation);
+
+	     //Hack to add current user
+	     ArrayList<String> groupMembersStr =  data.getStringArrayListExtra("groupMembers");
+	     groupMembersStr.add(ParseUser.getCurrentUser().getObjectId());
+	     
 	     try {
-	    	 createUserListfromObjectId(data.getStringArrayListExtra("groupMembers"));
+	    	 createUserListfromObjectId(groupMembersStr);
 	     } catch (Exception e) {
 	    	 e.printStackTrace();
 	     }
-	     //newGroup.set
-
-	     
+	   
+	     //newGroup.set	     
 	     if (data.getByteArrayExtra("photoBytes") != null) {
 		     ParseFile photoFile = new ParseFile("group_photo.jpg", data.getByteArrayExtra("photoBytes"));
 		     newGroup.setPhotoFile(photoFile);	    	 
