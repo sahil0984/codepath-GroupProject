@@ -22,6 +22,7 @@ import com.codepath.groupproject.GroupDetailActivity;
 import com.codepath.groupproject.R;
 import com.codepath.groupproject.adapters.GroupArrayAdapter;
 import com.codepath.groupproject.models.Group;
+import com.codepath.groupproject.models.User;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -42,10 +43,65 @@ public class GroupListFragment extends Fragment {
 		groups = new ArrayList<Group>();
 		aGroups = new GroupArrayAdapter(getActivity(), groups);
 				
-		populateGroups();
+		populateGroups_old();
 	}
 	
+	
 	public void populateGroups() {
+		ParseQuery<Group> queryGroups = ParseQuery.getQuery(Group.class);
+		//queryGroups.whereContains("groups", )
+	}
+	
+	
+	public void populateGroups_2() {		
+		
+		ParseQuery<User> queryUser = ParseQuery.getQuery(User.class);
+		queryUser.whereEqualTo("objectId", ParseUser.getCurrentUser().getObjectId());
+		queryUser.include("groups");
+		queryUser.findInBackground(new FindCallback<User>() {
+
+			@Override
+			public void done(List<User> userList, ParseException e) {
+		        if (e == null) {
+		        	if (userList.size()!=0) {
+
+		        		ArrayList<Group> myGroups = (ArrayList<Group>) userList.get(0).getGroups();
+		        		for (int i=0; i<myGroups.size(); i++) {
+			        		ParseQuery<Group> queryGroups = ParseQuery.getQuery(Group.class);
+			        		queryGroups.whereEqualTo("objectId", myGroups.get(i).getObjectId());
+			        		queryGroups.include("members");
+			        		queryGroups.findInBackground(new FindCallback<Group>() {
+			        			@Override
+			        			public void done(List<Group> groupList, ParseException e) {
+			        		        if (e == null) {
+			        		        	if (groupList.size()!=0) {
+			        		        		// Access the array of results here
+			        		        		aGroups.addAll(groupList);
+			        		        		
+			        		        		ParseUser.getCurrentUser().put("groups", groupList);
+			        		        		ParseUser.getCurrentUser().saveInBackground();
+			        		        		
+			        		        	} else {
+			        		        		Toast.makeText(getActivity(), "No group found.", Toast.LENGTH_SHORT).show();
+			        		        	}
+			        		        } else {
+			        		            Log.d("item", "Error: " + e.getMessage());
+			        		        }
+			        			}
+			        		});
+		        		}
+		        		
+		        	} else {
+		        		Toast.makeText(getActivity(), "No current user found.", Toast.LENGTH_SHORT).show();
+		        	}
+		        } else {
+		        	Log.d("item", "Error: " + e.getMessage());
+		        }	
+			}
+		});
+	}
+	
+	public void populateGroups_old() {
 		
 		ParseQuery<Group> queryGroups = ParseQuery.getQuery(Group.class);
 		// Define our query conditions

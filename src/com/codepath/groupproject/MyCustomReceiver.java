@@ -20,6 +20,8 @@ public class MyCustomReceiver extends BroadcastReceiver {
 
    @Override
    public void onReceive(Context context, Intent intent) {
+       Toast.makeText(context, "yes", Toast.LENGTH_SHORT).show();
+
        if (intent == null) {
            Log.d(TAG, "Receiver intent null");
        } else {
@@ -31,7 +33,6 @@ public class MyCustomReceiver extends BroadcastReceiver {
    private void processPush(Context context, Intent intent) {
        String action = intent.getAction();
        Log.d(TAG, "got action " + action );
-       Toast.makeText(context, "yes", Toast.LENGTH_SHORT).show();
        if (action.equals(intentAction))
        {
            String channel = intent.getExtras().getString("com.parse.Channel");
@@ -45,11 +46,11 @@ public class MyCustomReceiver extends BroadcastReceiver {
          	   // Extract custom push data
          	   if (key.equals("customdata")) {    
          	 	// Handle push notification by invoking activity directly
-         		launchSomeActivity(context, json.getString(key));
+         		//launchSomeActivity(context, json.getString(key));
          		// OR trigger a broadcast to activity
-         		triggerBroadcastToActivity(context);
+         		//triggerBroadcastToActivity(context);
          		// OR create a local notification
-         		createNotification(context);
+         		//createNotification(context);
          	    }
                     Log.d(TAG, "..." + key + " => " + json.getString(key));
                }
@@ -74,7 +75,7 @@ public class MyCustomReceiver extends BroadcastReceiver {
        Intent pupInt = new Intent(context, ProfileActivity.class);
        //pupInt.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
        //pupInt.putExtra("customdata", datavalue);
-       context.getApplicationContext().startActivity(pupInt);
+       context.startActivity(pupInt);
    }
    
    // Handle push notification by sending a local broadcast 
