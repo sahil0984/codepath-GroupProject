@@ -88,11 +88,10 @@ public class GroupArrayAdapter extends ArrayAdapter<Group> {
               
        String membersList = "";
        for (int i=0; i<groupMemberCount; i++) {
-    	   Log.d("MyApp", "GroupMembers: " + group.getMembers().toString());
-          // membersList = membersList + group.getMembers().get(i).getFirstName();        
-           //if (i != groupMemberCount-1) {
-        	 //  membersList = membersList + ", ";
-          // }
+           membersList = membersList + group.getMembers().get(i).getFirstName();
+           if (i != groupMemberCount-1) {
+        	   membersList = membersList + ", ";
+           }
        }
        holder.tvMembersList.setText(membersList);
 		
