@@ -195,7 +195,11 @@ public class HomeActivity extends ActionBarActivity {
 	     ParseGeoPoint returnLocation = new ParseGeoPoint(data.getDoubleExtra("returnLat", 0), 
 				  										  data.getDoubleExtra("returnLng", 0));
 	     newGroup.setReturnLocation(returnLocation);
-	     //createUserListfromObjectId(data.getStringArrayListExtra("groupMembers"));//Need to handle 0 members
+	     //Hack to add current user
+	     ArrayList<String> groupMembersStr =  data.getStringArrayListExtra("groupMembers");
+	     groupMembersStr.add(ParseUser.getCurrentUser().getObjectId());
+	     createUserListfromObjectId(groupMembersStr);
+	     
 	     newGroup.setMembers(groupMembers);
 	     //newGroup.set
 
