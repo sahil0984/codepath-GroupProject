@@ -240,9 +240,9 @@ public class CreateGroupActivity extends FragmentActivity implements OnDataPass 
 			getVerifySetAdd("onward", etOnwardLocation.getText().toString());
 			getVerifySetAdd("return", etReturnLocation.getText().toString());
 			break;
-		case 1:
-			sendPushNotification();
-			break;
+		//case 1:
+			//sendPushNotification();
+			//break;
 		case 2:
 			prepareIntent();
 			finish();
@@ -251,31 +251,6 @@ public class CreateGroupActivity extends FragmentActivity implements OnDataPass 
 			break;
 		}
 		
-	}
-	
-	private void sendPushNotification() {
-		JSONObject obj;
-		try {
-			obj = new JSONObject();
-			obj.put("alert", "Added to a new group!");
-			obj.put("action", MyCustomReceiver.intentAction);
-			obj.put("customdata","Added to group");
-
-			ParsePush push = new ParsePush();
-			ParseQuery<ParseInstallation> query = ParseInstallation.getQuery();
-
-			// Push the notification to Android users
-			query.whereEqualTo("deviceType", "android");
-			push.setQuery(query);
-			push.setData(obj);
-			push.sendInBackground(); 
-		} catch (JSONException e) {
-
-			e.printStackTrace();
-		}
-		oneAddressVerifDoneFlag = 0;
-		State_GeoCodeTask = 2;
-		onAddGroupTasks();
 	}
 
 	public void prepareIntent() {
@@ -448,7 +423,7 @@ public class CreateGroupActivity extends FragmentActivity implements OnDataPass 
 				if (oneAddressVerifDoneFlag==1) {
 					
 					oneAddressVerifDoneFlag = 0;
-					State_GeoCodeTask = 1;
+					State_GeoCodeTask = 2;
 					onAddGroupTasks();
 				} else {
 			    	oneAddressVerifDoneFlag = oneAddressVerifDoneFlag + 1;

@@ -53,7 +53,6 @@ public class GroupListFragment extends Fragment {
 		
 		
 		ParseQuery<Group> queryGroup = ParseQuery.getQuery(Group.class);
-		//queryGroup.whereEqualTo("objectId", ParseUser.getCurrentUser().getObjectId());
 		queryGroup.include("members");
 		queryGroup.whereMatchesQuery("members", innerUserQuery);
 		queryGroup.findInBackground(new FindCallback<Group>() {

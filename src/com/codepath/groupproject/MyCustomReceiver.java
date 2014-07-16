@@ -1,9 +1,15 @@
 package com.codepath.groupproject;
 
 import java.util.Iterator;
+import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.codepath.groupproject.models.Group;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
 
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
@@ -20,8 +26,7 @@ public class MyCustomReceiver extends BroadcastReceiver {
 
    @Override
    public void onReceive(Context context, Intent intent) {
-       Toast.makeText(context, "yes", Toast.LENGTH_SHORT).show();
-
+	   
        if (intent == null) {
            Log.d(TAG, "Receiver intent null");
        } else {
@@ -40,20 +45,21 @@ public class MyCustomReceiver extends BroadcastReceiver {
                JSONObject json = new JSONObject(intent.getExtras().getString("com.parse.Data"));
                Log.d(TAG, "got action " + action + " on channel " + channel + " with:");
                // Iterate the parse keys if needed
-               Iterator<String> itr = json.keys();
-               while (itr.hasNext()) {
-                   String key = (String) itr.next();
+               //Iterator<String> itr = json.keys();
+               //while (itr.hasNext()) {
+               //    String key = (String) itr.next();
          	   // Extract custom push data
-         	   if (key.equals("customdata")) {    
+         	   if (json.getString("customdata").equals("AddedToGroup")) {    
          	 	// Handle push notification by invoking activity directly
-         		//launchSomeActivity(context, json.getString(key));
+         		launchSomeActivity(context, json.getString("customdata"), json.getString("groupsObjectId"), json.getString("ownersObjectId"));
          		// OR trigger a broadcast to activity
          		//triggerBroadcastToActivity(context);
          		// OR create a local notification
          		//createNotification(context);
+         			
          	    }
-                    Log.d(TAG, "..." + key + " => " + json.getString(key));
-               }
+                    //Log.d(TAG, "..." + key + " => " + json.getString(key));
+               //}
        	    } catch (JSONException ex) {
        		Log.d(TAG, "JSON failed!");
        	    }
@@ -71,10 +77,13 @@ public class MyCustomReceiver extends BroadcastReceiver {
    }
    
    // Handle push notification by invoking activity directly
-   private void launchSomeActivity(Context context, String datavalue) {
-       Intent pupInt = new Intent(context, ProfileActivity.class);
-       //pupInt.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
-       //pupInt.putExtra("customdata", datavalue);
+   private void launchSomeActivity(Context context, String customdata, String groupsObjectId, String ownersObjectId) {
+       Intent pupInt = new Intent(context, HomeActivity.class);
+       pupInt.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
+       pupInt.putExtra("customdata", customdata);
+       pupInt.putExtra("groupsObjectId", groupsObjectId);
+       pupInt.putExtra("ownersObjectId", ownersObjectId);
+       pupInt.putExtra("classFrom", MyCustomReceiver.class.toString());
        context.startActivity(pupInt);
    }
    

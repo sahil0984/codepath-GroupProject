@@ -6,6 +6,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -39,9 +42,12 @@ import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
+import com.parse.ParseInstallation;
 import com.parse.ParseObject;
+import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.PushService;
 import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 
@@ -49,6 +55,8 @@ public class HomeActivity extends ActionBarActivity {
 
 	private final int REQUEST_CODE = 20;
 	ArrayList<User> groupMembers;
+	
+	GroupListFragment groupsListFragment;
 	
 	Group newGroup;
 	int queriesReturned;
@@ -60,6 +68,47 @@ public class HomeActivity extends ActionBarActivity {
 		groupMembers = new ArrayList<User>();
 		setupTabs();
 		
+
+		
+		String classFrom = getIntent().getStringExtra("classFrom");
+		String myCustomReceiverClass = MyCustomReceiver.class.toString();
+		if (classFrom != null && classFrom.equals(myCustomReceiverClass)) {
+			if (!getIntent().getStringExtra("ownersObjectId").equals(
+					ParseUser.getCurrentUser().getObjectId())) {
+				String objectId = getIntent().getStringExtra("customdata");
+
+				Toast.makeText(getApplicationContext(),
+						"Home called from MyCustomReceiver", Toast.LENGTH_SHORT)
+						.show();
+
+				ParseQuery<Group> queryGroup = ParseQuery.getQuery(Group.class);
+				queryGroup.include("members");
+				queryGroup.getInBackground(objectId, new GetCallback<Group>() {
+
+					@Override
+					public void done(Group foundGroup, ParseException e) {
+						if (e == null) {
+							groupsListFragment = (GroupListFragment) getSupportFragmentManager()
+									.findFragmentByTag("GroupsListFragment");
+							groupsListFragment.appendNewGroup(foundGroup);
+							
+							// Adding Parse Push channel for the new group in current users installation
+							addChannelToInstallation(foundGroup.getObjectId());
+
+							Toast.makeText(getApplicationContext(),
+									"added group: " + foundGroup.getName(),
+									Toast.LENGTH_SHORT).show();
+						} else {
+							Log.d("item", "Error: " + e.getMessage());
+						}
+
+					}
+
+				});
+
+			}
+		}
+
 	}
 	
 	private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
@@ -268,15 +317,64 @@ public class HomeActivity extends ActionBarActivity {
 			@Override
 			public void done(ParseException e) {
 				if (e == null) {
-			        GroupListFragment groupsListFragment = (GroupListFragment) getSupportFragmentManager().findFragmentByTag("GroupsListFragment");
+			        groupsListFragment = (GroupListFragment) getSupportFragmentManager().findFragmentByTag("GroupsListFragment");
 			        groupsListFragment.appendNewGroup(newGroup);
 			        //Toast.makeText(getApplicationContext(), newGroup.getObjectId(), Toast.LENGTH_SHORT).show();
+			        
+			        sendPushNotification();
 			        
 				} else {
 					e.printStackTrace();
 				}
 			}
 		});
+	}
+	
+	private void sendPushNotification() {
+		JSONObject obj;
+		try {
+			obj = new JSONObject();
+			obj.put("alert", "Added to " + newGroup.getName() + " group!");
+			obj.put("action", MyCustomReceiver.intentAction);
+			obj.put("customdata", "AddedToGroup");
+			obj.put("groupsObjectId", newGroup.getObjectId());
+			obj.put("ownersObjectId", newGroup.getUser().getObjectId());
+
+			ParsePush push = new ParsePush();
+			ParseQuery<ParseInstallation> query = ParseInstallation.getQuery();
+			
+			//ParseQuery<User> membersQuery = ParseQuery.getQuery(User.class);
+			
+			//for (int i=0; i<newGroup.getMembers().size(); i++) {
+				ParseQuery<User> memberQuery = ParseQuery.getQuery(User.class);
+				memberQuery.whereEqualTo("objectId", newGroup.getMembers().get(1).getObjectId());
+				push.setQuery(query);
+				push.setData(obj);
+				push.sendInBackground();
+			//}
+			Toast.makeText(getApplicationContext(), "Num members: " + newGroup.getMembers(), Toast.LENGTH_SHORT).show();
+			// Push the notification to Android users
+			//query.whereEqualTo("deviceType", "android");
+			//push.setQuery(query);
+			//push.setData(obj);
+			//push.sendInBackground();
+			
+			
+			addChannelToInstallation(newGroup.getObjectId());
+		} catch (JSONException e) {
+
+			e.printStackTrace();
+		}
+	}
+	
+	public void addChannelToInstallation (String groupObjectId) {
+		PushService.subscribe(getApplicationContext(), "channel_" + groupObjectId, HomeActivity.class);
+		
+		//Useful code for implementing messaging
+        //ParsePush push = new ParsePush();
+        //push.setChannel("channel_" + currentGroup.getObjectId());
+        //push.setMessage("The Giants just scored! It's now 2-2 against the Mets.");
+        //push.sendInBackground();
 	}
 	
 	public Date stringToDateTime(String dateTime) {
