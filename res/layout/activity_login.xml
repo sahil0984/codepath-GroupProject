@@ -3,6 +3,33 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="${packageName}.${activityClass}" >
+    
+ 
+    <ImageView
+        android:id="@+id/loginBgImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="0dp"
+        android:contentDescription="Background Image"
+        android:scaleType="centerCrop"
+        android:src="@drawable/earth_curve" />
+    
+    <TextView 
+        android:id="@+id/tvAppTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tvChoose"
+        android:layout_marginBottom="70dp"
+        android:textColor="@color/"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:shadowRadius="0.002"
+        android:shadowColor="@color/black"
+        android:textSize="40sp"
+        android:textStyle="bold|italic"
+        android:layout_centerHorizontal="true" 
+        android:text="Find My Ride"/>
+    
 
     <TextView
         android:id="@+id/tvChoose"
@@ -10,6 +37,8 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        android:textColor="@color/white"
+        android:textStyle="bold"
         android:text="Start with," />
 
     
@@ -19,8 +48,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvChoose"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="50dp"
         android:layout_centerHorizontal="true"
-        android:onClick="onLoginWithFacebook" />
+        android:onClick="onLoginWithFacebook" 
+        android:alpha="0.7"/>
 
 </RelativeLayout>
