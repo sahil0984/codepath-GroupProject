@@ -176,7 +176,7 @@ public class HomeActivity extends ActionBarActivity {
 	public void createUserListfromObjectId(ArrayList<String> userListStr)
 	{
 		int i;
-		ArrayList<User> userList = new ArrayList<User>();
+		//ArrayList<User> userList = new ArrayList<User>();
 		final int userListSize = userListStr.size();
 		queriesReturned=0;
 		for (i = 0; i < userListSize; i++)
@@ -186,19 +186,21 @@ public class HomeActivity extends ActionBarActivity {
 			// Define our query conditions
 			Log.d("geUserFromObjectId", "objectId: " + objectId);
 			
+			queryUsers.include("groups");
 			// Execute the find asynchronously
 			
 			queryUsers.getInBackground(objectId,new GetCallback<User>() {
 			  public void done(User user, ParseException e) {
 			    if (e == null) {
 		        		// Access the array of results here
+			    		//Adding member to the group adapter
 			    		groupMembers.add(user);
 		        		Log.d("MyApp", user.toString());
 		        		
-
-		        		
 		        		//ParseUser.getCurrentUser().put("groups", groupList);
 		        		//ParseUser.getCurrentUser().saveInBackground();
+		        		
+
 		        		
 		        		if (queriesReturned==userListSize-1) {
 		        			newGroup.setMembers(groupMembers);
@@ -206,6 +208,8 @@ public class HomeActivity extends ActionBarActivity {
 		        		} else {
 			        		queriesReturned = queriesReturned + 1;
 		        		}
+
+		        		
 			    } else {
 			        Log.d("MyApp", "oops");
 			    }
