@@ -144,7 +144,7 @@ public class GroupDetailActivity extends FragmentActivity {
 			                LatLng dest= list.get(z+1);
 			                Polyline line = map.addPolyline(new PolylineOptions()
 			                .add(new LatLng(src.latitude, src.longitude), new LatLng(dest.latitude,   dest.longitude))
-			                .width(2)
+			                .width(7)
 			                .color(Color.BLUE).geodesic(true));
 			            }					
 						super.onSuccess(statusCode, headers, response);
