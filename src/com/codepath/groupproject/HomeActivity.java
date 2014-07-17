@@ -19,6 +19,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBar.Tab;
 import android.support.v7.app.ActionBarActivity;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -238,7 +239,7 @@ public class HomeActivity extends ActionBarActivity {
 			queryUsers.include("groups");
 			// Execute the find asynchronously
 			
-			queryUsers.getInBackground(objectId,new GetCallback<User>() {
+			queryUsers.getInBackground(objectId, new GetCallback<User>() {
 			  public void done(User user, ParseException e) {
 			    if (e == null) {
 		        		// Access the array of results here
@@ -378,20 +379,6 @@ public class HomeActivity extends ActionBarActivity {
         //push.setChannel("channel_" + currentGroup.getObjectId());
         //push.setMessage("The Giants just scored! It's now 2-2 against the Mets.");
         //push.sendInBackground();
-	}
-	
-	public Date stringToDateTime(String dateTime) {
-		
-		Date date;
-		
-		try {
-			date = new SimpleDateFormat("MM/dd/yyyy'T'hh:mm", Locale.ENGLISH).parse(dateTime);
-		} catch (java.text.ParseException e) {
-			date = null;
-			e.printStackTrace();
-		}
-
-		return date;
 	}
 	
 	

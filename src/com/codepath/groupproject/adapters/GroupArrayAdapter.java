@@ -1,8 +1,12 @@
 package com.codepath.groupproject.adapters;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import android.content.Context;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +17,7 @@ import android.widget.Toast;
 
 import com.codepath.groupproject.R;
 import com.codepath.groupproject.models.Group;
+import com.codepath.groupproject.models.User;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -78,18 +83,20 @@ public class GroupArrayAdapter extends ArrayAdapter<Group> {
        holder.tvOnwardTime.setText(group.getOnwardTime());
        holder.tvReturnTime.setText(group.getReturnTime());
        
-       int groupMemberCount;
+       int groupMembersCount;
        try {
-    	   groupMemberCount = group.getMembers().size();
+    	   groupMembersCount = group.getMembers().size();
        } catch (Exception e) {
-    	   groupMemberCount = 0;
+    	   groupMembersCount = 0;
     	   e.printStackTrace();
        }
               
        String membersList = "";
-       for (int i=0; i<groupMemberCount; i++) {
+       for (int i=0; i<groupMembersCount; i++) {
+    	   //Toast.makeText(context, group.getMembers().get(i).toString(), Toast.LENGTH_LONG).show();
+    	   //Log.d("FBJSON", group.getMembers().get(i).getFirstName());
     	   membersList = membersList + group.getMembers().get(i).getFirstName();        
-           if (i != groupMemberCount-1) {
+           if (i != groupMembersCount-1) {
         	 membersList = membersList + ", ";
            }
        }
@@ -109,6 +116,26 @@ public class GroupArrayAdapter extends ArrayAdapter<Group> {
 		TextView tvMembersList;
 		
 
+	}
+	
+	public String stringToDateTime(String dateTime) {
+		
+		long dateMillis;
+		String relativeDate = "";
+		try {
+			dateMillis = new SimpleDateFormat("MM/dd/yyyy'T'hh:mm", Locale.ENGLISH).parse(dateTime).getTime();
+			relativeDate = DateUtils.getRelativeTimeSpanString(dateMillis,
+					System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS).toString();
+			
+			relativeDate = (String) DateUtils.getRelativeDateTimeString(context, dateMillis, DateUtils.SECOND_IN_MILLIS,
+						DateUtils.WEEK_IN_MILLIS, 0);
+		} catch (java.text.ParseException e) {
+			dateMillis = 0;
+			e.printStackTrace();
+		}
+
+		
+		return relativeDate;
 	}
 	
 }

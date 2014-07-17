@@ -29,8 +29,8 @@
 			android:paddingLeft="10dp"
 			android:paddingTop="10dp"
 			android:paddingBottom="10dp"
-	        android:textColor="@color/black"
-	        android:background="#afffffff"
+	        android:textColor="@color/white"
+	        android:background="#af000000"
 	        android:textSize="20sp"
 	        android:textStyle="normal"
 	        android:text="Welcome to "/>
@@ -44,8 +44,8 @@
 	        android:paddingRight="10dp"
 			android:paddingTop="10dp"
 			android:paddingBottom="10dp"
-	        android:textColor="@color/black"
-	        android:background="#afffffff"
+	        android:textColor="@color/white"
+	        android:background="#af000000"
 	        android:textSize="25sp"
 	        android:textStyle="bold"
 	        android:text="Find My Ride"/>
@@ -58,8 +58,8 @@
 	        android:layout_alignLeft="@+id/tvAppTitle"
 	        android:layout_marginLeft="-20dp"
 	        android:padding="5dp"
-	        android:textColor="@color/white"
-	        android:background="#af000000"
+	        android:textColor="@color/black"
+	        android:background="#afffffff"
 	        android:textSize="12sp"
 	        android:textStyle="italic"
 	        android:text="Your one stop for finding and managing in-network and out-of-network rides."/>

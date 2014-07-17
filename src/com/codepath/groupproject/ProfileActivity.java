@@ -241,10 +241,10 @@ public class ProfileActivity extends ActionBarActivity {
 		//ParseUser.getCurrentUser().put("homeAdd", etHomeAdd.getText().toString());
 		//ParseUser.getCurrentUser().put("workAdd", etWorkAdd.getText().toString());
 		if (homeLatLng != null) {
-			ParseUser.getCurrentUser().put("homeAdd", homeLatLng);			
+			ParseUser.getCurrentUser().put("homeAdd", homeLatLng);
 		}
 		if (workLatLng != null) {
-			ParseUser.getCurrentUser().put("workAdd", workLatLng);			
+			ParseUser.getCurrentUser().put("workAdd", workLatLng);
 		}		
 		ParseUser.getCurrentUser().put("phone", etPhone.getText().toString());
 		ParseUser.getCurrentUser().put("personalEmail", etPersonalEmail.getText().toString());
@@ -358,47 +358,30 @@ public class ProfileActivity extends ActionBarActivity {
 		}
 	}
     
-	public void getVerifySetAdd (final String tag, String address) {
-		
+    public void getVerifySetAdd(final String tag, String address) {
 		String formattedAddress = address.trim().replaceAll(" +", "+");
 		//Toast.makeText(getApplicationContext(), formattedAddress, Toast.LENGTH_LONG).show();
 
     	//https://developers.google.com/maps/documentation/geocoding/
 	    String url = "http://maps.google.com/maps/api/geocode/json?address=" + formattedAddress;
+	    
+	    
 	    AsyncHttpClient client = new AsyncHttpClient();
-	    client.get(url, null, new JsonHttpResponseHandler() {
-	    	
-			@Override
-			public void onSuccess(int statusCode, Header[] headers,
-					JSONObject response) {
-				
-				String status = null;
-				JSONArray results;
-				String checkedAdd = null;
-				String lat = null;
-				String lng = null;
-				String latLng = null;
-				try {
-					status = response.getString("status");
-					results = response.getJSONArray("results");
-					//Toast.makeText(getApplicationContext(), "Length:" + results.length() + " Status="+ status, Toast.LENGTH_SHORT).show();
+	    client.get(url, null, new GeoCoderResponseHandler(getApplicationContext()) {
 
-					if (status.equals("OK") && results.length()>0) {
-						checkedAdd = results.getJSONObject(0).getString("formatted_address");
-						lat = results.getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getString("lat");
-						lng = results.getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getString("lng");
-						//latLng = lat + "," + lng;
-						
-						setCoord(tag, lat, lng);
-						
-					}
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					Toast.makeText(getApplicationContext(), "Error checking address", Toast.LENGTH_SHORT).show();
-					return;
-				}				
-				//Toast.makeText(getApplicationContext(), checkedAdd + ":" + lat + "," + lng, Toast.LENGTH_SHORT).show();
+	    	@Override
+	    	public void onSuccess(int statusCode, Header[] headers,
+	    			JSONObject response) {
+	    		super.onSuccess(statusCode, headers, response);
+	    		
+		        if (tag.equals("home")) {
+		    		homeLatLng = getLatLng();
+		    		//homeAdd = getCheckedAdd();
+		    	} else if (tag.equals("work")) {
+		    		workLatLng = getLatLng();
+		    		//workAdd = getCheckedAdd();
+		    	}
+		        
 				if (oneAddressVerifDoneFlag==1) {
 					oneAddressVerifDoneFlag = 0;
 					State_GeoCodeTask = 1;
@@ -406,66 +389,31 @@ public class ProfileActivity extends ActionBarActivity {
 				} else {
 			    	oneAddressVerifDoneFlag = oneAddressVerifDoneFlag + 1;
 				}
-			}
-
-			@Override
-			public void onFailure(int statusCode, Header[] headers,
-					Throwable throwable, JSONObject errorResponse) {
-				Toast.makeText(getApplicationContext(), "Error checking address", Toast.LENGTH_SHORT).show();
-				//BOZO: Handle failure by asking user to try again. And resetting to edit profile state.
-			}
-
+	    	}
+	    	
 	    });
-	    
     }
     
-    public void setCoord(String tag, String lat, String lng) {    	
-    	
-    	if (tag.equals("home")) {
-    		homeLatLng = new ParseGeoPoint(Double.parseDouble(lat), Double.parseDouble(lng));
-    	} else if (tag.equals("work")) {
-    		workLatLng = new ParseGeoPoint(Double.parseDouble(lat), Double.parseDouble(lng));
-    	}
-    	
-    }
-    
-    public String getAddFromCoor(final String tag, ParseGeoPoint pCoord) {
+    public void getAddFromCoor(final String tag, ParseGeoPoint pCoord) {
     	Double lat = pCoord.getLatitude();
     	Double lng = pCoord.getLongitude();
 	    String url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lng;
 	    AsyncHttpClient client = new AsyncHttpClient();
-	    client.get(url, null, new JsonHttpResponseHandler() {
+	    client.get(url, null, new GeoCoderResponseHandler(getApplicationContext()) {
 	    	
-			@Override
-			public void onSuccess(int statusCode, Header[] headers,
-					JSONObject response) {
-				
-				String status = null;
-				JSONArray results;
-				String checkedAdd = null;
-				String lat = null;
-				String lng = null;
-				String latLng = null;
-				try {
-					status = response.getString("status");
-					results = response.getJSONArray("results");
-					//Toast.makeText(getApplicationContext(), "Length:" + results.length() + " Status="+ status, Toast.LENGTH_SHORT).show();
-
-					if (status.equals("OK") && results.length()>0) {
-						checkedAdd = results.getJSONObject(0).getString("formatted_address");
-						//lat = results.getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getString("lat");
-						//lng = results.getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getString("lng");
-						//latLng = lat + "," + lng;
-						
-						setAddress(tag, checkedAdd);
-						
-					}
-				} catch (JSONException e) {
-					e.printStackTrace();
-					Toast.makeText(getApplicationContext(), "Error checking address", Toast.LENGTH_SHORT).show();
-					return;
-				}				
-				//Toast.makeText(getApplicationContext(), checkedAdd + ":" + lat + "," + lng, Toast.LENGTH_SHORT).show();
+	    	@Override
+	    	public void onSuccess(int statusCode, Header[] headers,
+	    			JSONObject response) {
+	    		super.onSuccess(statusCode, headers, response);
+	    		
+		        if (tag.equals("home")) {
+		    		//homeLatLng = getLatLng();
+		    		homeAdd = getCheckedAdd();
+		    	} else if (tag.equals("work")) {
+		    		//workLatLng = getLatLng();
+		    		workAdd = getCheckedAdd();
+		    	}
+		        
 				if (oneAddressVerifDoneFlag==1) {
 					oneAddressVerifDoneFlag = 0;
 					State_GeoCodeTask = 3;
@@ -473,25 +421,147 @@ public class ProfileActivity extends ActionBarActivity {
 				} else {
 			    	oneAddressVerifDoneFlag = oneAddressVerifDoneFlag + 1;
 				}
-			}
-			
-			@Override
-			public void onFailure(int statusCode, Header[] headers,
-					Throwable throwable, JSONObject errorResponse) {
-				Toast.makeText(getApplicationContext(), "Error retrieving address", Toast.LENGTH_SHORT).show();
-				//BOZO: Handle failure by asking user to try again. And resetting to edit profile state.
-			}
+	    	}
+	    	
 	    });
-    	return null;
-    }
-    
-    public void setAddress(String tag, String checkedAdd) {    	
-    	
-    	if (tag.equals("home")) {
-    		homeAdd = checkedAdd;
-    	} else if (tag.equals("work")) {
-    		workAdd = checkedAdd;
-    	}  	
-		
+		return;
     }
 }
+    
+//	public void getVerifySetAdd (final String tag, String address) {
+//		
+//		String formattedAddress = address.trim().replaceAll(" +", "+");
+//		//Toast.makeText(getApplicationContext(), formattedAddress, Toast.LENGTH_LONG).show();
+//
+//    	//https://developers.google.com/maps/documentation/geocoding/
+//	    String url = "http://maps.google.com/maps/api/geocode/json?address=" + formattedAddress;
+//	    AsyncHttpClient client = new AsyncHttpClient();
+//	    client.get(url, null, new JsonHttpResponseHandler() {
+//	    	
+//			@Override
+//			public void onSuccess(int statusCode, Header[] headers,
+//					JSONObject response) {
+//				
+//				String status = null;
+//				JSONArray results;
+//				String checkedAdd = null;
+//				String lat = null;
+//				String lng = null;
+//				String latLng = null;
+//				try {
+//					status = response.getString("status");
+//					results = response.getJSONArray("results");
+//					//Toast.makeText(getApplicationContext(), "Length:" + results.length() + " Status="+ status, Toast.LENGTH_SHORT).show();
+//
+//					if (status.equals("OK") && results.length()>0) {
+//						checkedAdd = results.getJSONObject(0).getString("formatted_address");
+//						lat = results.getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getString("lat");
+//						lng = results.getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getString("lng");
+//						//latLng = lat + "," + lng;
+//						
+//						setCoord(tag, lat, lng);
+//						
+//					}
+//				} catch (JSONException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//					Toast.makeText(getApplicationContext(), "Error checking address", Toast.LENGTH_SHORT).show();
+//					return;
+//				}				
+//				//Toast.makeText(getApplicationContext(), checkedAdd + ":" + lat + "," + lng, Toast.LENGTH_SHORT).show();
+//				if (oneAddressVerifDoneFlag==1) {
+//					oneAddressVerifDoneFlag = 0;
+//					State_GeoCodeTask = 1;
+//					doDoneEditProfileTasks();
+//				} else {
+//			    	oneAddressVerifDoneFlag = oneAddressVerifDoneFlag + 1;
+//				}
+//			}
+//
+//			@Override
+//			public void onFailure(int statusCode, Header[] headers,
+//					Throwable throwable, JSONObject errorResponse) {
+//				Toast.makeText(getApplicationContext(), "Error checking address", Toast.LENGTH_SHORT).show();
+//				//BOZO: Handle failure by asking user to try again. And resetting to edit profile state.
+//			}
+//
+//	    });
+//	    
+//    }
+//    
+//    public void setCoord(String tag, String lat, String lng) {    	
+//    	
+//    	if (tag.equals("home")) {
+//    		homeLatLng = new ParseGeoPoint(Double.parseDouble(lat), Double.parseDouble(lng));
+//    	} else if (tag.equals("work")) {
+//    		workLatLng = new ParseGeoPoint(Double.parseDouble(lat), Double.parseDouble(lng));
+//    	}
+//    	
+//    }
+    
+//    public String getAddFromCoor(final String tag, ParseGeoPoint pCoord) {
+//    	Double lat = pCoord.getLatitude();
+//    	Double lng = pCoord.getLongitude();
+//	    String url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lng;
+//	    AsyncHttpClient client = new AsyncHttpClient();
+//	    client.get(url, null, new JsonHttpResponseHandler() {
+//	    	
+//			@Override
+//			public void onSuccess(int statusCode, Header[] headers,
+//					JSONObject response) {
+//				
+//				String status = null;
+//				JSONArray results;
+//				String checkedAdd = null;
+//				String lat = null;
+//				String lng = null;
+//				String latLng = null;
+//				try {
+//					status = response.getString("status");
+//					results = response.getJSONArray("results");
+//					//Toast.makeText(getApplicationContext(), "Length:" + results.length() + " Status="+ status, Toast.LENGTH_SHORT).show();
+//
+//					if (status.equals("OK") && results.length()>0) {
+//						checkedAdd = results.getJSONObject(0).getString("formatted_address");
+//						//lat = results.getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getString("lat");
+//						//lng = results.getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getString("lng");
+//						//latLng = lat + "," + lng;
+//						
+//						setAddress(tag, checkedAdd);
+//						
+//					}
+//				} catch (JSONException e) {
+//					e.printStackTrace();
+//					Toast.makeText(getApplicationContext(), "Error checking address", Toast.LENGTH_SHORT).show();
+//					return;
+//				}				
+//				//Toast.makeText(getApplicationContext(), checkedAdd + ":" + lat + "," + lng, Toast.LENGTH_SHORT).show();
+//				if (oneAddressVerifDoneFlag==1) {
+//					oneAddressVerifDoneFlag = 0;
+//					State_GeoCodeTask = 3;
+//					doDoneEditProfileTasks();
+//				} else {
+//			    	oneAddressVerifDoneFlag = oneAddressVerifDoneFlag + 1;
+//				}
+//			}
+//			
+//			@Override
+//			public void onFailure(int statusCode, Header[] headers,
+//					Throwable throwable, JSONObject errorResponse) {
+//				Toast.makeText(getApplicationContext(), "Error retrieving address", Toast.LENGTH_SHORT).show();
+//				//BOZO: Handle failure by asking user to try again. And resetting to edit profile state.
+//			}
+//	    });
+//    	return null;
+//    }
+//    
+//    public void setAddress(String tag, String checkedAdd) {    	
+//    	
+//    	if (tag.equals("home")) {
+//    		homeAdd = checkedAdd;
+//    	} else if (tag.equals("work")) {
+//    		workAdd = checkedAdd;
+//    	}  	
+//		
+//    }
+//}
