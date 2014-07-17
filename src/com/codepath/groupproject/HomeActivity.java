@@ -281,12 +281,15 @@ public class HomeActivity extends ActionBarActivity {
 	     newGroup.setOnwardTime(data.getStringExtra("onwardTime"));
 	     newGroup.setReturnTime(data.getStringExtra("returnTime"));
 	     newGroup.setRecurring(data.getBooleanExtra("recurring", false));
+	     newGroup.setDaysOfWeek(data.getBooleanArrayExtra("daysOfWeek"));
 	     ParseGeoPoint onwardLocation = new ParseGeoPoint(data.getDoubleExtra("onwardLat", 0), 
 	    		 										  data.getDoubleExtra("onwardLng", 0));
 	     newGroup.setOnwardLocation(onwardLocation);
 	     ParseGeoPoint returnLocation = new ParseGeoPoint(data.getDoubleExtra("returnLat", 0), 
 				  										  data.getDoubleExtra("returnLng", 0));
 	     newGroup.setReturnLocation(returnLocation);
+	     
+	     newGroup.setIsPublic(data.getBooleanExtra("isPublic", false));
 
 	     //Hack to add current user
 	     ArrayList<String> groupMembersStr =  data.getStringArrayListExtra("groupMembers");

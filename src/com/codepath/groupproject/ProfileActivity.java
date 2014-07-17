@@ -41,6 +41,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -55,6 +56,7 @@ public class ProfileActivity extends ActionBarActivity {
 	private EditText etPhone;
 	private EditText etPersonalEmail;
 	private EditText etEmail;
+	private CheckBox cbIsPublic;
 	
 	private Button btnVerifyEmail;
 	private Button btnGoHome;
@@ -86,6 +88,7 @@ public class ProfileActivity extends ActionBarActivity {
 		etPhone         = (EditText) findViewById(R.id.etPhone);
 		etPersonalEmail = (EditText) findViewById(R.id.etPersonalEmail);
 		etEmail         = (EditText) findViewById(R.id.etEmail);
+		cbIsPublic		= (CheckBox) findViewById(R.id.cbIsPublic);
 		
 		btnVerifyEmail = (Button) findViewById(R.id.btnVerifyEmail);
 		btnGoHome      = (Button) findViewById(R.id.btnDone);
@@ -116,6 +119,7 @@ public class ProfileActivity extends ActionBarActivity {
 		String phone = (String) ParseUser.getCurrentUser().get("phone");
 		String personalEmail = (String) ParseUser.getCurrentUser().get("personalEmail");
 		String email = (String) ParseUser.getCurrentUser().get("email");
+		Boolean isPublic = (Boolean) ParseUser.getCurrentUser().get("isPublic");
 		
 		//First Name
 		etFirstName.setText(firstName);
@@ -138,6 +142,9 @@ public class ProfileActivity extends ActionBarActivity {
 		//Email
 		etEmail.setText(email);
 		etEmail.setFocusable(false);
+		//IsPublic
+		cbIsPublic.setChecked(isPublic);
+		cbIsPublic.setEnabled(false);
 		
 		//etEmail.setBackgroundColor(android.graphics.Color.CYAN);
 		//etEmail.setBackgroundResource(0);
@@ -167,7 +174,9 @@ public class ProfileActivity extends ActionBarActivity {
 		etPersonalEmail.setFocusable(true);
 		//Email
 		etEmail.setFocusableInTouchMode(true);
-		etEmail.setFocusable(true);			
+		etEmail.setFocusable(true);		
+		//IsPublic
+		cbIsPublic.setEnabled(true);
 
 		//etPersonalEmail.setBackgroundResource(R.drawable.backtext);
 		//etEmail.setBackgroundResource(R.drawable.backtext);
@@ -237,6 +246,7 @@ public class ProfileActivity extends ActionBarActivity {
 		ParseUser.getCurrentUser().put("phone", etPhone.getText().toString());
 		ParseUser.getCurrentUser().put("personalEmail", etPersonalEmail.getText().toString());
 		ParseUser.getCurrentUser().put("email", etEmail.getText().toString());
+		ParseUser.getCurrentUser().put("isPublic", cbIsPublic.isChecked());
 		ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
 			
 			@Override

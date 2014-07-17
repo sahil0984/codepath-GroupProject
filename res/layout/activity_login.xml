@@ -14,32 +14,68 @@
         android:scaleType="centerCrop"
         android:src="@drawable/earth_curve" />
     
-    <TextView 
-        android:id="@+id/tvAppTitle"
+    <RelativeLayout 
+        android:id="@+id/rlTitleText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/tvChoose"
-        android:layout_marginBottom="70dp"
-        android:textColor="@color/"
-        android:shadowDx="2"
-        android:shadowDy="2"
-        android:shadowRadius="0.002"
-        android:shadowColor="@color/black"
-        android:textSize="40sp"
-        android:textStyle="bold|italic"
-        android:layout_centerHorizontal="true" 
-        android:text="Find My Ride"/>
+        android:layout_marginTop="70dp"
+        android:layout_centerHorizontal="true" >
     
+	    <TextView 
+	        android:id="@+id/tvWelcome"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+			android:layout_alignParentLeft="true"
+			android:paddingLeft="10dp"
+			android:paddingTop="10dp"
+			android:paddingBottom="10dp"
+	        android:textColor="@color/black"
+	        android:background="#afffffff"
+	        android:textSize="20sp"
+	        android:textStyle="normal"
+	        android:text="Welcome to "/>
+	    
+	    <TextView 
+	        android:id="@+id/tvAppTitle"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_toRightOf="@+id/tvWelcome"
+	        android:layout_alignBaseline="@+id/tvWelcome"
+	        android:paddingRight="10dp"
+			android:paddingTop="10dp"
+			android:paddingBottom="10dp"
+	        android:textColor="@color/black"
+	        android:background="#afffffff"
+	        android:textSize="25sp"
+	        android:textStyle="bold"
+	        android:text="Find My Ride"/>
+	    
+	    <TextView 
+	        android:id="@+id/tvTagline"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_below="@+id/tvAppTitle"
+	        android:layout_alignLeft="@+id/tvAppTitle"
+	        android:layout_marginLeft="-20dp"
+	        android:padding="5dp"
+	        android:textColor="@color/white"
+	        android:background="#af000000"
+	        android:textSize="12sp"
+	        android:textStyle="italic"
+	        android:text="Your one stop for finding and managing in-network and out-of-network rides."/>
 
+    </RelativeLayout>
+    
     <TextView
         android:id="@+id/tvChoose"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
+        android:layout_below="@+id/rlTitleText"
+        android:layout_marginTop="130dp"
         android:textColor="@color/white"
-        android:textStyle="bold"
-        android:text="Start with," />
+        android:textStyle="italic"
+        android:text="Get started with," />
 
     
     <com.facebook.widget.LoginButton
@@ -48,7 +84,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvChoose"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true"
         android:onClick="onLoginWithFacebook" 
         android:alpha="0.7"/>

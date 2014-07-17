@@ -167,21 +167,32 @@
             android:lines="2" />
 
         <Button
-            android:id="@+id/btnCreate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/etReturnLocation"
-            android:text="Create" />
-
-        <Button
             android:id="@+id/btnAddUsers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/btnCreate"
-            android:layout_marginTop="17dp"
+            android:layout_below="@+id/etReturnLocation"
+            android:layout_marginTop="10dp"
             android:onClick="onAddUsers"
             android:text="Add Users" />
+        
+        <CheckBox 
+            android:id="@+id/cbIsPublic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btnAddUsers"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:text="Visible outside networks?" />
+                
+        <Button
+            android:id="@+id/btnCreate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/cbIsPublic"
+            android:text="Create" />
+
+
     </RelativeLayout>
 
 </ScrollView>

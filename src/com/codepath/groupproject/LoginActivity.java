@@ -25,6 +25,7 @@ public class LoginActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
 		
+		getActionBar().hide();
 		
     	//This accesses cached current user.
     	ParseUser currentUser = ParseUser.getCurrentUser();
@@ -51,21 +52,27 @@ public class LoginActivity extends ActionBarActivity {
 	
 	//Arrays.asList("email", Permissions.User.EMAIL),
 	public void onLoginWithFacebook(View v) {
-		ParseFacebookUtils.logIn(Arrays.asList("email"), this, new LogInCallback() {
-			@Override
-			public void done(ParseUser user, ParseException err) {
-				if (user == null) {
-					Log.d("MyApp", "Uh oh. The user cancelled the Facebook login.");
-					err.printStackTrace();
-				} else if (user.isNew()) {
-					Log.d("MyApp", "User signed up and logged in through Facebook!");
-					getFacebookDetailsInBackground();
-				} else {
-					Log.d("MyApp", "User logged in through Facebook!");
-					getFacebookDetailsInBackground();
+		//if (ParseFacebookUtils.isLinked(ParseUser.getCurrentUser())) {
+			//Dont do anything.
+			
+		//} else {
+		
+			ParseFacebookUtils.logIn(Arrays.asList("email"), this, new LogInCallback() {
+				@Override
+				public void done(ParseUser user, ParseException err) {
+					if (user == null) {
+						Log.d("MyApp", "Uh oh. The user cancelled the Facebook login.");
+						err.printStackTrace();
+					} else if (user.isNew()) {
+						Log.d("MyApp", "User signed up and logged in through Facebook!");
+						getFacebookDetailsInBackground();
+					} else {
+						Log.d("MyApp", "User logged in through Facebook!");
+						getFacebookDetailsInBackground();
+					}
 				}
-			}
-		});
+			});
+		//}
 	}
 	
 	

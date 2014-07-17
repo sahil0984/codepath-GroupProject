@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <string name="app_name">GroupProject</string>
+    <string name="app_name">Find My Ride</string>
     <string name="hello_world">Hello world!</string>
     <string name="app_id">260804040793784</string>
     <string name="title_activity_profile">ProfileActivity</string>

@@ -15,7 +15,8 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:layout_margin="10dp" />
-
+        
+            
         <EditText
             android:id="@+id/etFirstName"
             android:layout_width="wrap_content"
@@ -104,17 +105,29 @@
             android:layout_marginTop="5dp"
             android:onClick="onVerifyEmail"
             android:text="@string/verify_email_btn_text" />
-
-        <Button
-            android:id="@+id/btnDone"
+        
+        <CheckBox 
+            android:id="@+id/cbIsPublic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/etEmail"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginTop="5dp"
+            android:text="Visible outside networks?" />
+        
+        <Button
+            android:id="@+id/btnDone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/cbIsPublic"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
             android:onClick="onDone"
             android:text="@string/done_btn_text" />
+        
+
     </RelativeLayout>
 
 </ScrollView>

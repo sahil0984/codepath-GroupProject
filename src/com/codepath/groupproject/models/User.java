@@ -62,6 +62,9 @@ public class User extends ParseUser {
 	public List<Group> getGroups() {
 		return getList("groups");
 	}	
+	public boolean getIsPublic() {
+		return getBoolean("isPublic");
+	}	
 	
 	// Use put to modify field values
 	//public void setObjectId(String value) { //This is created by Parse when a new object is created. So you wont need to set this.
@@ -104,5 +107,7 @@ public class User extends ParseUser {
 	public void setGroups(List<Group> value) {
 		put("groups", value);
 	}	
-
+	public void setIsPublic(boolean value) {
+		put("isPublic", value);
+	}
 }

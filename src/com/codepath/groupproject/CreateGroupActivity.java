@@ -82,6 +82,8 @@ public class CreateGroupActivity extends FragmentActivity implements OnDataPass 
 	private TextView etOnwardLocation;
 	private TextView etReturnLocation;
 	
+	private CheckBox cbIsPublic;
+	
 	private Button btnCreate;
 	
 	private String onwardTime;
@@ -137,6 +139,8 @@ public class CreateGroupActivity extends FragmentActivity implements OnDataPass 
 		
 		etOnwardLocation = (EditText) findViewById(R.id.etOnwardLocation);
 		etReturnLocation = (EditText) findViewById(R.id.etReturnLocation);
+		
+		cbIsPublic = (CheckBox) findViewById(R.id.cbIsPublic);
 		
 		btnCreate = (Button) findViewById(R.id.btnCreate);
 		
@@ -273,6 +277,7 @@ public class CreateGroupActivity extends FragmentActivity implements OnDataPass 
 		data.putExtra("returnLat", returnLatLng.getLatitude());
 		data.putExtra("returnLng", returnLatLng.getLongitude());
 		data.putExtra("groupMembers",groupMembers);
+		data.putExtra("isPublic", cbIsPublic.isChecked());
 				
 		setResult(RESULT_OK, data);
 	}
