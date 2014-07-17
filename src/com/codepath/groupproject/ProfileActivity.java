@@ -260,7 +260,7 @@ public class ProfileActivity extends ActionBarActivity {
 					doDoneEditProfileTasks();
 				} else {
 					e.printStackTrace();
-					Toast.makeText(getApplicationContext(), "Either email address is invalid or already taken!", Toast.LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), "Work email address is either invalid or already taken!", Toast.LENGTH_SHORT).show();
 					doEditProfileTasks();
 				}
 			}
