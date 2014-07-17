@@ -120,6 +120,9 @@ public class ProfileActivity extends ActionBarActivity {
 		String personalEmail = (String) ParseUser.getCurrentUser().get("personalEmail");
 		String email = (String) ParseUser.getCurrentUser().get("email");
 		Boolean isPublic = (Boolean) ParseUser.getCurrentUser().get("isPublic");
+		if (isPublic==null) {
+			isPublic = false;
+		}
 		
 		//First Name
 		etFirstName.setText(firstName);
@@ -250,10 +253,16 @@ public class ProfileActivity extends ActionBarActivity {
 		ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
 			
 			@Override
-			public void done(ParseException arg0) {
-				oneAddressVerifDoneFlag = 0;
-				State_GeoCodeTask = 2;
-				doDoneEditProfileTasks();
+			public void done(ParseException e) {
+				if (e==null) {
+					oneAddressVerifDoneFlag = 0;
+					State_GeoCodeTask = 2;
+					doDoneEditProfileTasks();
+				} else {
+					e.printStackTrace();
+					Toast.makeText(getApplicationContext(), "Either email address is invalid or already taken!", Toast.LENGTH_SHORT).show();
+					doEditProfileTasks();
+				}
 			}
 		});
 	}

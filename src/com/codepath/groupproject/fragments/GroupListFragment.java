@@ -63,7 +63,7 @@ public class GroupListFragment extends Fragment {
 		        	if (groupList.size()!=0) {
 		        		aGroups.addAll(groupList);
 		        	} else {
-		        		Toast.makeText(getActivity(), "No current user found.", Toast.LENGTH_SHORT).show();
+		        		Toast.makeText(getActivity(), "No groups found.", Toast.LENGTH_SHORT).show();
 		        	}
 		        } else {
 		        	Log.d("item", "Error: " + e.getMessage());

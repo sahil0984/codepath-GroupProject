@@ -15,6 +15,7 @@ import com.facebook.model.GraphUser;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
+import com.parse.ParseFacebookUtils.Permissions;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
@@ -32,6 +33,7 @@ public class LoginActivity extends ActionBarActivity {
     	if (currentUser != null && ParseFacebookUtils.isLinked(currentUser)) {
     		// do stuff with the user
     		//signInParseUser(); //Don't do this: User does not need to login if its already cached.
+    		getFacebookDetailsInBackground();
     		gotoProfileActivity();
     	} else {
     		// show the signup or login screen
@@ -57,7 +59,7 @@ public class LoginActivity extends ActionBarActivity {
 			
 		//} else {
 		
-			ParseFacebookUtils.logIn(Arrays.asList("email"), this, new LogInCallback() {
+			ParseFacebookUtils.logIn(Arrays.asList("email", "user_friends"), this, new LogInCallback() {
 				@Override
 				public void done(ParseUser user, ParseException err) {
 					if (user == null) {
@@ -91,6 +93,10 @@ public class LoginActivity extends ActionBarActivity {
 			          ParseUser.getCurrentUser().put("personalEmail", user.asMap().get("email"));
 			          String fbProfileImageUrl = "http://graph.facebook.com/"+user.getId()+"/picture?type=large";
 			          ParseUser.getCurrentUser().put("profileImageUrl", fbProfileImageUrl);
+			          
+			          //ParseUser.getCurrentUser().put("", user.getInnerJSONObject());
+			          Log.d("FBJSON", user.toString());
+			          
 			          
 			          ParseUser.getCurrentUser().saveInBackground();
 			          gotoProfileActivity();
