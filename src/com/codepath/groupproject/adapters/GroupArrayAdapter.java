@@ -80,8 +80,8 @@ public class GroupArrayAdapter extends ArrayAdapter<Group> {
        //Picasso.with(context).load("http://i.imgur.com/DvpvklR.png").into(holder.ivGroupImage);
 
        holder.tvGroupName.setText(group.getName());
-       holder.tvOnwardTime.setText(group.getOnwardTime());
-       holder.tvReturnTime.setText(group.getReturnTime());
+       holder.tvOnwardTime.setText(stringToDateTime(group.getOnwardTime()));
+       holder.tvReturnTime.setText(stringToDateTime(group.getReturnTime()));
        
        int groupMembersCount;
        try {
@@ -123,7 +123,8 @@ public class GroupArrayAdapter extends ArrayAdapter<Group> {
 		long dateMillis;
 		String relativeDate = "";
 		try {
-			dateMillis = new SimpleDateFormat("MM/dd/yyyy'T'hh:mm", Locale.ENGLISH).parse(dateTime).getTime();
+			dateMillis = new SimpleDateFormat("MM/dd/yyyy hh:mm", Locale.ENGLISH).parse(dateTime).getTime();
+			//dateMillis = new SimpleDateFormat("MM/dd/yyyy'T'hh:mm", Locale.ENGLISH).parse(dateTime).getTime();
 			relativeDate = DateUtils.getRelativeTimeSpanString(dateMillis,
 					System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS).toString();
 			

@@ -24,7 +24,9 @@ import com.parse.GetCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
+import com.parse.ParseInstallation;
 import com.parse.ParseQuery;
+import com.parse.SaveCallback;
 import com.parse.ParseFacebookUtils.Permissions;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
@@ -69,7 +71,9 @@ public class LoginActivity extends ActionBarActivity {
 			
 		//} else {
 		
-			ParseFacebookUtils.logIn(Arrays.asList("email", "user_friends", "user_friendlists"), this, new LogInCallback() {
+		
+			ParseFacebookUtils.logIn(Arrays.asList("email", "user_friends"), this, new LogInCallback() {
+			//ParseFacebookUtils.logIn(Arrays.asList("email", "user_friends", "user_friendlists"), this, new LogInCallback() {
 				@Override
 				public void done(ParseUser user, ParseException err) {
 					if (user == null) {
@@ -106,9 +110,21 @@ public class LoginActivity extends ActionBarActivity {
 			          
 			          //ParseUser.getCurrentUser().put("", user.getInnerJSONObject());
 			          //Log.d("FBJSON", response.toString());
+			     
 			          
-			          
-			          ParseUser.getCurrentUser().saveInBackground();
+			         
+			          ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
+						
+						@Override
+						public void done(ParseException pE) {
+							if (pE==null) {
+								ParseInstallation.getCurrentInstallation().put("userObjectId", ParseUser.getCurrentUser().getObjectId().toString());
+								ParseInstallation.getCurrentInstallation().saveInBackground();
+							} else {
+								Log.d("FBJSON", pE.toString());
+							}
+						}
+					});
 			          gotoProfileActivity();
 			          
 			      }
@@ -142,54 +158,56 @@ public class LoginActivity extends ActionBarActivity {
 						}
       		        	
       		        	//Now fbFriendsIds contains the array of fb friends id's
+      		        	ParseUser.getCurrentUser().remove("fbFriendsIds");
+      		        	ParseUser.getCurrentUser().saveInBackground();
       		        	ParseUser.getCurrentUser().add("fbFriendsIds", fbFriendsIds);
       		        	ParseUser.getCurrentUser().saveInBackground();
       		        }
       		    }
       		).executeAsync();
           
-		  //Gets lists of the friend lists names of the user
-          new Request(
-				ParseFacebookUtils.getSession(),
-      		    "/me/friendlists",
-      		    null,
-      		    HttpMethod.GET,
-      		    new Request.Callback() {
-      		        public void onCompleted(Response response) {
-      		            /* handle the result */
-      		        	//Log.d("FBJSON", response.toString());
-      		        	
-      		        	//Create a list of work and education and add it to the current Parse user
-      		        	JSONArray fbListsJsonArray;
-      		        	ArrayList<String> fbWorkList = new ArrayList<String>();
-      		        	ArrayList<String> fbSchoolList = new ArrayList<String>();
-      		        	try {
-							fbListsJsonArray = response.getGraphObject().getInnerJSONObject().getJSONArray("data");
-	      		        	//Log.d("FacebookLists", fbListsJsonArray.toString());
-	      		        	for (int i=0; i<fbListsJsonArray.length(); i++) {
-	      		        		String listType = fbListsJsonArray.getJSONObject(i).getString("list_type");
-	      		        		String listValue = fbListsJsonArray.getJSONObject(i).getString("name");
-	      		        		if (listType.matches("work")) {
-	      		        			fbWorkList.add(listValue);
-	      		        			//Log.d("FacebookWorkList", listValue);
-	      		        		} else if (listType.matches("education")) {
-	      		        			fbSchoolList.add(listValue);
-	      		        			//Log.d("FacebookSchoolList", listValue);
-	      		        		}
-	      		        		
-	      		        	}
-
-						} catch (JSONException e) {
-							e.printStackTrace();
-						}
-      		        	
-      		        	//Now fbWorkList contains work networks and fbSchoolList contains school networks
-      		        	ParseUser.getCurrentUser().add("fbWorkList", fbWorkList);
-      		        	ParseUser.getCurrentUser().add("fbSchoolList", fbSchoolList);
-      		        	ParseUser.getCurrentUser().saveInBackground();
-      		        }
-      		    }
-      		).executeAsync();          
+//		  //Gets lists of the friend lists names of the user
+//          new Request(
+//				ParseFacebookUtils.getSession(),
+//      		    "/me/friendlists",
+//      		    null,
+//      		    HttpMethod.GET,
+//      		    new Request.Callback() {
+//      		        public void onCompleted(Response response) {
+//      		            /* handle the result */
+//      		        	//Log.d("FBJSON", response.toString());
+//      		        	
+//      		        	//Create a list of work and education and add it to the current Parse user
+//      		        	JSONArray fbListsJsonArray;
+//      		        	ArrayList<String> fbWorkList = new ArrayList<String>();
+//      		        	ArrayList<String> fbSchoolList = new ArrayList<String>();
+//      		        	try {
+//							fbListsJsonArray = response.getGraphObject().getInnerJSONObject().getJSONArray("data");
+//	      		        	//Log.d("FacebookLists", fbListsJsonArray.toString());
+//	      		        	for (int i=0; i<fbListsJsonArray.length(); i++) {
+//	      		        		String listType = fbListsJsonArray.getJSONObject(i).getString("list_type");
+//	      		        		String listValue = fbListsJsonArray.getJSONObject(i).getString("name");
+//	      		        		if (listType.matches("work")) {
+//	      		        			fbWorkList.add(listValue);
+//	      		        			//Log.d("FacebookWorkList", listValue);
+//	      		        		} else if (listType.matches("education")) {
+//	      		        			fbSchoolList.add(listValue);
+//	      		        			//Log.d("FacebookSchoolList", listValue);
+//	      		        		}
+//	      		        		
+//	      		        	}
+//
+//						} catch (JSONException e) {
+//							e.printStackTrace();
+//						}
+//      		        	
+//      		        	//Now fbWorkList contains work networks and fbSchoolList contains school networks
+//      		        	ParseUser.getCurrentUser().add("fbWorkList", fbWorkList);
+//      		        	ParseUser.getCurrentUser().add("fbSchoolList", fbSchoolList);
+//      		        	ParseUser.getCurrentUser().saveInBackground();
+//      		        }
+//      		    }
+//      		).executeAsync();          
 		  
 	}
 	

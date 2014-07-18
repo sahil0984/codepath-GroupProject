@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.codepath.groupproject.models.Group;
+import com.codepath.groupproject.models.Installation;
 import com.codepath.groupproject.models.User;
 import com.parse.Parse;
 import com.parse.ParseFacebookUtils;
@@ -19,13 +20,17 @@ public class GroupProjectApplication extends Application {
         super.onCreate();
         GroupProjectApplication.context = this;
         
-	    ParseObject.registerSubclass(Group.class);
+		//Parse.initialize(this, "E6dfGnFJaoyFAfHzCZsv615xfwUehoX5mhyDLfac", "eiP1T45E7qEqWYkrZ7aPa1gXVRIxonyhVeRkNUD3");
+
 	    ParseObject.registerSubclass(User.class);
+	    ParseObject.registerSubclass(Group.class);
+	    ParseObject.registerSubclass(Installation.class);
 		
+
 		Parse.initialize(this, "BnDnWs760QS13U0gD2cKZYTWXBtGoR0LepOHyKp6", "njtWAdurtwc23F0CDaRbYPL30MJJUhCsH0sRC3H1");
-		
+
 		ParseFacebookUtils.initialize(getString(R.string.app_id));
-		
+
 		
 		PushService.setDefaultPushCallback(this, HomeActivity.class);
 		ParseInstallation.getCurrentInstallation().saveInBackground();

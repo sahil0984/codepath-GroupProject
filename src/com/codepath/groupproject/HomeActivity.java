@@ -276,7 +276,7 @@ public class HomeActivity extends ActionBarActivity {
 		  
 	     // Extract name value from result extras
 	     //final Group 
-	     newGroup = new Group(data.getStringExtra("groupName"));
+		     newGroup = new Group(data.getStringExtra("groupName"));
 	     
 	     newGroup.setOwner(ParseUser.getCurrentUser());
 	     newGroup.setOnwardTime(data.getStringExtra("onwardTime"));
@@ -344,18 +344,17 @@ public class HomeActivity extends ActionBarActivity {
 			obj.put("groupsObjectId", newGroup.getObjectId());
 			obj.put("ownersObjectId", newGroup.getUser().getObjectId());
 
-			ParsePush push = new ParsePush();
-			ParseQuery<ParseInstallation> query = ParseInstallation.getQuery();
-			
-			//ParseQuery<User> membersQuery = ParseQuery.getQuery(User.class);
-			
-			//for (int i=0; i<newGroup.getMembers().size(); i++) {
-				ParseQuery<User> memberQuery = ParseQuery.getQuery(User.class);
-				memberQuery.whereEqualTo("objectId", newGroup.getMembers().get(1).getObjectId());
+						
+			for (int i=0; i<newGroup.getMembers().size(); i++) {
+				ParsePush push = new ParsePush();
+
+				ParseQuery<ParseInstallation> query = ParseInstallation.getQuery();
+				query.whereEqualTo("userObjectId", newGroup.getMembers().get(i).getObjectId());
+				
 				push.setQuery(query);
 				push.setData(obj);
 				push.sendInBackground();
-			//}
+			}
 			Toast.makeText(getApplicationContext(), "Num members: " + newGroup.getMembers(), Toast.LENGTH_SHORT).show();
 			// Push the notification to Android users
 			//query.whereEqualTo("deviceType", "android");
