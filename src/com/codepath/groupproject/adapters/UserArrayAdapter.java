@@ -15,6 +15,7 @@ import com.codepath.groupproject.R;
 import com.codepath.groupproject.adapters.GroupArrayAdapter.ViewHolder;
 import com.codepath.groupproject.models.Group;
 import com.codepath.groupproject.models.User;
+import com.facebook.widget.ProfilePictureView;
 import com.squareup.picasso.Picasso;
 
 public class UserArrayAdapter extends ArrayAdapter<User> {
@@ -34,10 +35,10 @@ public class UserArrayAdapter extends ArrayAdapter<User> {
        if (convertView == null) {
     	   
   		LayoutInflater inflater = LayoutInflater.from(getContext());
-  		convertView = inflater.inflate(R.layout.group_item, parent, false);
+  		convertView = inflater.inflate(R.layout.user_item, parent, false);
   	    holder = new ViewHolder();
   	    
-  	    holder.ivProfileImage = (ImageView) convertView.findViewById(R.id.ivGroupImage);
+  	    holder.ivProfileImage = (ProfilePictureView) convertView.findViewById(R.id.ivProfileImage);
   	    holder.tvName = (TextView) convertView.findViewById(R.id.tvName);
   	    holder.tvOnwardTime = (TextView) convertView.findViewById(R.id.tvOnwardTime);
   	    holder.tvReturnTime = (TextView) convertView.findViewById(R.id.tvReturnTime);
@@ -52,14 +53,12 @@ public class UserArrayAdapter extends ArrayAdapter<User> {
 
    	   }
        
-       holder.ivProfileImage.setImageResource(android.R.color.transparent);
-       
-       Picasso.with(context).load("http://i.imgur.com/DvpvklR.png").into(holder.ivProfileImage);
+       holder.ivProfileImage.setProfileId((String)user.get("fbId"));
 
-       holder.tvName.setText(user.getFirstName() + " " + user.getLastName());
+       holder.tvName.setText(user.getFirstName());
        holder.tvOnwardTime.setText("Estimated");
        holder.tvReturnTime.setText("Estimated");
-       holder.tvLocation.setText(user.getHomeAdd().toString());
+       holder.tvLocation.setText("Location");
        
 		
 		// Return the completed view to render on screen
@@ -69,7 +68,7 @@ public class UserArrayAdapter extends ArrayAdapter<User> {
 	
 	static class ViewHolder {
 		
-		ImageView ivProfileImage;
+		ProfilePictureView ivProfileImage;
 		TextView tvName;
 		TextView tvOnwardTime;
 		TextView tvReturnTime;

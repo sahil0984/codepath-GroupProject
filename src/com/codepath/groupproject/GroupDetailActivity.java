@@ -1,5 +1,10 @@
 package com.codepath.groupproject;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +13,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
@@ -23,6 +31,7 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -94,18 +103,36 @@ public class GroupDetailActivity extends FragmentActivity {
 		int i;
 		ArrayList<User> groupMembers = (ArrayList<User>) currentGroup.getMembers();
 		ArrayList<Marker> markers = new ArrayList<Marker>();
+	
+		ParseGeoPoint startPoint = currentGroup.getOnwardLocation();
+		ParseGeoPoint endPoint = currentGroup.getReturnLocation();
+	
+		Marker s = map.addMarker(new MarkerOptions()
+									.position(new LatLng(startPoint.getLatitude(), startPoint.getLongitude()))
+									.title("Start"));
+		markers.add(s);
+		
 		
 		for (i = 0; i < groupMembers.size(); i++)
 		{
 			User user = groupMembers.get(i);
 			ParseGeoPoint geoPoint = user.getParseGeoPoint("homeAdd");
-
+			
+			
+			
 			Marker m = map.addMarker(new MarkerOptions()
 							.position(new LatLng(geoPoint.getLatitude(), geoPoint.getLongitude()))
-							.title(user.getFirstName()));	
+							.title(user.getFirstName()));
+							//.icon(BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(bmap, 40, 40, false))));	
 			markers.add(m);
 			
 		}
+		
+		Marker e = map.addMarker(new MarkerOptions()
+		.position(new LatLng(endPoint.getLatitude(), endPoint.getLongitude()))
+		.title("End"));
+		markers.add(e);
+		
 		LatLngBounds.Builder builder = new LatLngBounds.Builder();
 		for (Marker marker : markers) {
 		    builder.include(marker.getPosition());
@@ -119,10 +146,7 @@ public class GroupDetailActivity extends FragmentActivity {
 		
 		//Add Settings to Query
 		AsyncHttpClient client = new AsyncHttpClient();
-		String directionsUrl = makeURL(markers.get(0).getPosition().latitude, 
-				markers.get(0).getPosition().longitude,
-				markers.get(1).getPosition().latitude,
-				markers.get(1).getPosition().longitude);
+		String directionsUrl = makeURL(markers);
 		Log.d("MyApp", directionsUrl);
 		client.get(directionsUrl,
 			new JsonHttpResponseHandler(){
@@ -162,6 +186,31 @@ public class GroupDetailActivity extends FragmentActivity {
 		
 	}
 	
+	private class BitmapDownloadTask extends AsyncTask<String, Void, Bitmap> {
+
+		@Override
+		protected Bitmap doInBackground(String... params) {
+			// TODO Auto-generated method stub
+			Bitmap bmap;
+			try {
+				URL linkUrl = new URL("https://pbs.twimg.com/profile_images/423089654842150912/zwqJ-2M__normal.png"); 
+				//new URL("https://graph.facebook.com/" + fbId + "/picture");
+			      Log.d("image",linkUrl.getPath());
+		        bmap = BitmapFactory.decodeStream(linkUrl.openConnection().getInputStream());
+		        Log.d("image", bmap.toString());
+		        Log.d("image",linkUrl.getPath());
+
+		    	return bmap;
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				Log.d("image", e.toString());
+				
+				return null;
+			}
+		}
+		
+
+	}
 	private List<LatLng> decodePoly(String encoded) {
 
 	    List<LatLng> poly = new ArrayList<LatLng>();
@@ -195,7 +244,17 @@ public class GroupDetailActivity extends FragmentActivity {
 
 	    return poly;
 	}
-	 public String makeURL (double sourcelat, double sourcelog, double destlat, double destlog ){
+	 public String makeURL (ArrayList<Marker> markerList){
+		 	int numOfMarkers = markerList.size();
+		 	Marker s = markerList.get(0);
+		 	Marker e = markerList.get(numOfMarkers - 1);
+		 	
+		 	double sourcelat = s.getPosition().latitude;
+		 	double sourcelog = s.getPosition().longitude;
+		 	
+		 	double destlat = e.getPosition().latitude;
+		 	double destlog = e.getPosition().longitude;
+		 	
 	        StringBuilder urlString = new StringBuilder();
 	        urlString.append("http://maps.googleapis.com/maps/api/directions/json");
 	        urlString.append("?origin=");// from
@@ -208,7 +267,27 @@ public class GroupDetailActivity extends FragmentActivity {
 	                .append(Double.toString( destlat));
 	        urlString.append(",");
 	        urlString.append(Double.toString( destlog));
+	        urlString.append("&waypoints=");
+	        for (int i = 1;i < numOfMarkers; i++)
+	        {
+	        	Marker m = markerList.get(i);
+	        	LatLng pos = m.getPosition();
+	        	
+	        	try {
+					urlString.append(URLEncoder.encode(Double.toString(pos.latitude) + "," + Double.toString(pos.longitude), "UTF-8"));
+		        	
+		        	if (i != numOfMarkers - 1){
+		        		urlString.append(URLEncoder.encode("|","UTF-8"));
+		        	}
+				} catch (UnsupportedEncodingException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+	        	
+
+	        }	        
 	        urlString.append("&sensor=false&mode=driving&alternatives=true");
+
 	        return urlString.toString();
 	 }
 
