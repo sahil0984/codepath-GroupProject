@@ -6,43 +6,25 @@
     tools:context="${packageName}.${activityClass}" >
 
     <TextView
-        android:id="@+id/tvReturnLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/tvOnwardLocation"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="22dp"
-        android:text="Work" />
-
-    <TextView
         android:id="@+id/tvOnwardLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        android:layout_alignLeft="@+id/tvReturnLocation"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="18dp"
-        android:layout_marginTop="49dp"
+        android:layout_alignRight="@+id/map"
+        android:layout_marginBottom="50dp"
+        android:layout_marginTop="10dp"
         android:text="Home" />
 
-    <Button
-        android:id="@+id/btnSwitch"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/tvReturnLocation"
-        android:layout_alignBottom="@+id/tvReturnLocation"
-        android:layout_centerHorizontal="true"
-        android:text="Switch" />
-
-    <FrameLayout
+    <RelativeLayout
         android:id="@+id/flUserList"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="150dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/btnSwitch" >
+        android:layout_below="@+id/tvOnwardLocation" >
 
-    </FrameLayout>
+    </RelativeLayout>
 
     <fragment
         android:id="@+id/map"
@@ -51,10 +33,20 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:layout_below="@+id/flUserList" />
+        android:layout_below="@+id/flUserList"
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginRight="4dp" />
+
+    <TextView
+        android:id="@+id/tvReturnLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/flUserList"
+        android:layout_alignLeft="@+id/map"
+        android:layout_alignRight="@+id/map"
+        android:layout_marginBottom="18dp"
+        android:text="Work" />
 
 </RelativeLayout>

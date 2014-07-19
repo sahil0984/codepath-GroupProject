@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.codepath.groupproject.fragments.GroupMemberListFragment;
@@ -51,11 +52,17 @@ public class GroupDetailActivity extends FragmentActivity {
 	private SupportMapFragment mapFragment;
 	private GoogleMap map;
 	private Group currentGroup;
+	private TextView tvOnwardLocation;
+	private TextView tvReturnLocation;
+	
+	ArrayList<Marker> markers ;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_group_detail);
 		
+		tvOnwardLocation = (TextView) findViewById(R.id.tvOnwardLocation);
+		tvReturnLocation = (TextView) findViewById(R.id.tvReturnLocation);
 		
 		mapFragment = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map));
 		if (mapFragment != null) {
@@ -84,7 +91,9 @@ public class GroupDetailActivity extends FragmentActivity {
 	        		// Access the array of results here
 		    		Log.d("MyApp","Loading: " + group.getName());	 
 		    		currentGroup = group;
+		    		setTitle(group.getName());
 		    		addMarkers();
+		    		addRoute();
 		            
 		    } else {
 		        Log.d("MyApp", "oops");
@@ -98,39 +107,79 @@ public class GroupDetailActivity extends FragmentActivity {
         ft.commit();
 	
 	}
+	protected void getOnwardAddFromCoord(ParseGeoPoint pCoord) {
+    	Double lat = pCoord.getLatitude();
+    	Double lng = pCoord.getLongitude();
+	    String url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lng;
+	    AsyncHttpClient client = new AsyncHttpClient();
+	    client.get(url, null, new GeoCoderResponseHandler(getApplicationContext()) {
+	    	
+	    	@Override
+	    	public void onSuccess(int statusCode, Header[] headers,
+	    			JSONObject response) {
+	    		super.onSuccess(statusCode, headers, response);
+		    		tvOnwardLocation.setText(getCheckedAdd());
+	    	}
+	    	
+	    });
+		return;
+	}
+	protected void getReturnAddFromCoord(ParseGeoPoint pCoord) {
+    	Double lat = pCoord.getLatitude();
+    	Double lng = pCoord.getLongitude();
+	    String url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lng;
+	    AsyncHttpClient client = new AsyncHttpClient();
+	    client.get(url, null, new GeoCoderResponseHandler(getApplicationContext()) {
+	    	
+	    	@Override
+	    	public void onSuccess(int statusCode, Header[] headers,
+	    			JSONObject response) {
+	    		super.onSuccess(statusCode, headers, response);
+	    	
+	    		tvReturnLocation.setText(getCheckedAdd());
+	    			
+
+	    	}
+	    	
+	    });
+		return;
+	}
 	public void addMarkers() {
 		// TODO Auto-generated method stub
 		int i;
 		ArrayList<User> groupMembers = (ArrayList<User>) currentGroup.getMembers();
-		ArrayList<Marker> markers = new ArrayList<Marker>();
+		markers = new ArrayList<Marker>();
 	
 		ParseGeoPoint startPoint = currentGroup.getOnwardLocation();
 		ParseGeoPoint endPoint = currentGroup.getReturnLocation();
+		
+		getOnwardAddFromCoord(startPoint);
+		getReturnAddFromCoord(endPoint);
 	
 		Marker s = map.addMarker(new MarkerOptions()
 									.position(new LatLng(startPoint.getLatitude(), startPoint.getLongitude()))
 									.title("Start"));
 		markers.add(s);
 		
+		Marker e = map.addMarker(new MarkerOptions()
+		.position(new LatLng(endPoint.getLatitude(), endPoint.getLongitude()))
+		.title("End"));
 		
 		for (i = 0; i < groupMembers.size(); i++)
 		{
 			User user = groupMembers.get(i);
 			ParseGeoPoint geoPoint = user.getParseGeoPoint("homeAdd");
 			
-			
-			
+	
 			Marker m = map.addMarker(new MarkerOptions()
 							.position(new LatLng(geoPoint.getLatitude(), geoPoint.getLongitude()))
 							.title(user.getFirstName()));
 							//.icon(BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(bmap, 40, 40, false))));	
 			markers.add(m);
-			
+			new MarkerImageDownloadTask(markers.size()-1).execute((String)user.get("fbId"));		
 		}
 		
-		Marker e = map.addMarker(new MarkerOptions()
-		.position(new LatLng(endPoint.getLatitude(), endPoint.getLongitude()))
-		.title("End"));
+
 		markers.add(e);
 		
 		LatLngBounds.Builder builder = new LatLngBounds.Builder();
@@ -142,9 +191,11 @@ public class GroupDetailActivity extends FragmentActivity {
 		int padding = 0; // offset from edges of the map in pixels
 		CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
 		map.animateCamera(cu);
-
 		
-		//Add Settings to Query
+	}
+	
+	public void addRoute()
+	{
 		AsyncHttpClient client = new AsyncHttpClient();
 		String directionsUrl = makeURL(markers);
 		Log.d("MyApp", directionsUrl);
@@ -181,20 +232,19 @@ public class GroupDetailActivity extends FragmentActivity {
 					
 				});	
 		
-		
-		
-		
 	}
-	
-	private class BitmapDownloadTask extends AsyncTask<String, Void, Bitmap> {
-
-		@Override
+	private class MarkerImageDownloadTask extends AsyncTask<String, Void, Bitmap> {
+		int markerPos;
+		
+		public MarkerImageDownloadTask(int pos) {
+			markerPos = pos;
+		}
 		protected Bitmap doInBackground(String... params) {
 			// TODO Auto-generated method stub
 			Bitmap bmap;
 			try {
-				URL linkUrl = new URL("https://pbs.twimg.com/profile_images/423089654842150912/zwqJ-2M__normal.png"); 
-				//new URL("https://graph.facebook.com/" + fbId + "/picture");
+				URL linkUrl =
+						new URL("https://graph.facebook.com/" + params[0] + "/picture");
 			      Log.d("image",linkUrl.getPath());
 		        bmap = BitmapFactory.decodeStream(linkUrl.openConnection().getInputStream());
 		        Log.d("image", bmap.toString());
@@ -208,7 +258,11 @@ public class GroupDetailActivity extends FragmentActivity {
 				return null;
 			}
 		}
-		
+		@Override
+		protected void onPostExecute(Bitmap result) {
+			// TODO Auto-generated method stub
+			markers.get(markerPos).setIcon(BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(result, 40, 40, false)));
+		}
 
 	}
 	private List<LatLng> decodePoly(String encoded) {
