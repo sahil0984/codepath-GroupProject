@@ -3,6 +3,8 @@ package com.codepath.groupproject.fragments;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.w3c.dom.Text;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,6 +18,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.codepath.groupproject.GroupDetailActivity;
@@ -28,13 +31,16 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
-public class GroupListFragment extends Fragment {
+public abstract class GroupListFragment extends Fragment {
 	private ArrayList<Group> groups;
 	private ArrayAdapter<Group> aGroups;
 	private ListView lvGroups;
 
+	public TextView tvPageTitle;
 	private ProgressBar pbLoading;
-
+	
+	public int page;
+	public String title;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -45,39 +51,6 @@ public class GroupListFragment extends Fragment {
 				
 		populateGroups();
 	}
-	
-	
-	public void populateGroups() {
-		ParseQuery<User> innerUserQuery = ParseQuery.getQuery(User.class);
-		innerUserQuery.whereEqualTo("objectId", ParseUser.getCurrentUser().getObjectId());
-		
-		
-		ParseQuery<Group> queryGroup = ParseQuery.getQuery(Group.class);
-		queryGroup.include("members");
-		queryGroup.whereMatchesQuery("members", innerUserQuery);
-		queryGroup.findInBackground(new FindCallback<Group>() {
-
-			@Override
-			public void done(List<Group> groupList, ParseException e) {
-		        if (e == null) {
-		        	if (groupList.size()!=0) {
-		        		aGroups.addAll(groupList);
-		        	} else {
-		        		Toast.makeText(getActivity(), "No groups found.", Toast.LENGTH_SHORT).show();
-		        	}
-		        } else {
-		        	Log.d("item", "Error: " + e.getMessage());
-		        }
-			}
-		});
-
-	}
-	
-	
-	public void appendNewGroup(Group newGroup) {
-		aGroups.add(newGroup);
-	}
-
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -100,12 +73,25 @@ public class GroupListFragment extends Fragment {
 			}
 			
 		});
+		
+		//tvPageTitle = (TextView) v.findViewById(R.id.tvPageTitle);
 		pbLoading = (ProgressBar) v.findViewById(R.id.pbLoading);
 		
-		
+		//tvPageTitle.setText(title);
+
 		//Return the layout view
 		return v;
 	}
 	
+	
+	public void appendNewGroup(Group newGroup) {
+		aGroups.add(newGroup);
+	}
+	public void addAllGroups(List<Group> groupListp) {
+		aGroups.addAll(groupListp);
+	}
+	
+    abstract public void populateGroups();
+
 	
 }

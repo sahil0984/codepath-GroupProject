@@ -14,8 +14,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBar.Tab;
 import android.support.v7.app.ActionBarActivity;
@@ -23,13 +27,16 @@ import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.codepath.groupproject.fragments.GroupListFragment;
 
 import com.codepath.groupproject.dialogs.ChoosePhotoDialog;
 import com.codepath.groupproject.dialogs.SavingsDialog;
+import com.codepath.groupproject.fragments.MyGroupListFragment;
+import com.codepath.groupproject.fragments.MyNetworkGroupListFragment;
+import com.codepath.groupproject.fragments.PublicGroupListFragment;
 
 
 import com.codepath.groupproject.listeners.SupportFragmentTabListener;
@@ -57,19 +64,69 @@ public class HomeActivity extends ActionBarActivity {
 	private final int REQUEST_CODE = 20;
 	ArrayList<User> groupMembers;
 	
-	GroupListFragment groupsListFragment;
+	private TextView tvPageTitle;
+	
+	MyGroupListFragment myGroupListFragment;
 	
 	Group newGroup;
 	int queriesReturned;
+	
+    private SmartFragmentStatePagerAdapter adapterViewPager;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
 		groupMembers = new ArrayList<User>();
-		setupTabs();
+		//setupTabs();
 		
+		//Instantiating the view pager
+		ViewPager vpPager = (ViewPager) findViewById(R.id.vpPager);
+		adapterViewPager = new MyPagerAdapter(getSupportFragmentManager());
+		vpPager.setClipToPadding(false);
+		vpPager.setPageMargin(12);
+		vpPager.setAdapter(adapterViewPager);
 
+		
+		tvPageTitle = (TextView) findViewById(R.id.tvPageTitle);
+		tvPageTitle.setText("My Groups");
+		
+		vpPager.setOnPageChangeListener(new OnPageChangeListener() {
+			
+			// This method will be invoked when a new page becomes selected.
+			@Override
+			public void onPageSelected(int position) {
+				String title;
+				switch (position) {
+				case 0:
+					title = "My Groups";
+					break;
+				case 1:
+					title = "My Network List";
+					break;
+				case 2:
+					title = "Public List";
+					break;
+				default:
+					title = "";
+					break;
+				}
+				
+				tvPageTitle.setText(title);
+				
+				
+			}
+
+			@Override
+			public void onPageScrollStateChanged(int arg0) {				
+			}
+
+			@Override
+			public void onPageScrolled(int arg0, float arg1, int arg2) {				
+			}
+			
+		});
+		
 		
 		String classFrom = getIntent().getStringExtra("classFrom");
 		String myCustomReceiverClass = MyCustomReceiver.class.toString();
@@ -89,9 +146,9 @@ public class HomeActivity extends ActionBarActivity {
 					@Override
 					public void done(Group foundGroup, ParseException e) {
 						if (e == null) {
-							groupsListFragment = (GroupListFragment) getSupportFragmentManager()
+							myGroupListFragment = (MyGroupListFragment) getSupportFragmentManager()
 									.findFragmentByTag("GroupsListFragment");
-							groupsListFragment.appendNewGroup(foundGroup);
+							myGroupListFragment.appendNewGroup(foundGroup);
 							
 							// Adding Parse Push channel for the new group in current users installation
 							addChannelToInstallation(foundGroup.getObjectId());
@@ -153,32 +210,40 @@ public class HomeActivity extends ActionBarActivity {
 	
 
 
-	private void setupTabs() {
-		ActionBar actionBar = getSupportActionBar();
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-		actionBar.setDisplayShowTitleEnabled(true);
-
-		Tab tab1 = actionBar
-		    .newTab()
-		    .setText("My Groups")
-		    //.setIcon(R.drawable.ic_profile)
-		    .setTag("GroupsListFragment")
-			.setTabListener(new SupportFragmentTabListener<GroupListFragment>(R.id.flContainer, this,
-                        "GroupsListFragment", GroupListFragment.class));
-
-		actionBar.addTab(tab1);
-		actionBar.selectTab(tab1);
-
-		Tab tab2 = actionBar
-		    .newTab()
-		    .setText("Timeline")
-		    //.setIcon(R.drawable.ic_profile)
-		    .setTag("TimelineFragment")
-			.setTabListener(new SupportFragmentTabListener<GroupListFragment>(R.id.flContainer, this,
-                        "TimelineFragment", GroupListFragment.class));
-		actionBar.addTab(tab2);
-		
-	}
+//	private void setupTabs() {
+//		ActionBar actionBar = getSupportActionBar();
+//		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+//		actionBar.setDisplayShowTitleEnabled(true);
+//
+//		Tab tab1 = actionBar
+//		    .newTab()
+//		    .setText("My Groups")
+//		    //.setIcon(R.drawable.ic_profile)
+//		    .setTag("MyGroupListFragment")
+//			.setTabListener(new SupportFragmentTabListener<MyGroupListFragment>(R.id.flContainer, this,
+//                        "MyGroupListFragment", MyGroupListFragment.class));
+//
+//		actionBar.addTab(tab1);
+//		actionBar.selectTab(tab1);
+//
+//		Tab tab2 = actionBar
+//		    .newTab()
+//		    .setText("My Network Groups")
+//		    //.setIcon(R.drawable.ic_profile)
+//		    .setTag("MyNetworkGroupListFragment")
+//			.setTabListener(new SupportFragmentTabListener<MyNetworkGroupListFragment>(R.id.flContainer, this,
+//                        "MyNetworkGroupListFragment", MyNetworkGroupListFragment.class));
+//		actionBar.addTab(tab2);
+//		
+//		Tab tab3 = actionBar
+//			    .newTab()
+//			    .setText("Public Groups")
+//			    //.setIcon(R.drawable.ic_profile)
+//			    .setTag("PublicGroups")
+//				.setTabListener(new SupportFragmentTabListener<PublicGroupListFragment>(R.id.flContainer, this,
+//	                        "PublicGroups", PublicGroupListFragment.class));
+//		actionBar.addTab(tab3);
+//	}
 	
 	
     @Override
@@ -321,8 +386,8 @@ public class HomeActivity extends ActionBarActivity {
 			@Override
 			public void done(ParseException e) {
 				if (e == null) {
-			        groupsListFragment = (GroupListFragment) getSupportFragmentManager().findFragmentByTag("GroupsListFragment");
-			        groupsListFragment.appendNewGroup(newGroup);
+			        myGroupListFragment = (MyGroupListFragment) getSupportFragmentManager().findFragmentByTag("GroupsListFragment");
+			        myGroupListFragment.appendNewGroup(newGroup);
 			        //Toast.makeText(getApplicationContext(), newGroup.getObjectId(), Toast.LENGTH_SHORT).show();
 			        
 			        sendPushNotification();
@@ -344,7 +409,6 @@ public class HomeActivity extends ActionBarActivity {
 			obj.put("groupsObjectId", newGroup.getObjectId());
 			obj.put("ownersObjectId", newGroup.getUser().getObjectId());
 
-						
 			for (int i=0; i<newGroup.getMembers().size(); i++) {
 				ParsePush push = new ParsePush();
 
@@ -379,9 +443,7 @@ public class HomeActivity extends ActionBarActivity {
         //push.setMessage("The Giants just scored! It's now 2-2 against the Mets.");
         //push.sendInBackground();
 	}
-	
-	
-}
+
 
 
 
@@ -444,3 +506,51 @@ public class HomeActivity extends ActionBarActivity {
 //		        }				
 //			}
 //		});
+
+
+
+
+		
+    public static class MyPagerAdapter extends SmartFragmentStatePagerAdapter {
+    	private static int NUM_ITEMS = 3;
+    		
+            public MyPagerAdapter(FragmentManager fragmentManager) {
+                super(fragmentManager);
+            }
+            
+    	    @Override
+    		public float getPageWidth(int position) {
+    	    	return 0.93f;
+    		}
+            
+            // Returns total number of pages
+            @Override
+            public int getCount() {
+                return NUM_ITEMS;
+            }
+     
+            // Returns the fragment to display for that page
+            @Override
+            public Fragment getItem(int position) {
+    	        switch (position) {
+    	        case 0:
+    	            return MyGroupListFragment.newInstance(0, "MyGroups");
+    	        case 1:
+    	            return MyNetworkGroupListFragment.newInstance(1, "MyNetworkGroups");
+    	        case 2:
+    	            return PublicGroupListFragment.newInstance(2, "PublicGroups");
+    	        default:
+    	        	return null;
+                }
+            }
+            
+            // Returns the page title for the top indicator
+            @Override
+            public CharSequence getPageTitle(int position) {
+            	return "Page " + position;
+            }
+            
+            
+        }
+
+}
