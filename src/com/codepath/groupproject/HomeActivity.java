@@ -86,7 +86,7 @@ public class HomeActivity extends ActionBarActivity {
 		vpPager.setClipToPadding(false);
 		vpPager.setPageMargin(12);
 		vpPager.setAdapter(adapterViewPager);
-
+		//vpPager.setPageTransformer(true, new ZoomOutPageTransformer());
 		
 		tvPageTitle = (TextView) findViewById(R.id.tvPageTitle);
 		tvPageTitle.setText("My Groups");
@@ -128,6 +128,7 @@ public class HomeActivity extends ActionBarActivity {
 		});
 		
 		
+		
 		String classFrom = getIntent().getStringExtra("classFrom");
 		String myCustomReceiverClass = MyCustomReceiver.class.toString();
 		if (classFrom != null && classFrom.equals(myCustomReceiverClass)) {
@@ -146,8 +147,7 @@ public class HomeActivity extends ActionBarActivity {
 					@Override
 					public void done(Group foundGroup, ParseException e) {
 						if (e == null) {
-							myGroupListFragment = (MyGroupListFragment) getSupportFragmentManager()
-									.findFragmentByTag("GroupsListFragment");
+							MyGroupListFragment myGroupListFragment = (MyGroupListFragment) adapterViewPager.getRegisteredFragment(0);
 							myGroupListFragment.appendNewGroup(foundGroup);
 							
 							// Adding Parse Push channel for the new group in current users installation
@@ -357,6 +357,14 @@ public class HomeActivity extends ActionBarActivity {
 	     
 	     newGroup.setIsPublic(data.getBooleanExtra("isPublic", false));
 
+	     
+	     //newGroup.set	     
+	     if (data.getByteArrayExtra("photoBytes") != null) {
+		     ParseFile photoFile = new ParseFile("group_photo.jpg", data.getByteArrayExtra("photoBytes"));
+		     newGroup.setPhotoFile(photoFile);	    	 
+	     }
+	     
+	     
 	     //Hack to add current user
 	     ArrayList<String> groupMembersStr =  data.getStringArrayListExtra("groupMembers");
 	     groupMembersStr.add(ParseUser.getCurrentUser().getObjectId());
@@ -366,13 +374,6 @@ public class HomeActivity extends ActionBarActivity {
 	     } catch (Exception e) {
 	    	 e.printStackTrace();
 	     }
-	   
-	     //newGroup.set	     
-	     if (data.getByteArrayExtra("photoBytes") != null) {
-		     ParseFile photoFile = new ParseFile("group_photo.jpg", data.getByteArrayExtra("photoBytes"));
-		     newGroup.setPhotoFile(photoFile);	    	 
-	     }
-
 	     
 	     //Toast.makeText(getApplicationContext(), newGroup.getName(), Toast.LENGTH_SHORT).show();
 	     
@@ -386,8 +387,8 @@ public class HomeActivity extends ActionBarActivity {
 			@Override
 			public void done(ParseException e) {
 				if (e == null) {
-			        myGroupListFragment = (MyGroupListFragment) getSupportFragmentManager().findFragmentByTag("GroupsListFragment");
-			        myGroupListFragment.appendNewGroup(newGroup);
+					MyGroupListFragment myGroupListFragment = (MyGroupListFragment) adapterViewPager.getRegisteredFragment(0);
+					myGroupListFragment.appendNewGroup(newGroup);
 			        //Toast.makeText(getApplicationContext(), newGroup.getObjectId(), Toast.LENGTH_SHORT).show();
 			        
 			        sendPushNotification();
@@ -446,71 +447,7 @@ public class HomeActivity extends ActionBarActivity {
 
 
 
-
-//Everything below this is old and was used for testing
-//-----------------------------------------------------
-//		Group newGroup = new Group("1234");
-//		// Set the current user, assuming a user is signed in
-//		newGroup.setOwner(ParseUser.getCurrentUser());
-//		// Immediately save the data asynchronously
-//		newGroup.saveInBackground();
-//		// or for a more robust offline save
-//		// newGroup.saveEventually();
-//		
-//		
-//		//User newUser = new User("testr");
-//		//newUser.saveInBackground();
-//
-//		
-//		
-//		
-//		// Define the class we would like to query
-//		ParseQuery<Group> query = ParseQuery.getQuery(Group.class);
-//		// Define our query conditions
-//		query.whereEqualTo("owner", ParseUser.getCurrentUser());
-//		// Execute the find asynchronously
-//		query.findInBackground(new FindCallback<Group>() {
-//			@Override
-//			public void done(List<Group> itemList, ParseException e) {
-//		        if (e == null) {
-//		            // Access the array of results here
-//		            String firstItemId = itemList.get(0).getName();
-//		            //Toast.makeText(HomeActivity.this, firstItemId, Toast.LENGTH_SHORT).show();
-//		        } else {
-//		            Log.d("item", "Error: " + e.getMessage());
-//		        }				
-//			}
-//		});
-//		
-//		
-//		//Toast.makeText(HomeActivity.this, ParseUser.getCurrentUser().getUsername(), Toast.LENGTH_SHORT).show();
-//		
-//		// Define the class we would like to query
-//		ParseQuery<ParseUser> queryUser = ParseQuery.getQuery(ParseUser.class);
-//		// Define our query conditions
-//		queryUser.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
-//		// Execute the find asynchronously
-//		queryUser.findInBackground(new FindCallback<ParseUser>() {
-//			@Override
-//			public void done(List<ParseUser> itemList, ParseException e) {
-//		        if (e == null) {
-//		        	if (itemList.size()!=0) {
-//		        		// Access the array of results here
-//		        		String firstItemId = itemList.get(0).getString("phone");
-//		        		Toast.makeText(HomeActivity.this, firstItemId, Toast.LENGTH_SHORT).show();
-//		        	} else {
-//		        		Toast.makeText(HomeActivity.this, "No user found.", Toast.LENGTH_SHORT).show();
-//		        	}
-//		        } else {
-//		            Log.d("item", "Error: " + e.getMessage());
-//		        }				
-//			}
-//		});
-
-
-
-
-		
+	//PagerAdapter for ViewPager		
     public static class MyPagerAdapter extends SmartFragmentStatePagerAdapter {
     	private static int NUM_ITEMS = 3;
     		

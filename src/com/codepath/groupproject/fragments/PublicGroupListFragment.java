@@ -59,6 +59,7 @@ public class PublicGroupListFragment extends GroupListFragment {
 		
 		ParseQuery<Group> queryGroup = ParseQuery.getQuery(Group.class);
 		queryGroup.include("members");
+		queryGroup.whereEqualTo("isPublic", true);
 		queryGroup.findInBackground(new FindCallback<Group>() {
 
 			@Override
