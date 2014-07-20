@@ -1,6 +1,8 @@
 package com.codepath.groupproject;
 
 
+import java.util.Locale;
+
 import org.apache.http.Header;
 import org.json.JSONObject;
 
@@ -214,6 +216,7 @@ public class ProfileActivity extends ActionBarActivity {
 	
 	public void saveUpdatedInfo() {
 		ParseUser.getCurrentUser().put("firstName", etFirstName.getText().toString());
+		ParseUser.getCurrentUser().put("lowerFirstName", etFirstName.getText().toString().toLowerCase(Locale.ENGLISH));
 		ParseUser.getCurrentUser().put("lastName", etLastName.getText().toString());
 		//ParseUser.getCurrentUser().put("homeAdd", etHomeAdd.getText().toString());
 		//ParseUser.getCurrentUser().put("workAdd", etWorkAdd.getText().toString());

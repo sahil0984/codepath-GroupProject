@@ -27,11 +27,17 @@ public class AddUsersActivity extends FragmentActivity implements AddUserListFra
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_add_users);
-		toAddUsers = new ArrayList<String>();
+		toAddUsers = getIntent().getStringArrayListExtra("currentGroupMembers");
+		
+		if (toAddUsers == null)
+		{
+			toAddUsers = new ArrayList<String>();
+		}
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        utF = AddUserListFragment.newInstance("");
+        utF = AddUserListFragment.newInstance(toAddUsers);
         ft.replace(R.id.flAddUserList, utF);
         ft.commit();
+        
 	}
 	@Override
 	public void onUserClick(User user)
@@ -67,13 +73,31 @@ public class AddUsersActivity extends FragmentActivity implements AddUserListFra
 	       @Override
 	       public boolean onQueryTextSubmit(String query) {
 	            Toast.makeText(getApplicationContext(), "Searching for" + query, Toast.LENGTH_SHORT).show();
-	            utF.populateUserByName(query);
+		    	   if (query.equals(""))
+		    	   {
+		    		   utF.populateListwithAddedUsers();
+		    	   }
+		    	   else
+		    	   {
+			    	   Log.d("MyApp", "Query: " + query);
+		    		   utF.populateUserByName(query);
+		    	   }
 	            return true;
 	       }
 
 	       @Override
 	       public boolean onQueryTextChange(String newText) {
-	           return false;
+
+	    	   if (newText.equals(""))
+	    	   {
+	    		   utF.populateListwithAddedUsers();
+	    	   }
+	    	   else
+	    	   {
+		    	   Log.d("MyApp", "Query: " + newText);
+	    		   utF.populateUserByName(newText);
+	    	   }
+	           return true;
 	       }
 	   });
 		return super.onCreateOptionsMenu(menu);

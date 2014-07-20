@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.parse.ParseClassName;
 import com.parse.ParseGeoPoint;
-import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 @ParseClassName("_User")
@@ -20,7 +19,27 @@ public class User extends ParseUser {
 		super();
 		setUsername(username);
 	}
+	@Override
+	public boolean equals(Object o) {
+		// TODO Auto-generated method stub
+		boolean results = false;
+		if (o instanceof User)
+		{
+			User u = (User) o ;
+			if (this.getObjectId().equals(((User) o).getObjectId()))
+			{
+				results = true;
+			}
+		
+		}
+		return results;
+	}
 	
+	@Override
+	public int hashCode() {
+		// TODO Auto-generated method stub
+		return this.getObjectId().hashCode();
+	}
 	// Use getString and others to access fields
 	//public String getObjectId() {
 	//	return getString("objectId");
