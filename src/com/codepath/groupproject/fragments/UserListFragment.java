@@ -2,6 +2,7 @@ package com.codepath.groupproject.fragments;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -83,7 +84,7 @@ public abstract class UserListFragment extends Fragment {
 	public void populateUserByName(String query) {
 		ParseQuery<User> queryUsers = ParseQuery.getQuery(User.class);
 		// Define our query conditions
-		queryUsers.whereEqualTo("firstName", query);
+		queryUsers.whereStartsWith("lowerFirstName", query.toLowerCase(Locale.ENGLISH));
 		Log.d("MyApp", "Query: " + query);
 		// Execute the find asynchronously
 		queryUsers.findInBackground(new FindCallback<User>() {

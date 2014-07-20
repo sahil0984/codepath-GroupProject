@@ -356,6 +356,7 @@ public class CreateGroupActivity extends FragmentActivity implements OnDataPass,
 	
 	public void onAddUsers(View v) {
 		Intent i = new Intent(getApplicationContext(), AddUsersActivity.class);
+		i.putExtra("currentGroupMembers",groupMembers);
 		startActivityForResult(i, ADD_USERS_REQUEST_CODE);	
 	}
 
