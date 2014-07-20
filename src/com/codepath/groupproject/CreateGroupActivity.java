@@ -30,9 +30,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -51,26 +49,34 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.DatePicker;
+import android.widget.CompoundButton;
+import android.widget.RadioGroup;
+//import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 
-public class CreateGroupActivity extends FragmentActivity implements OnDataPass {
+import com.fourmob.datetimepicker.date.DatePickerDialog;
+import com.fourmob.datetimepicker.date.DatePickerDialog.OnDateSetListener;
+import com.sleepbot.datetimepicker.time.RadialPickerLayout;
+import com.sleepbot.datetimepicker.time.TimePickerDialog;
+import com.wrapp.floatlabelededittext.FloatLabeledEditText;
+
+public class CreateGroupActivity extends FragmentActivity implements OnDataPass, OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 	
 	private ImageView ivGroupPhoto;
-	private EditText etGroupName;
+	private FloatLabeledEditText etGroupName;
 	private TextView tvOnwardTime;
-	private Button btnPickOnwardTime;
 	private TextView tvReturnTime;
-	private Button btnPickReturnTime;
 	
 	private TextView tvDate;
-	private Button btnPickDate;
 
 	private CheckBox cbRecurring;
+	private LinearLayout llCheckBoxDays;
 	private CheckBox cbMonday;
 	private CheckBox cbTuesday;
 	private CheckBox cbWednesday;
@@ -79,8 +85,8 @@ public class CreateGroupActivity extends FragmentActivity implements OnDataPass 
 	private CheckBox cbSaturday;
 	private CheckBox cbSunday;
 	
-	private TextView etOnwardLocation;
-	private TextView etReturnLocation;
+	private FloatLabeledEditText etOnwardLocation;
+	private FloatLabeledEditText etReturnLocation;
 	
 	private CheckBox cbIsPublic;
 	
@@ -119,16 +125,15 @@ public class CreateGroupActivity extends FragmentActivity implements OnDataPass 
 
 	private void setupViews() {
 		ivGroupPhoto = (ImageView) findViewById(R.id.ivGroupPhoto);
-		etGroupName = (EditText) findViewById(R.id.etGroupName);
+		etGroupName = (FloatLabeledEditText) findViewById(R.id.etGroupName);
 		tvOnwardTime = (TextView) findViewById(R.id.tvOnwardTime);
-		btnPickOnwardTime = (Button) findViewById(R.id.btnPickOnwardTime);
 		tvReturnTime = (TextView) findViewById(R.id.tvReturnTime);
-		btnPickReturnTime = (Button) findViewById(R.id.btnPickReturnTime);
 		
 		tvDate = (TextView) findViewById(R.id.tvDate);
-		btnPickDate = (Button) findViewById(R.id.btnPickDate);
 
 		cbRecurring = (CheckBox) findViewById(R.id.cbRecurring);
+		
+		llCheckBoxDays = (LinearLayout) findViewById(R.id.llCheckBoxDays);
 		cbMonday = (CheckBox) findViewById(R.id.cbMonday);
 		cbTuesday = (CheckBox) findViewById(R.id.cbTuesday);
 		cbWednesday = (CheckBox) findViewById(R.id.cbWednesday);
@@ -137,12 +142,19 @@ public class CreateGroupActivity extends FragmentActivity implements OnDataPass 
 		cbSaturday = (CheckBox) findViewById(R.id.cbSaturday);
 		cbSunday = (CheckBox) findViewById(R.id.cbSunday);
 		
-		etOnwardLocation = (EditText) findViewById(R.id.etOnwardLocation);
-		etReturnLocation = (EditText) findViewById(R.id.etReturnLocation);
+		etOnwardLocation = (FloatLabeledEditText) findViewById(R.id.etOnwardLocation);
+		etReturnLocation = (FloatLabeledEditText) findViewById(R.id.etReturnLocation);
 		
 		cbIsPublic = (CheckBox) findViewById(R.id.cbIsPublic);
 		
 		btnCreate = (Button) findViewById(R.id.btnCreate);
+		
+		cbIsPublic.setChecked(true);
+		cbIsPublic.setText("Public Group");
+		
+		cbRecurring.setChecked(false);
+		llCheckBoxDays.setVisibility(View.INVISIBLE);
+		tvDate.setVisibility(View.VISIBLE);
 		
 		ivGroupPhoto.setOnClickListener(new OnClickListener() {
 			
@@ -154,6 +166,27 @@ public class CreateGroupActivity extends FragmentActivity implements OnDataPass 
 			}
 		});
 		
+		tvDate.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				onPickDate();
+			}
+		});
+		
+		tvOnwardTime.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				onPickTime(v);
+			}
+		});
+		
+		tvReturnTime.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				onPickTime(v);
+			}
+		});		
+		
 		btnCreate.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -163,76 +196,90 @@ public class CreateGroupActivity extends FragmentActivity implements OnDataPass 
 				onAddGroupTasks();
 			}
 		});
+		
+		cbRecurring.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {			
+				if (isChecked) {
+					llCheckBoxDays.setVisibility(View.VISIBLE);
+					tvDate.setVisibility(View.INVISIBLE);
+				} else {
+					llCheckBoxDays.setVisibility(View.INVISIBLE);
+					tvDate.setVisibility(View.VISIBLE);
+				}
+			}
+		});
+		
+		cbIsPublic.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				if (isChecked) {
+					buttonView.setText("Public Group");
+				} else {
+					buttonView.setText("Local Group");
+				}
+			}
+		});
+		
+
 	}
 	
 //---- Pick Date fragment code starts here -------
 	//onClick method for picking date
-	public void onPickDate(View v) {
-		DialogFragment newFragment = new SelectDateFragment();
-		newFragment.show(getSupportFragmentManager(), "DatePicker");
+	public void onPickDate() {
+	       	final Calendar calendar = Calendar.getInstance();
+	        final DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), false);
+	        
+            datePickerDialog.setYearRange(1985, 2028);
+            datePickerDialog.setCloseOnSingleTapDay(false);
+            datePickerDialog.show(getSupportFragmentManager(), "datepicker");
 	}
 	//Interface method for SelectDateFragment Class
 	public void populateSetDate(int year, int month, int day) {
 		DecimalFormat formatter = new DecimalFormat("00");
 		tvDate.setText(formatter.format(month) + "/" + formatter.format(day) + "/" + year);
 	}
-	//SelectDateFragment sub-class
-	@SuppressLint("ValidFragment")
-	public class SelectDateFragment extends DialogFragment implements
-			DatePickerDialog.OnDateSetListener {
-		
-		@Override
-		public Dialog onCreateDialog(Bundle savedInstanceState) {
-			final Calendar calendar = Calendar.getInstance();
-			int yy = calendar.get(Calendar.YEAR);
-			int mm = calendar.get(Calendar.MONTH);
-			int dd = calendar.get(Calendar.DAY_OF_MONTH);
-			return new DatePickerDialog(getActivity(), this, yy, mm, dd);
-		}
 
-		public void onDateSet(DatePicker view, int yy, int mm, int dd) {
-			populateSetDate(yy, mm + 1, dd);
-		}
+	@Override
+	public void onDateSet(
+			com.fourmob.datetimepicker.date.DatePickerDialog datePickerDialog,
+			int year, int month, int day) {
+		populateSetDate(year, month + 1, day);
 	}
 //----- End of Pick Date Fragment -----
+
 //---- Pick Time fragment code starts here -------
 	//onClick method for picking date
 	public void onPickTime(View v) {
-		DialogFragment newFragment = new SelectTimeFragment();
-		if (v.getId() == btnPickOnwardTime.getId()) {
-			newFragment.show(getSupportFragmentManager(), "OnwardTimePicker");
+	    final Calendar calendar = Calendar.getInstance();
+        final TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(this, calendar.get(Calendar.HOUR_OF_DAY) ,calendar.get(Calendar.MINUTE), false, false);
+
+        timePickerDialog.setCloseOnSingleTapMinute(false);
+		if (v.getId() == tvOnwardTime.getId()) {
+	        timePickerDialog.show(getSupportFragmentManager(), "OnwardTimePicker");
 		} else {
-			newFragment.show(getSupportFragmentManager(), "ReturnTimePicker");
-		}	
+	        timePickerDialog.show(getSupportFragmentManager(), "ReturnTimePicker");
+		}
 	}
 	
 	//Interface method for SelectDateFragment Class
-	public void populateSetTime(int hour, int minute, String timeType) {
+	public void populateSetTime(int hour, int minute) {
 		DecimalFormat formatter = new DecimalFormat("00");
-		if (timeType == "OnwardTimePicker") {
-			tvOnwardTime.setText(formatter.format(hour) + ":" + formatter.format(minute));
-		} else if (timeType == "ReturnTimePicker") {
-			tvReturnTime.setText(formatter.format(hour) + ":" + formatter.format(minute));
-		}
+		
+        TimePickerDialog tpdOnwardTime = (TimePickerDialog) getSupportFragmentManager().findFragmentByTag("OnwardTimePicker");
+        TimePickerDialog tpdReturnTime = (TimePickerDialog) getSupportFragmentManager().findFragmentByTag("ReturnTimePicker");
+        if (tpdOnwardTime!=null) {
+            tvOnwardTime.setText(formatter.format(hour) + ":" + formatter.format(minute));
+        } else if (tpdReturnTime!=null) {
+        	tvReturnTime.setText(formatter.format(hour) + ":" + formatter.format(minute));
+        }
 	}
-
-	//SelectDateFragment sub-class
-	@SuppressLint("ValidFragment")
-	public class SelectTimeFragment extends DialogFragment implements
-			TimePickerDialog.OnTimeSetListener {
-
-		@Override
-		public Dialog onCreateDialog(Bundle savedInstanceState) {
-			final Calendar calendar = Calendar.getInstance();
-			int hr = calendar.get(Calendar.HOUR);
-			int min = calendar.get(Calendar.MINUTE);
-			boolean is24HrView = false;
-			return new TimePickerDialog(getActivity(), this, hr, min, is24HrView);
-		}
-
-		public void onTimeSet(TimePicker view, int hr, int min) {
-			populateSetTime(hr, min, getTag());
-		}
+	
+	@Override
+	public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
+		populateSetTime(hourOfDay, minute);
 	}
 //----- End of Pick Time Fragment -----
 	
@@ -241,6 +288,9 @@ public class CreateGroupActivity extends FragmentActivity implements OnDataPass 
 		
 		switch (State_GeoCodeTask) {
 		case 0:
+			if (!isFormOkay()) {
+				break;
+			}
 			getVerifySetAdd("onward", etOnwardLocation.getText().toString());
 			getVerifySetAdd("return", etReturnLocation.getText().toString());
 			break;
@@ -255,6 +305,16 @@ public class CreateGroupActivity extends FragmentActivity implements OnDataPass 
 			break;
 		}
 		
+	}
+	
+	public boolean isFormOkay() {
+		if (etGroupName.getText().toString().equals("") || 
+			etOnwardLocation.getText().toString().equals("") || 
+			etReturnLocation.getText().toString().equals("")) {
+			Toast.makeText(getApplicationContext(), "Please enter the required fields!", Toast.LENGTH_SHORT).show();
+			return false;
+		}
+		return true;
 	}
 
 	public void prepareIntent() {
@@ -418,80 +478,17 @@ public class CreateGroupActivity extends FragmentActivity implements OnDataPass 
 				}
 	    	}
 	    	
+	    	@Override
+	    	public void onFailure(int statusCode, Header[] headers,
+	    			String responseString, Throwable throwable) {
+	    		super.onFailure(statusCode, headers, responseString, throwable);
+	    		
+	    		//BOZO: Handle this case
+	    	}
+	    	
 	    });
     }
+
+
 }
 
-//Logic for setting GeoLocation - BOZO: combine this with usage in ProfileActivity and make it a common class
-//	public void getVerifySetAdd (final String tag, String address) {
-//		
-//		String formattedAddress = address.trim().replaceAll(" +", "+");
-//		//Toast.makeText(getApplicationContext(), formattedAddress, Toast.LENGTH_LONG).show();
-//
-//    	//https://developers.google.com/maps/documentation/geocoding/
-//	    String url = "http://maps.google.com/maps/api/geocode/json?address=" + formattedAddress;
-//	    AsyncHttpClient client = new AsyncHttpClient();
-//	    client.get(url, null, new JsonHttpResponseHandler() {
-//	    	
-//			@Override
-//			public void onSuccess(int statusCode, Header[] headers,
-//					JSONObject response) {
-//				
-//				String status = null;
-//				JSONArray results;
-//				String checkedAdd = null;
-//				String lat = null;
-//				String lng = null;
-//				String latLng = null;
-//				try {
-//					status = response.getString("status");
-//					results = response.getJSONArray("results");
-//					//Toast.makeText(getApplicationContext(), "Length:" + results.length() + " Status="+ status, Toast.LENGTH_SHORT).show();
-//
-//					if (status.equals("OK") && results.length()>0) {
-//						checkedAdd = results.getJSONObject(0).getString("formatted_address");
-//						lat = results.getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getString("lat");
-//						lng = results.getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getString("lng");
-//						//latLng = lat + "," + lng;
-//						
-//						setCoord(tag, lat, lng);
-//						
-//					}
-//				} catch (JSONException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//					Toast.makeText(getApplicationContext(), "Error checking address", Toast.LENGTH_SHORT).show();
-//					return;
-//				}				
-//				//Toast.makeText(getApplicationContext(), checkedAdd + ":" + lat + "," + lng, Toast.LENGTH_SHORT).show();
-//				if (oneAddressVerifDoneFlag==1) {
-//					
-//					oneAddressVerifDoneFlag = 0;
-//					State_GeoCodeTask = 2;
-//					onAddGroupTasks();
-//				} else {
-//			    	oneAddressVerifDoneFlag = oneAddressVerifDoneFlag + 1;
-//				}
-//			}
-//
-//			@Override
-//			public void onFailure(int statusCode, Header[] headers,
-//					Throwable throwable, JSONObject errorResponse) {
-//				Toast.makeText(getApplicationContext(), "Error checking address", Toast.LENGTH_SHORT).show();
-//				//BOZO: Handle failure by asking user to try again. And resetting to edit profile state.
-//			}
-//
-//	    });
-//	    
-//    }
-//	
-//    public void setCoord(String tag, String lat, String lng) {    	
-//    	
-//    	if (tag.equals("onward")) {
-//    		onwardLatLng = new ParseGeoPoint(Double.parseDouble(lat), Double.parseDouble(lng));
-//    	} else if (tag.equals("return")) {
-//    		returnLatLng = new ParseGeoPoint(Double.parseDouble(lat), Double.parseDouble(lng));
-//    	}
-//    	
-//    }
-//}

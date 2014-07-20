@@ -14,10 +14,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.codepath.groupproject.R.string;
 import com.codepath.groupproject.models.User;
 import com.facebook.HttpMethod;
 import com.facebook.Request;
 import com.facebook.Response;
+import com.facebook.android.Facebook;
 import com.facebook.model.GraphUser;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
@@ -57,6 +59,7 @@ public class LoginActivity extends ActionBarActivity {
 	public void gotoProfileActivity() {
 		Intent i = new Intent(getApplicationContext(), ProfileActivity.class);
 		startActivity(i);
+		overridePendingTransition(R.anim.fade_in, R.anim.slide_up);
 	}
 	
 	public void gotoHomeActivity() {
@@ -70,10 +73,11 @@ public class LoginActivity extends ActionBarActivity {
 			//Dont do anything.
 			
 		//} else {
-		
-		
+
 			ParseFacebookUtils.logIn(Arrays.asList("email", "user_friends"), this, new LogInCallback() {
 			//ParseFacebookUtils.logIn(Arrays.asList("email", "user_friends", "user_friendlists"), this, new LogInCallback() {
+				
+								
 				@Override
 				public void done(ParseUser user, ParseException err) {
 					if (user == null) {
@@ -112,6 +116,9 @@ public class LoginActivity extends ActionBarActivity {
 			          //Log.d("FBJSON", response.toString());
 			     
 			          
+			          String URL = "https://graph.facebook.com/" + user.getId() + "?fields=cover&access_token=" + ParseFacebookUtils.getSession().getAccessToken();
+			          Log.d("FBJSON", URL.toString());
+
 			         
 			          ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
 						
@@ -129,23 +136,65 @@ public class LoginActivity extends ActionBarActivity {
 			          
 			      }
 			  }
-			}).executeAsync();
+			}).executeAsync();    
+          
+		  getFriends();
+          //getFriendLists();
 		  
+		  
+		  
+	        new Request(
+					ParseFacebookUtils.getSession(),
+	    		    "/me/friends",
+	    		    null,
+	    		    HttpMethod.GET,
+	    		    new Request.Callback() {
+	    		        public void onCompleted(Response response) {
+	    		            /* handle the result */
+	    		        	//Log.d("FBJSON", response.toString());
+	    		        	
+	    		        	//Create a list of friends with fbId and add it to the current Parse user
+	    		        	JSONArray fbFriendsJsonArray;
+	    		        	ArrayList<String> fbFriendsIds = new ArrayList<String>();
+	    		        	try {
+								fbFriendsJsonArray = response.getGraphObject().getInnerJSONObject().getJSONArray("data");
+		      		        	for (int i=0; i<fbFriendsJsonArray.length(); i++) {
+		      		        		Log.d("FacebookFrndId", fbFriendsJsonArray.getJSONObject(i).getString("id"));
+		      		        		fbFriendsIds.add(fbFriendsJsonArray.getJSONObject(i).getString("id"));
+			      					
+			      		        }
+		      					
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+	    		        	
+	    		        	//Now fbFriendsIds contains the array of fb friends id's
+	    		        	ParseUser.getCurrentUser().remove("fbFriendsIds");
+	    		        	ParseUser.getCurrentUser().saveInBackground();
+	    		        	ParseUser.getCurrentUser().add("fbFriendsIds", fbFriendsIds);
+	    		        	ParseUser.getCurrentUser().saveInBackground();
+	    		        }
+	    		    }
+	    		).executeAsync(); 
+          
+	}
+	
+	public void getFriends() {
 		  //Gets friends who are using the app
-          new Request(
+        new Request(
 				ParseFacebookUtils.getSession(),
-      		    "/me/friends",
-      		    null,
-      		    HttpMethod.GET,
-      		    new Request.Callback() {
-      		        public void onCompleted(Response response) {
-      		            /* handle the result */
-      		        	//Log.d("FBJSON", response.toString());
-      		        	
-      		        	//Create a list of friends with fbId and add it to the current Parse user
-      		        	JSONArray fbFriendsJsonArray;
-      		        	ArrayList<String> fbFriendsIds = new ArrayList<String>();
-      		        	try {
+    		    "/me/friends",
+    		    null,
+    		    HttpMethod.GET,
+    		    new Request.Callback() {
+    		        public void onCompleted(Response response) {
+    		            /* handle the result */
+    		        	//Log.d("FBJSON", response.toString());
+    		        	
+    		        	//Create a list of friends with fbId and add it to the current Parse user
+    		        	JSONArray fbFriendsJsonArray;
+    		        	ArrayList<String> fbFriendsIds = new ArrayList<String>();
+    		        	try {
 							fbFriendsJsonArray = response.getGraphObject().getInnerJSONObject().getJSONArray("data");
 	      		        	for (int i=0; i<fbFriendsJsonArray.length(); i++) {
 	      		        		Log.d("FacebookFrndId", fbFriendsJsonArray.getJSONObject(i).getString("id"));
@@ -156,59 +205,60 @@ public class LoginActivity extends ActionBarActivity {
 						} catch (JSONException e) {
 							e.printStackTrace();
 						}
-      		        	
-      		        	//Now fbFriendsIds contains the array of fb friends id's
-      		        	ParseUser.getCurrentUser().remove("fbFriendsIds");
-      		        	ParseUser.getCurrentUser().saveInBackground();
-      		        	ParseUser.getCurrentUser().add("fbFriendsIds", fbFriendsIds);
-      		        	ParseUser.getCurrentUser().saveInBackground();
-      		        }
-      		    }
-      		).executeAsync();
-          
-//		  //Gets lists of the friend lists names of the user
-//          new Request(
-//				ParseFacebookUtils.getSession(),
-//      		    "/me/friendlists",
-//      		    null,
-//      		    HttpMethod.GET,
-//      		    new Request.Callback() {
-//      		        public void onCompleted(Response response) {
-//      		            /* handle the result */
-//      		        	//Log.d("FBJSON", response.toString());
-//      		        	
-//      		        	//Create a list of work and education and add it to the current Parse user
-//      		        	JSONArray fbListsJsonArray;
-//      		        	ArrayList<String> fbWorkList = new ArrayList<String>();
-//      		        	ArrayList<String> fbSchoolList = new ArrayList<String>();
-//      		        	try {
-//							fbListsJsonArray = response.getGraphObject().getInnerJSONObject().getJSONArray("data");
-//	      		        	//Log.d("FacebookLists", fbListsJsonArray.toString());
-//	      		        	for (int i=0; i<fbListsJsonArray.length(); i++) {
-//	      		        		String listType = fbListsJsonArray.getJSONObject(i).getString("list_type");
-//	      		        		String listValue = fbListsJsonArray.getJSONObject(i).getString("name");
-//	      		        		if (listType.matches("work")) {
-//	      		        			fbWorkList.add(listValue);
-//	      		        			//Log.d("FacebookWorkList", listValue);
-//	      		        		} else if (listType.matches("education")) {
-//	      		        			fbSchoolList.add(listValue);
-//	      		        			//Log.d("FacebookSchoolList", listValue);
-//	      		        		}
-//	      		        		
-//	      		        	}
-//
-//						} catch (JSONException e) {
-//							e.printStackTrace();
-//						}
-//      		        	
-//      		        	//Now fbWorkList contains work networks and fbSchoolList contains school networks
-//      		        	ParseUser.getCurrentUser().add("fbWorkList", fbWorkList);
-//      		        	ParseUser.getCurrentUser().add("fbSchoolList", fbSchoolList);
-//      		        	ParseUser.getCurrentUser().saveInBackground();
-//      		        }
-//      		    }
-//      		).executeAsync();          
-		  
+    		        	
+    		        	//Now fbFriendsIds contains the array of fb friends id's
+    		        	ParseUser.getCurrentUser().remove("fbFriendsIds");
+    		        	ParseUser.getCurrentUser().saveInBackground();
+    		        	ParseUser.getCurrentUser().add("fbFriendsIds", fbFriendsIds);
+    		        	ParseUser.getCurrentUser().saveInBackground();
+    		        }
+    		    }
+    		).executeAsync(); 
+	}
+	
+	public void getFriendLists() {
+		  //Gets lists of the friend lists names of the user
+        new Request(
+				ParseFacebookUtils.getSession(),
+    		    "/me/friendlists",
+    		    null,
+    		    HttpMethod.GET,
+    		    new Request.Callback() {
+    		        public void onCompleted(Response response) {
+    		            /* handle the result */
+    		        	//Log.d("FBJSON", response.toString());
+    		        	
+    		        	//Create a list of work and education and add it to the current Parse user
+    		        	JSONArray fbListsJsonArray;
+    		        	ArrayList<String> fbWorkList = new ArrayList<String>();
+    		        	ArrayList<String> fbSchoolList = new ArrayList<String>();
+    		        	try {
+							fbListsJsonArray = response.getGraphObject().getInnerJSONObject().getJSONArray("data");
+	      		        	//Log.d("FacebookLists", fbListsJsonArray.toString());
+	      		        	for (int i=0; i<fbListsJsonArray.length(); i++) {
+	      		        		String listType = fbListsJsonArray.getJSONObject(i).getString("list_type");
+	      		        		String listValue = fbListsJsonArray.getJSONObject(i).getString("name");
+	      		        		if (listType.matches("work")) {
+	      		        			fbWorkList.add(listValue);
+	      		        			//Log.d("FacebookWorkList", listValue);
+	      		        		} else if (listType.matches("education")) {
+	      		        			fbSchoolList.add(listValue);
+	      		        			//Log.d("FacebookSchoolList", listValue);
+	      		        		}
+	      		        		
+	      		        	}
+
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+    		        	
+    		        	//Now fbWorkList contains work networks and fbSchoolList contains school networks
+    		        	ParseUser.getCurrentUser().add("fbWorkList", fbWorkList);
+    		        	ParseUser.getCurrentUser().add("fbSchoolList", fbSchoolList);
+    		        	ParseUser.getCurrentUser().saveInBackground();
+    		        }
+    		    }
+    		).executeAsync();    
 	}
 	
 	@Override
