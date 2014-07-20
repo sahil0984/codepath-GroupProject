@@ -12,6 +12,7 @@ import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+import com.wrapp.floatlabelededittext.FloatLabeledEditText;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,23 +23,25 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.Toast;
 
 public class ProfileActivity extends ActionBarActivity {
 	
 	private ProfilePictureView ivProfileImage;
-	private EditText etFirstName;
-	private EditText etLastName;
-	private EditText etHomeAdd;
-	private EditText etWorkAdd;
-	private EditText etPhone;
-	private EditText etPersonalEmail;
-	private EditText etEmail;
+	private FloatLabeledEditText etFirstName;
+	private FloatLabeledEditText etLastName;
+	private FloatLabeledEditText etHomeAdd;
+	private FloatLabeledEditText etWorkAdd;
+	//private FloatLabeledEditText etPhone;
+	private FloatLabeledEditText etPersonalEmail;
+	private FloatLabeledEditText etEmail;
 	private CheckBox cbIsPublic;
 	
 	private Button btnVerifyEmail;
-	private Button btnGoHome;
+	//private Button btnGoHome;
 	
 	private Menu mOptionsMenu;
 	
@@ -56,31 +59,41 @@ public class ProfileActivity extends ActionBarActivity {
 		
 
 		setupViews();
-	}
-
-	private void setupViews() {
-		ivProfileImage  = (ProfilePictureView) findViewById(R.id.ivProfileImage);
-		etFirstName     = (EditText) findViewById(R.id.etFirstName);
-		etLastName 	    = (EditText) findViewById(R.id.etLastName);
-		etHomeAdd       = (EditText) findViewById(R.id.etHomeAdd);
-		etWorkAdd       = (EditText) findViewById(R.id.etWorkAdd);
-		etPhone         = (EditText) findViewById(R.id.etPhone);
-		etPersonalEmail = (EditText) findViewById(R.id.etPersonalEmail);
-		etEmail         = (EditText) findViewById(R.id.etEmail);
-		cbIsPublic		= (CheckBox) findViewById(R.id.cbIsPublic);
-		
-		btnVerifyEmail = (Button) findViewById(R.id.btnVerifyEmail);
-		btnGoHome      = (Button) findViewById(R.id.btnDone);
-
-		btnVerifyEmail.setEnabled(false);
-		
-		etPhone.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
 		
 		oneAddressVerifDoneFlag = 0;
 		State_GeoCodeTask = 2;
 		doDoneEditProfileTasks();
+	}
+
+	private void setupViews() {
+		ivProfileImage  = (ProfilePictureView) findViewById(R.id.ivProfileImage);
+		etFirstName     = (FloatLabeledEditText) findViewById(R.id.etFirstName);
+		etLastName 	    = (FloatLabeledEditText) findViewById(R.id.etLastName);
+		etHomeAdd       = (FloatLabeledEditText) findViewById(R.id.etHomeAdd);
+		etWorkAdd       = (FloatLabeledEditText) findViewById(R.id.etWorkAdd);
+		//etPhone         = (FloatLabeledEditText) findViewById(R.id.etPhone);
+		etPersonalEmail = (FloatLabeledEditText) findViewById(R.id.etPersonalEmail);
+		etEmail         = (FloatLabeledEditText) findViewById(R.id.etEmail);
+		cbIsPublic		= (CheckBox) findViewById(R.id.cbIsPublic);
 		
-		//stopEditProfile();
+		btnVerifyEmail = (Button) findViewById(R.id.btnVerifyEmail);
+		//btnGoHome      = (Button) findViewById(R.id.btnDone);
+
+		btnVerifyEmail.setEnabled(false);
+		
+		cbIsPublic.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				if (isChecked) {
+					buttonView.setText("Public Profile");
+				} else {
+					buttonView.setText("Local Profile");
+				}
+			}
+		});
+		
+		//etPhone.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
 	}
 	
 	public void stopEditProfile() {
@@ -105,31 +118,44 @@ public class ProfileActivity extends ActionBarActivity {
 		
 		//First Name
 		etFirstName.setText(firstName);
-		etFirstName.setFocusable(false);
+		etFirstName.requestFocus();
+		
 		//Last Name
 		etLastName.setText(lastName);
-		etLastName.setFocusable(false);
+		etLastName.requestFocus();
+
 		//Home Address
 		etHomeAdd.setText(homeAdd);
-		etHomeAdd.setFocusable(false);
+		etHomeAdd.requestFocus();
+		
 		//Work Address
 		etWorkAdd.setText(workAdd);
-		etWorkAdd.setFocusable(false);
+		etWorkAdd.requestFocus();
+
 		//Phone number
-		etPhone.setText(phone);
-		etPhone.setFocusable(false);
+		//etPhone.setText(phone);
+
 		//Personal Email
 		etPersonalEmail.setText(personalEmail);
-		etPersonalEmail.setFocusable(false);
+		etPersonalEmail.requestFocus();
+		
 		//Email
 		etEmail.setText(email);
-		etEmail.setFocusable(false);
+		etEmail.requestFocus();
+
 		//IsPublic
 		cbIsPublic.setChecked(isPublic);
-		cbIsPublic.setEnabled(false);
+
 		
-		//etEmail.setBackgroundColor(android.graphics.Color.CYAN);
-		//etEmail.setBackgroundResource(0);
+		etFirstName.requestFocus();
+
+		
+		etFirstName.setBackgroundResource(0);
+		etLastName.setBackgroundResource(0);
+		etHomeAdd.setBackgroundResource(0);
+		etWorkAdd.setBackgroundResource(0);
+		etPersonalEmail.setBackgroundResource(0);
+		etEmail.setBackgroundResource(0);
 		
 
 	}
@@ -149,8 +175,8 @@ public class ProfileActivity extends ActionBarActivity {
 		etWorkAdd.setFocusableInTouchMode(true);
 		etWorkAdd.setFocusable(true);
 		//Phone number
-		etPhone.setFocusableInTouchMode(true);
-		etPhone.setFocusable(true);
+		//etPhone.setFocusableInTouchMode(true);
+		//etPhone.setFocusable(true);
 		//Personal Email
 		etPersonalEmail.setFocusableInTouchMode(true);
 		etPersonalEmail.setFocusable(true);
@@ -163,7 +189,9 @@ public class ProfileActivity extends ActionBarActivity {
 		//etPersonalEmail.setBackgroundResource(R.drawable.backtext);
 		//etEmail.setBackgroundResource(R.drawable.backtext);
 		//etEmail.setBackgroundResource(0);
-
+		
+        btnVerifyEmail.setEnabled(true);
+        //btnGoHome.setEnabled(false);
 	}
 	
 	public void onVerifyEmail (View v) {
@@ -203,11 +231,15 @@ public class ProfileActivity extends ActionBarActivity {
 		});
 	}
 	
-	public void onDone (View v) {
+	public void onDone () {
+		oneAddressVerifDoneFlag = 0;
+		State_GeoCodeTask = 0;
+		doDoneEditProfileTasks();
 		
 		//if (etHomeAdd.getText().equals("") || etWorkAdd.getText().equals("") ) {
 			Intent i = new Intent(getApplicationContext(), HomeActivity.class);
-			startActivity(i);			
+			startActivity(i);
+
 		//} else {
 		//	Toast.makeText(getApplicationContext(), "Please enter the required fields.", Toast.LENGTH_SHORT).show();
 		//}
@@ -226,7 +258,7 @@ public class ProfileActivity extends ActionBarActivity {
 		if (workLatLng != null) {
 			ParseUser.getCurrentUser().put("workAdd", workLatLng);
 		}		
-		ParseUser.getCurrentUser().put("phone", etPhone.getText().toString());
+		//ParseUser.getCurrentUser().put("phone", etPhone.getText().toString());
 		ParseUser.getCurrentUser().put("personalEmail", etPersonalEmail.getText().toString());
 		ParseUser.getCurrentUser().put("email", etEmail.getText().toString());
 		ParseUser.getCurrentUser().put("isPublic", cbIsPublic.isChecked());
@@ -241,7 +273,8 @@ public class ProfileActivity extends ActionBarActivity {
 				} else {
 					e.printStackTrace();
 					Toast.makeText(getApplicationContext(), "Error Saving info!", Toast.LENGTH_SHORT).show();
-					doEditProfileTasks();
+					//doEditProfileTasks();
+					editProfile();
 				}
 			}
 		});
@@ -253,55 +286,69 @@ public class ProfileActivity extends ActionBarActivity {
         getMenuInflater().inflate(R.menu.profile_activity_actions, menu);
         mOptionsMenu = menu;
 
-        showOption(R.id.miEditProfile);
-        hideOption(R.id.miDoneEditProfile);
+        //showOption(R.id.miEditProfile);
+        //hideOption(R.id.miDoneEditProfile);
         return true;
     }
     
-    private void hideOption(int id)
-    {
-        MenuItem item = mOptionsMenu.findItem(id);
-        item.setVisible(false);
-    }
-
-    private void showOption(int id)
-    {
-        MenuItem item = mOptionsMenu.findItem(id);
-        item.setVisible(true);
-    }
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+      // Handle presses on the action bar items
+      switch (item.getItemId()) {
+          case R.id.miDone:
+  			onDone();
+              return true;
+          default:
+              return super.onOptionsItemSelected(item);
+      }
+  }
     
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle presses on the action bar items
-        switch (item.getItemId()) {
-            case R.id.miEditProfile:
-            	doEditProfileTasks();
-                return true;
-            case R.id.miDoneEditProfile:
-    			oneAddressVerifDoneFlag = 0;
-    			State_GeoCodeTask = 0;
-            	doDoneEditProfileTasks();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
     
-    public void doEditProfileTasks() {
-        hideOption(R.id.miEditProfile);
-        showOption(R.id.miDoneEditProfile);
-        btnVerifyEmail.setEnabled(true);
-        btnGoHome.setEnabled(false);
-        editProfile();
-    }
+//    
+//    private void hideOption(int id)
+//    {
+//        MenuItem item = mOptionsMenu.findItem(id);
+//        item.setVisible(false);
+//    }
+//
+//    private void showOption(int id)
+//    {
+//        MenuItem item = mOptionsMenu.findItem(id);
+//        item.setVisible(true);
+//    }
+//    
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle presses on the action bar items
+//        switch (item.getItemId()) {
+//            case R.id.miEditProfile:
+//            	doEditProfileTasks();
+//                return true;
+//            case R.id.miDoneEditProfile:
+//    			oneAddressVerifDoneFlag = 0;
+//    			State_GeoCodeTask = 0;
+//            	doDoneEditProfileTasks();
+//                return true;
+//            default:
+//                return super.onOptionsItemSelected(item);
+//        }
+//    }
+//    
+//    public void doEditProfileTasks() {
+//        hideOption(R.id.miEditProfile);
+//        showOption(R.id.miDoneEditProfile);
+//        btnVerifyEmail.setEnabled(true);
+//        btnGoHome.setEnabled(false);
+//        editProfile();
+//    }
     
     public void doDoneEditProfileTasks() {
     	switch (State_GeoCodeTask) {
 		case 0:
-	        showOption(R.id.miEditProfile);
-	        hideOption(R.id.miDoneEditProfile);
-	        btnVerifyEmail.setEnabled(false);
-	        btnGoHome.setEnabled(true);
+	        //showOption(R.id.miEditProfile);
+	        //hideOption(R.id.miDoneEditProfile);
+	        //btnVerifyEmail.setEnabled(false);
+	        //btnGoHome.setEnabled(true);
 	        checkAddresses();
 			break;
 		case 1:
@@ -311,7 +358,7 @@ public class ProfileActivity extends ActionBarActivity {
 	        updateAddresses();
 	        break;
 		case 3:
-	        stopEditProfile(); 			
+	        stopEditProfile();
 			break;
 		default:
 			break;
@@ -407,141 +454,3 @@ public class ProfileActivity extends ActionBarActivity {
 		return;
     }
 }
-    
-//	public void getVerifySetAdd (final String tag, String address) {
-//		
-//		String formattedAddress = address.trim().replaceAll(" +", "+");
-//		//Toast.makeText(getApplicationContext(), formattedAddress, Toast.LENGTH_LONG).show();
-//
-//    	//https://developers.google.com/maps/documentation/geocoding/
-//	    String url = "http://maps.google.com/maps/api/geocode/json?address=" + formattedAddress;
-//	    AsyncHttpClient client = new AsyncHttpClient();
-//	    client.get(url, null, new JsonHttpResponseHandler() {
-//	    	
-//			@Override
-//			public void onSuccess(int statusCode, Header[] headers,
-//					JSONObject response) {
-//				
-//				String status = null;
-//				JSONArray results;
-//				String checkedAdd = null;
-//				String lat = null;
-//				String lng = null;
-//				String latLng = null;
-//				try {
-//					status = response.getString("status");
-//					results = response.getJSONArray("results");
-//					//Toast.makeText(getApplicationContext(), "Length:" + results.length() + " Status="+ status, Toast.LENGTH_SHORT).show();
-//
-//					if (status.equals("OK") && results.length()>0) {
-//						checkedAdd = results.getJSONObject(0).getString("formatted_address");
-//						lat = results.getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getString("lat");
-//						lng = results.getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getString("lng");
-//						//latLng = lat + "," + lng;
-//						
-//						setCoord(tag, lat, lng);
-//						
-//					}
-//				} catch (JSONException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//					Toast.makeText(getApplicationContext(), "Error checking address", Toast.LENGTH_SHORT).show();
-//					return;
-//				}				
-//				//Toast.makeText(getApplicationContext(), checkedAdd + ":" + lat + "," + lng, Toast.LENGTH_SHORT).show();
-//				if (oneAddressVerifDoneFlag==1) {
-//					oneAddressVerifDoneFlag = 0;
-//					State_GeoCodeTask = 1;
-//					doDoneEditProfileTasks();
-//				} else {
-//			    	oneAddressVerifDoneFlag = oneAddressVerifDoneFlag + 1;
-//				}
-//			}
-//
-//			@Override
-//			public void onFailure(int statusCode, Header[] headers,
-//					Throwable throwable, JSONObject errorResponse) {
-//				Toast.makeText(getApplicationContext(), "Error checking address", Toast.LENGTH_SHORT).show();
-//				//BOZO: Handle failure by asking user to try again. And resetting to edit profile state.
-//			}
-//
-//	    });
-//	    
-//    }
-//    
-//    public void setCoord(String tag, String lat, String lng) {    	
-//    	
-//    	if (tag.equals("home")) {
-//    		homeLatLng = new ParseGeoPoint(Double.parseDouble(lat), Double.parseDouble(lng));
-//    	} else if (tag.equals("work")) {
-//    		workLatLng = new ParseGeoPoint(Double.parseDouble(lat), Double.parseDouble(lng));
-//    	}
-//    	
-//    }
-    
-//    public String getAddFromCoor(final String tag, ParseGeoPoint pCoord) {
-//    	Double lat = pCoord.getLatitude();
-//    	Double lng = pCoord.getLongitude();
-//	    String url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lng;
-//	    AsyncHttpClient client = new AsyncHttpClient();
-//	    client.get(url, null, new JsonHttpResponseHandler() {
-//	    	
-//			@Override
-//			public void onSuccess(int statusCode, Header[] headers,
-//					JSONObject response) {
-//				
-//				String status = null;
-//				JSONArray results;
-//				String checkedAdd = null;
-//				String lat = null;
-//				String lng = null;
-//				String latLng = null;
-//				try {
-//					status = response.getString("status");
-//					results = response.getJSONArray("results");
-//					//Toast.makeText(getApplicationContext(), "Length:" + results.length() + " Status="+ status, Toast.LENGTH_SHORT).show();
-//
-//					if (status.equals("OK") && results.length()>0) {
-//						checkedAdd = results.getJSONObject(0).getString("formatted_address");
-//						//lat = results.getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getString("lat");
-//						//lng = results.getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getString("lng");
-//						//latLng = lat + "," + lng;
-//						
-//						setAddress(tag, checkedAdd);
-//						
-//					}
-//				} catch (JSONException e) {
-//					e.printStackTrace();
-//					Toast.makeText(getApplicationContext(), "Error checking address", Toast.LENGTH_SHORT).show();
-//					return;
-//				}				
-//				//Toast.makeText(getApplicationContext(), checkedAdd + ":" + lat + "," + lng, Toast.LENGTH_SHORT).show();
-//				if (oneAddressVerifDoneFlag==1) {
-//					oneAddressVerifDoneFlag = 0;
-//					State_GeoCodeTask = 3;
-//					doDoneEditProfileTasks();
-//				} else {
-//			    	oneAddressVerifDoneFlag = oneAddressVerifDoneFlag + 1;
-//				}
-//			}
-//			
-//			@Override
-//			public void onFailure(int statusCode, Header[] headers,
-//					Throwable throwable, JSONObject errorResponse) {
-//				Toast.makeText(getApplicationContext(), "Error retrieving address", Toast.LENGTH_SHORT).show();
-//				//BOZO: Handle failure by asking user to try again. And resetting to edit profile state.
-//			}
-//	    });
-//    	return null;
-//    }
-//    
-//    public void setAddress(String tag, String checkedAdd) {    	
-//    	
-//    	if (tag.equals("home")) {
-//    		homeAdd = checkedAdd;
-//    	} else if (tag.equals("work")) {
-//    		workAdd = checkedAdd;
-//    	}  	
-//		
-//    }
-//}

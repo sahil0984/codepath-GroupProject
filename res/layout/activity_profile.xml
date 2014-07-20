@@ -1,11 +1,19 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:float="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res/com.codepath.groupproject"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent" 
+    android:background="@color/button_blue">
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="@color/white"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:padding="5dp"
         tools:context="${packageName}.${activityClass}" >
 
         <com.facebook.widget.ProfilePictureView
@@ -16,74 +24,90 @@
             android:layout_alignParentTop="true"
             android:layout_margin="10dp" />
         
-            
-        <EditText
+       <CheckBox 
+            android:id="@+id/cbIsPublic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/ivProfileImage"            
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:text="" />
+        
+        <com.wrapp.floatlabelededittext.FloatLabeledEditText
             android:id="@+id/etFirstName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/ivProfileImage"
-            android:layout_marginTop="20dp"
+            android:layout_below="@+id/cbIsPublic"
             android:layout_toRightOf="@+id/ivProfileImage"
+            android:layout_marginTop="-5dp"
             android:ellipsize="end"
-            android:hint="@string/first_name_hint"
             android:maxLength="20"
-            android:maxLines="1" />
-
-        <EditText
+            android:maxLines="1" 
+            float:fletFloatingHint="@string/first_name_hint" 
+            app:fletSingleLine="true" />
+        
+        <com.wrapp.floatlabelededittext.FloatLabeledEditText
             android:id="@+id/etLastName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/etFirstName"
             android:layout_toRightOf="@+id/ivProfileImage"
             android:ellipsize="end"
-            android:hint="@string/last_name_hint"
             android:maxLength="20"
-            android:maxLines="1" />
-
-        <EditText
-            android:id="@+id/etHomeAdd"
-            android:layout_width="wrap_content"
+            android:maxLines="1"
+            float:fletFloatingHint="@string/last_name_hint" />
+        
+        <LinearLayout 
+            android:id="@+id/llAddresses"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/ivProfileImage"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
+            android:layout_below="@+id/etLastName"
             android:layout_marginTop="5dp"
-            android:hint="@string/home_address_hint"
-            android:lines="2" />
+            android:weightSum="1"
+            android:showDividers="middle" >
+	        <com.wrapp.floatlabelededittext.FloatLabeledEditText
+	            android:id="@+id/etHomeAdd"
+	            android:layout_width="0dp"
+	            android:layout_height="wrap_content"
+	            android:layout_marginLeft="5dp"
+	            android:layout_marginRight="5dp"
+	            android:lines="2"
+	            android:layout_weight="0.5"
+	            float:fletFloatingHint="@string/home_address_hint" />
+	
+	        <View style="@style/VericalDivider"/>
+	        
+	        <com.wrapp.floatlabelededittext.FloatLabeledEditText
+	            android:id="@+id/etWorkAdd"
+	            android:layout_width="0dp"
+	            android:layout_height="wrap_content"
+	            android:layout_marginLeft="5dp"
+	            android:layout_marginRight="5dp"
+	            android:lines="2"
+	            android:layout_weight="0.5"
+	            float:fletFloatingHint="@string/work_address_hint" />
+        </LinearLayout>
+        
 
-        <EditText
-            android:id="@+id/etWorkAdd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/etHomeAdd"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:hint="@string/work_address_hint"
-            android:lines="2" />
-
-        <EditText
-            android:id="@+id/etPhone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/etWorkAdd"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="5dp"
-            android:hint="@string/phone_hint"
-            android:inputType="phone" />
-
-        <EditText
+        
+        <com.wrapp.floatlabelededittext.FloatLabeledEditText
             android:id="@+id/etPersonalEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/etPhone"
+            android:layout_below="@+id/llAddresses"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginTop="5dp"
-            android:hint="@string/personal_email_hint"
-            android:inputType="textEmailAddress" />
+            android:inputType="textEmailAddress"
+            float:fletFloatingHint="@string/personal_email_hint" />
+        
+        
 
-        <EditText
+        
+        
+        <com.wrapp.floatlabelededittext.FloatLabeledEditText
             android:id="@+id/etEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -91,9 +115,9 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginTop="5dp"
-            android:hint="@string/email_hint"
-            android:inputType="textEmailAddress" />
-
+            android:inputType="textEmailAddress"
+            float:fletFloatingHint="@string/email_hint" />
+        
         <Button
             android:id="@+id/btnVerifyEmail"
             android:layout_width="wrap_content"
@@ -105,28 +129,13 @@
             android:layout_marginTop="5dp"
             android:onClick="onVerifyEmail"
             android:text="@string/verify_email_btn_text" />
-        
-        <CheckBox 
-            android:id="@+id/cbIsPublic"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/etEmail"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="5dp"
-            android:text="Visible outside networks?" />
-        
-        <Button
-            android:id="@+id/btnDone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/cbIsPublic"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="5dp"
-            android:onClick="onDone"
-            android:text="@string/done_btn_text" />
-        
+
+        <View 
+            android:id="@+id/dummy"
+            android:layout_width="1dp"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            />
 
     </RelativeLayout>
 

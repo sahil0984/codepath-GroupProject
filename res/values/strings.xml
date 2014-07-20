@@ -9,7 +9,7 @@
     <string name="title_activity_create_group">New Group</string>
     <string name="title_activity_group_detail">Group</string>
     <string name="title_activity_add_users">Add People</string>
-    
+    <string name="title_activity_view_profile">Loading Profile</string>
     
     <!-- Profile Activity strings -->
     <string name="first_name_hint"><i>First Name</i></string>
@@ -19,8 +19,7 @@
     <string name="phone_hint"><i>Phone Number</i></string>
     <string name="personal_email_hint"><i>Personal Email</i></string>
     <string name="email_hint"><i>Work Email</i></string>
-    <string name="done_btn_text"><i>Go to Home</i></string>
+    <string name="done_btn_text"><i>Done</i></string>
     <string name="verify_email_btn_text"><i>Verify</i></string>
-
 
 </resources>

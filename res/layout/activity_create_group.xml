@@ -1,105 +1,102 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:float="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res/com.codepath.groupproject"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-
-    <RelativeLayout
+    android:layout_height="match_parent"
+    android:background="@color/button_blue">
+    
+   <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="@color/white"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:padding="5dp"
         tools:context="${packageName}.${activityClass}" >
 
-        <TextView
-            android:id="@+id/tvCreateGroup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Add a new group" />
 
         <ImageView
             android:id="@+id/ivGroupPhoto"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_below="@+id/tvCreateGroup"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_margin="5dp"
             android:src="@drawable/ic_launcher" />
 
-        <EditText
+        <com.wrapp.floatlabelededittext.FloatLabeledEditText
             android:id="@+id/etGroupName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/ivGroupPhoto"
+            android:layout_alignTop="@+id/ivGroupPhoto"
             android:layout_toRightOf="@+id/ivGroupPhoto"
-            android:hint="Group Name" />
-
+            android:layout_marginTop="0dp"
+            android:gravity="center"
+            android:ellipsize="end"
+            android:maxLength="30"
+            android:maxLines="1" 
+            float:fletFloatingHint="Group Name" 
+            app:fletSingleLine="true" />
+        
         <LinearLayout
-            android:id="@+id/llOnwardTime"
-            android:layout_width="wrap_content"
+            android:id="@+id/llTime"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/etGroupName"
+            android:layout_toRightOf="@+id/ivGroupPhoto"
+            android:weightSum="1"
+            android:gravity="center_horizontal"
             android:orientation="horizontal" >
 
             <TextView
                 android:id="@+id/tvOnwardTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:gravity="center"
                 android:hint="Onward Time" />
-
-            <Button
-                android:id="@+id/btnPickOnwardTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="onPickTime"
-                android:text="Pick Time" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/llReturnTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/llOnwardTime"
-            android:orientation="horizontal" >
+            
+            <View style="@style/VericalDivider"/>
+         
 
             <TextView
                 android:id="@+id/tvReturnTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="0.5"                
+                android:gravity="center"
                 android:hint="Return Time" />
-
-            <Button
-                android:id="@+id/btnPickReturnTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="onPickTime"
-                android:text="Pick Time" />
+            
         </LinearLayout>
 
-        <CheckBox
+
+        <CheckBox 
             android:id="@+id/cbRecurring"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/llReturnTime"
-            android:text="Recurring?" />
-
-        <Button
-            android:id="@+id/btnPickDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/llReturnTime"
-            android:layout_toRightOf="@+id/cbRecurring"
-            android:onClick="onPickDate"
-            android:text="Pick Date" />
+            android:layout_below="@+id/llTime"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:text="Repeat" />
 
         <TextView
             android:id="@+id/tvDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/llReturnTime"
-            android:layout_toRightOf="@+id/btnPickDate"
+            android:layout_alignBaseline="@+id/cbRecurring"
+            android:layout_alignLeft="@+id/llTime"
+            android:layout_marginLeft="70dp"
             android:hint="Date" />
 
         <LinearLayout
             android:id="@+id/llCheckBoxDays"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/cbRecurring"
+            android:layout_toRightOf="@+id/cbRecurring"
+            android:layout_alignBottom="@+id/cbRecurring"
             android:orientation="horizontal" >
 
             <CheckBox
@@ -145,32 +142,47 @@
                 android:text="Su" />
         </LinearLayout>
 
-        <EditText
-            android:id="@+id/etOnwardLocation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/llCheckBoxDays"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="5dp"
-            android:hint="Start Address.."
-            android:lines="2" />
 
-        <EditText
-            android:id="@+id/etReturnLocation"
-            android:layout_width="wrap_content"
+        
+        <LinearLayout 
+            android:id="@+id/llAddresses"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/etOnwardLocation"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:hint="End Address.."
-            android:lines="2" />
+            android:layout_below="@+id/cbRecurring"
+            android:layout_marginTop="5dp"
+            android:weightSum="1" >
+            
+	        <com.wrapp.floatlabelededittext.FloatLabeledEditText
+	            android:id="@+id/etOnwardLocation"
+	            android:layout_width="0dp"
+	            android:layout_height="wrap_content"
+	            android:layout_marginLeft="5dp"
+	            android:layout_marginRight="5dp"
+	            android:lines="3"
+                android:maxLines="3" 
+	            android:layout_weight="0.5"
+	            float:fletFloatingHint="Start Address" />
+	
+	        <View style="@style/VericalDivider"/>
+	        
+	        <com.wrapp.floatlabelededittext.FloatLabeledEditText
+	            android:id="@+id/etReturnLocation"
+	            android:layout_width="0dp"
+	            android:layout_height="wrap_content"
+	            android:layout_marginLeft="5dp"
+	            android:layout_marginRight="5dp"
+	            android:lines="3"
+	            android:maxLines="3" 
+	            android:layout_weight="0.5"
+	            float:fletFloatingHint="End Address" />
+        </LinearLayout>        
+        
 
         <Button
             android:id="@+id/btnAddUsers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/etReturnLocation"
+            android:layout_below="@+id/llAddresses"
             android:layout_marginTop="10dp"
             android:onClick="onAddUsers"
             android:text="Add Users" />
@@ -179,16 +191,18 @@
             android:id="@+id/cbIsPublic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/btnAddUsers"
+            android:layout_below="@+id/llAddresses"
+            android:layout_toRightOf="@+id/btnAddUsers"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginTop="5dp"
-            android:text="Visible outside networks?" />
+            android:text="" />
                 
         <Button
             android:id="@+id/btnCreate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
             android:layout_below="@+id/cbIsPublic"
             android:text="Create" />
 
