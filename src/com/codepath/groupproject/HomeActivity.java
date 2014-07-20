@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 
 
+import com.codepath.groupproject.adapters.SmartFragmentStatePagerAdapter;
 import com.codepath.groupproject.dialogs.ChoosePhotoDialog;
 import com.codepath.groupproject.dialogs.SavingsDialog;
 import com.codepath.groupproject.fragments.MyGroupListFragment;

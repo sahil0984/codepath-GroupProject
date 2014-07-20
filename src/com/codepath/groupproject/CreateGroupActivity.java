@@ -18,6 +18,7 @@ import org.json.JSONObject;
 import com.codepath.groupproject.dialogs.ChoosePhotoDialog;
 import com.codepath.groupproject.dialogs.ChoosePhotoDialog.OnDataPass;
 import com.codepath.groupproject.models.Group;
+import com.codepath.groupproject.models.ParseProxyObject;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.parse.ParseFile;
@@ -324,7 +325,7 @@ public class CreateGroupActivity extends FragmentActivity implements OnDataPass,
 		} else {
 			tmpDate = "01/01/3001";
 		}
-
+		
 		
 		Intent data = new Intent();
 		data.putExtra("groupName", etGroupName.getText().toString());
@@ -339,6 +340,16 @@ public class CreateGroupActivity extends FragmentActivity implements OnDataPass,
 		data.putExtra("returnLng", returnLatLng.getLongitude());
 		data.putExtra("groupMembers",groupMembers);
 		data.putExtra("isPublic", cbIsPublic.isChecked());
+		
+		
+		//Group newGroup = new Group(etGroupName.getText().toString());
+		//newGroup.setOnwardTime(value);
+		//newGroup.setReturnTime(value);
+		//newGroup.setRecurring(value);
+		//newGroup.setDaysOfWeek(value);
+		
+		//ParseProxyObject proxyNewGroup = new ParseProxyObject(object);
+		//data.putEx
 				
 		setResult(RESULT_OK, data);
 	}
