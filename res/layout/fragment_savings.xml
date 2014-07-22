@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="40dp"
+    android:orientation="vertical" >
+
+    
+    <TextView 
+        android:id="@+id/tvCarbonContribution"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="70dp"
+        android:text="CO2"/>
+        
+        
+	<RelativeLayout 
+	    android:id="@+id/rlCarbon"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+		android:layout_below="@+id/tvCarbonContribution"	    >
+	    <LinearLayout
+	        android:id="@+id/llCarbonBox"
+	        android:layout_width="match_parent"
+	        android:layout_height="24dp"
+	        android:layout_marginLeft="18dp"
+	        android:layout_marginRight="18dp"
+	        android:layout_marginBottom="8dp"
+	        android:layout_marginTop="8dp"
+	        android:background="@drawable/shape_border"
+	        android:orientation="horizontal" >
+	    </LinearLayout>
+	    
+	    <Button
+	        android:id="@+id/btnCarbonBar"
+	        android:layout_width="match_parent"
+	        android:layout_height="20dp"
+	        android:layout_marginLeft="20dp"
+	        android:layout_marginRight="20dp"
+	        android:layout_marginBottom="10dp"
+	        android:layout_marginTop="10dp"
+	        android:background="@drawable/gradient_shape_carbon"
+	        android:orientation="horizontal" >
+	    </Button>
+	    
+	    <LinearLayout
+	        android:id="@+id/llCarbonMask"
+	        android:layout_width="match_parent"
+	        android:layout_height="20dp"
+	        android:layout_marginLeft="20dp"
+	        android:layout_marginRight="20dp"
+	        android:layout_marginBottom="10dp"
+	        android:layout_marginTop="10dp"
+	        android:background="@color/white"
+	        android:orientation="horizontal" >
+	    </LinearLayout>
+    </RelativeLayout>
+    
+    <TextView 
+        android:id="@+id/tvCarbonSavings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rlCarbon"
+		android:layout_centerHorizontal="true"
+		android:layout_marginTop="20dp"
+		android:layout_marginBottom="60dp"
+        android:text="CO2"/>
+	
+    <TextView 
+        android:id="@+id/tvDollarsSpent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/rlDollars"
+        android:layout_marginLeft="20dp"
+        android:text="$"/>
+    
+	<RelativeLayout 
+	    android:id="@+id/rlDollars"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/tvCarbonSavings">
+	    <LinearLayout
+	        android:id="@+id/llDollarsBox"
+	        android:layout_width="match_parent"
+	        android:layout_height="24dp"
+	        android:layout_marginLeft="18dp"
+	        android:layout_marginRight="18dp"
+	        android:layout_marginBottom="8dp"
+	        android:layout_marginTop="8dp"
+	        android:background="@drawable/shape_border"
+	        android:orientation="horizontal" >
+	    </LinearLayout>
+	    
+	    <Button
+	        android:id="@+id/btnDollarsBar"
+	        android:layout_width="match_parent"
+	        android:layout_height="20dp"
+	        android:layout_marginLeft="20dp"
+	        android:layout_marginRight="20dp"
+	        android:layout_marginBottom="10dp"
+	        android:layout_marginTop="10dp"
+	        android:background="@drawable/gradient_shape_dollars"
+	        android:orientation="horizontal" >
+	    </Button>
+	    
+	    <LinearLayout
+	        android:id="@+id/llDollarsMask"
+	        android:layout_width="match_parent"
+	        android:layout_height="20dp"
+	        android:layout_marginLeft="20dp"
+	        android:layout_marginRight="20dp"
+	        android:layout_marginBottom="10dp"
+	        android:layout_marginTop="10dp"
+	        android:background="@color/white"
+	        android:orientation="horizontal" >
+	    </LinearLayout>
+    </RelativeLayout>
+    
+
+    
+    
+    <TextView 
+        android:id="@+id/tvDollarSavings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rlDollars"
+		android:layout_centerHorizontal="true"
+		android:layout_marginTop="20dp"
+        android:text="$"/>
+
+        
+    <TextView 
+        android:id="@+id/tvPageTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+		android:layout_centerHorizontal="true"
+		android:gravity="center_horizontal"
+		android:layout_marginBottom="20dp"
+        android:text=""/>
+    
+</RelativeLayout>

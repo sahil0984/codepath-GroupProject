@@ -18,14 +18,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.telephony.PhoneNumberFormattingTextWatcher;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnKeyListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 public class ProfileActivity extends ActionBarActivity {
@@ -79,7 +83,7 @@ public class ProfileActivity extends ActionBarActivity {
 		btnVerifyEmail = (Button) findViewById(R.id.btnVerifyEmail);
 		//btnGoHome      = (Button) findViewById(R.id.btnDone);
 
-		btnVerifyEmail.setEnabled(false);
+		//btnVerifyEmail.setEnabled(false);
 		
 		cbIsPublic.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			
@@ -92,6 +96,7 @@ public class ProfileActivity extends ActionBarActivity {
 				}
 			}
 		});
+				
 		
 		//etPhone.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
 	}
@@ -114,6 +119,9 @@ public class ProfileActivity extends ActionBarActivity {
 		Boolean isPublic = (Boolean) ParseUser.getCurrentUser().get("isPublic");
 		if (isPublic==null) {
 			isPublic = false;
+		}
+		if ((Boolean) ParseUser.getCurrentUser().get("emailVerified")) {
+			btnVerifyEmail.setEnabled(false);
 		}
 		
 		//First Name
@@ -190,7 +198,7 @@ public class ProfileActivity extends ActionBarActivity {
 		//etEmail.setBackgroundResource(R.drawable.backtext);
 		//etEmail.setBackgroundResource(0);
 		
-        btnVerifyEmail.setEnabled(true);
+        //btnVerifyEmail.setEnabled(true);
         //btnGoHome.setEnabled(false);
 	}
 	

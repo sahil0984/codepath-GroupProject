@@ -11,7 +11,7 @@ import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.parse.ParseGeoPoint;
 
-class GeoCoderResponseHandler extends JsonHttpResponseHandler {
+public class GeoCoderResponseHandler extends JsonHttpResponseHandler {
 
 	private Context context;
 	private ParseGeoPoint LatLng;
