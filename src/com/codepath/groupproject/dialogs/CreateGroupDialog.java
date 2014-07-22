@@ -155,10 +155,12 @@ public class CreateGroupDialog extends MyFragment {
 	                   // nothing to do
 	    		   }
 	    	   });
+	    	   photoFile = fromGroup.getPhotoFile();
 	       } else {
 	    	   ivGroupPhoto.setImageResource(android.R.color.transparent);
 	       }
 		
+	    
 		etGroupName.setText(fromGroup.getName());
 		//tvOnwardTime.setText(fromGroup.getOnwardTime());
 		//tvReturnTime.setText(fromGroup.getReturnTime());
@@ -242,7 +244,11 @@ public class CreateGroupDialog extends MyFragment {
 		for (int i=0; i<fromGroup.getMembers().size(); i++) {
 			groupMembersStr.add(fromGroup.getMembers().get(i).getObjectId());
 		}
+		groupMembers = new ArrayList<User>();
+		groupMembers = (ArrayList<User>) fromGroup.getMembers();
 		
+		newGroup = new Group();
+		newGroup.setObjectId(fromGroup.getObjectId());
 	}
 	
 	
@@ -287,6 +293,7 @@ public class CreateGroupDialog extends MyFragment {
 		
 		if (fromActivity!=null) {
 			((GroupDetailActivity) fromActivity).sendGroupToPopulateCreateGroupFragment();
+			btnCreate.setText("Update");
 		}
 		
 		return view;
