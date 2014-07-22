@@ -17,7 +17,7 @@
         tools:context="${packageName}.${activityClass}" >
 
 
-        <ImageView
+    	<com.parse.ParseImageView
             android:id="@+id/ivGroupPhoto"
             android:layout_width="80dp"
             android:layout_height="80dp"

@@ -44,16 +44,13 @@ import android.widget.Toast;
 
 
 
+import com.codepath.groupproject.adapters.MyPagerAdapter;
 import com.codepath.groupproject.adapters.SmartFragmentStatePagerAdapter;
 import com.codepath.groupproject.dialogs.ChoosePhotoDialog;
 import com.codepath.groupproject.dialogs.ChoosePhotoDialog.OnDataPass;
 import com.codepath.groupproject.dialogs.CreateGroupDialog;
 import com.codepath.groupproject.dialogs.CreateGroupDialog.OnActionSelectedListenerCreateGroup;
 import com.codepath.groupproject.dialogs.SavingsDialog;
-import com.codepath.groupproject.fragments.MyGroupListFragment;
-import com.codepath.groupproject.fragments.MyNetworkGroupListFragment;
-import com.codepath.groupproject.fragments.PublicGroupListFragment;
-
 
 import com.codepath.groupproject.listeners.SupportFragmentTabListener;
 import com.codepath.groupproject.models.Group;
@@ -94,9 +91,7 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
 	private TextView tvPageTitleLeft;
 	private TextView tvPageTitle;
 	private TextView tvPageTitleRight;
-	
-	MyGroupListFragment myGroupListFragment;
-	
+		
 	int animationDone;
 	
 	Group newGroup;
@@ -180,38 +175,41 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
 		String classFrom = getIntent().getStringExtra("classFrom");
 		String myCustomReceiverClass = MyCustomReceiver.class.toString();
 		if (classFrom != null && classFrom.equals(myCustomReceiverClass)) {
-			if (!getIntent().getStringExtra("ownersObjectId").equals(
-					ParseUser.getCurrentUser().getObjectId())) {
-				String objectId = getIntent().getStringExtra("customdata");
-
-				Toast.makeText(getApplicationContext(),
-						"Home called from MyCustomReceiver", Toast.LENGTH_SHORT)
-						.show();
-
-				ParseQuery<Group> queryGroup = ParseQuery.getQuery(Group.class);
-				queryGroup.include("members");
-				queryGroup.getInBackground(objectId, new GetCallback<Group>() {
-
-					@Override
-					public void done(Group foundGroup, ParseException e) {
-						if (e == null) {
-							MyGroupListFragment myGroupListFragment = (MyGroupListFragment) adapterViewPager.getRegisteredFragment(0);
-							myGroupListFragment.appendNewGroup(foundGroup);
-							
-							// Adding Parse Push channel for the new group in current users installation
-							addChannelToInstallation(foundGroup.getObjectId());
-
-							Toast.makeText(getApplicationContext(),
-									"added group: " + foundGroup.getName(),
-									Toast.LENGTH_SHORT).show();
-						} else {
-							Log.d("item", "Error: " + e.getMessage());
+			if (getIntent().getStringExtra("customdata").equals("AddedToGroup")) {
+				//if (!getIntent().getStringExtra("ownersObjectId").equals(
+				//		ParseUser.getCurrentUser().getObjectId())) {
+					String objectId = getIntent().getStringExtra("groupsObjectId");
+	
+					Toast.makeText(getApplicationContext(),
+							"Home called from MyCustomReceiver", Toast.LENGTH_SHORT)
+							.show();
+	
+					ParseQuery<Group> queryGroup = ParseQuery.getQuery(Group.class);
+					queryGroup.include("members");
+					queryGroup.getInBackground(objectId, new GetCallback<Group>() {
+	
+						@Override
+						public void done(Group foundGroup, ParseException e) {
+							if (e == null) {
+								// Adding Parse Push channel for the new group in current users installation
+								addChannelToInstallation(foundGroup.getObjectId());
+	
+								Toast.makeText(getApplicationContext(),
+										"added group: " + foundGroup.getName(),
+										Toast.LENGTH_SHORT).show();
+							} else {
+								Log.d("item", "Error: " + e.getMessage());
+							}
+	
 						}
-
-					}
-
-				});
-
+	
+					});
+	
+				//}
+			} else if (getIntent().getStringExtra("customdata").equals("UpdateToGroup")) {
+				Toast.makeText(getApplicationContext(),
+						"Group updated.",
+						Toast.LENGTH_SHORT).show();
 			}
 		}
 
@@ -288,105 +286,18 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
 		startActivity(i);
 	}
 	
-	public void gotoCreateGroupActivity() {
-		Intent i = new Intent(getApplicationContext(), CreateGroupActivity.class);
-		startActivityForResult(i, REQUEST_CODE);
-	}
+//	public void gotoCreateGroupActivity() {
+//		Intent i = new Intent(getApplicationContext(), CreateGroupActivity.class);
+//		startActivityForResult(i, REQUEST_CODE);
+//	}
 	public void gotoSavingsDialogFragment() {
 	  	FragmentManager fm = getSupportFragmentManager();
 	  	SavingsDialog savingsDialog = new SavingsDialog();
 	  	savingsDialog.show(fm, "dialog_savings");
 	}
-	
-	private void sendPushNotification() {
-		JSONObject obj;
-		try {
-			obj = new JSONObject();
-			obj.put("alert", "Added to " + newGroup.getName() + " group!");
-			obj.put("action", MyCustomReceiver.intentAction);
-			obj.put("customdata", "AddedToGroup");
-			obj.put("groupsObjectId", newGroup.getObjectId());
-			obj.put("ownersObjectId", newGroup.getUser().getObjectId());
-
-			for (int i=0; i<newGroup.getMembers().size(); i++) {
-				ParsePush push = new ParsePush();
-
-				ParseQuery<ParseInstallation> query = ParseInstallation.getQuery();
-				query.whereEqualTo("userObjectId", newGroup.getMembers().get(i).getObjectId());
-				
-				push.setQuery(query);
-				push.setData(obj);
-				push.sendInBackground();
-			}
-			Toast.makeText(getApplicationContext(), "Num members: " + newGroup.getMembers(), Toast.LENGTH_SHORT).show();
-			// Push the notification to Android users
-			//query.whereEqualTo("deviceType", "android");
-			//push.setQuery(query);
-			//push.setData(obj);
-			//push.sendInBackground();
-			
-			
-			addChannelToInstallation(newGroup.getObjectId());
-		} catch (JSONException e) {
-
-			e.printStackTrace();
-		}
-	}
-	
-	public void addChannelToInstallation (String groupObjectId) {
-		PushService.subscribe(getApplicationContext(), "channel_" + groupObjectId, HomeActivity.class);
-		
-		//Useful code for implementing messaging
-        //ParsePush push = new ParsePush();
-        //push.setChannel("channel_" + currentGroup.getObjectId());
-        //push.setMessage("The Giants just scored! It's now 2-2 against the Mets.");
-        //push.sendInBackground();
-	}
 
 
 
-	//PagerAdapter for ViewPager		
-    public static class MyPagerAdapter extends SmartFragmentStatePagerAdapter {
-    	private static int NUM_ITEMS = 3;
-    		
-            public MyPagerAdapter(FragmentManager fragmentManager) {
-                super(fragmentManager);
-            }
-            
-    	    @Override
-    		public float getPageWidth(int position) {
-    	    	return 0.93f;
-    		}
-            
-            // Returns total number of pages
-            @Override
-            public int getCount() {
-                return NUM_ITEMS;
-            }
-     
-            // Returns the fragment to display for that page
-            @Override
-            public Fragment getItem(int position) {
-    	        switch (position) {
-    	        case 0:
-    	            return MyGroupListFragment.newInstance(0, "MyGroups");
-    	        case 1:
-    	            return MyNetworkGroupListFragment.newInstance(1, "MyNetworkGroups");
-    	        case 2:
-    	            return PublicGroupListFragment.newInstance(2, "PublicGroups");
-    	        default:
-    	        	return null;
-                }
-            }
-            
-            // Returns the page title for the top indicator
-            @Override
-            public CharSequence getPageTitle(int position) {
-            	return "Page " + position;
-            }
-            
-            
-        }
     
     
 
@@ -472,8 +383,6 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
 			@Override
 			public void done(ParseException e) {
 				if (e == null) {
-					MyGroupListFragment myGroupListFragment = (MyGroupListFragment) adapterViewPager.getRegisteredFragment(0);
-					myGroupListFragment.appendNewGroup(newGroup);
 			        //Toast.makeText(getApplicationContext(), newGroup.getObjectId(), Toast.LENGTH_SHORT).show();
 			        
 			        sendPushNotification();
@@ -483,6 +392,51 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
 				}
 			}
 		});
+	}
+	
+	private void sendPushNotification() {
+		JSONObject obj;
+		try {
+			obj = new JSONObject();
+			obj.put("alert", "Added to " + newGroup.getName() + " group!");
+			obj.put("action", MyCustomReceiver.intentAction);
+			obj.put("customdata", "AddedToGroup");
+			obj.put("groupsObjectId", newGroup.getObjectId());
+			obj.put("ownersObjectId", newGroup.getUser().getObjectId());
+
+			for (int i=0; i<newGroup.getMembers().size(); i++) {
+				ParsePush push = new ParsePush();
+
+				ParseQuery<ParseInstallation> query = ParseInstallation.getQuery();
+				query.whereEqualTo("userObjectId", newGroup.getMembers().get(i).getObjectId());
+				
+				push.setQuery(query);
+				push.setData(obj);
+				push.sendInBackground();
+			}
+			Toast.makeText(getApplicationContext(), "Num members: " + newGroup.getMembers(), Toast.LENGTH_SHORT).show();
+			// Push the notification to Android users
+			//query.whereEqualTo("deviceType", "android");
+			//push.setQuery(query);
+			//push.setData(obj);
+			//push.sendInBackground();
+			
+			
+			//addChannelToInstallation(newGroup.getObjectId());
+		} catch (JSONException e) {
+
+			e.printStackTrace();
+		}
+	}
+	
+	public void addChannelToInstallation (String groupObjectId) {
+		PushService.subscribe(getApplicationContext(), "channel_" + groupObjectId, HomeActivity.class);
+		
+		//Useful code for implementing messaging
+        //ParsePush push = new ParsePush();
+        //push.setChannel("channel_" + currentGroup.getObjectId());
+        //push.setMessage("The Giants just scored! It's now 2-2 against the Mets.");
+        //push.sendInBackground();
 	}
 	
 //Pick date and pick time related code:

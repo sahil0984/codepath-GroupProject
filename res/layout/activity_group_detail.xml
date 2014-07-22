@@ -49,4 +49,10 @@
         android:layout_marginBottom="18dp"
         android:text="Work" />
 
+    <FrameLayout
+       android:id="@+id/flCreateGroup"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_alignParentTop="true"/>
+    
 </RelativeLayout>

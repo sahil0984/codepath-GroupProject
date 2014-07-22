@@ -10,15 +10,18 @@ import org.json.JSONObject;
 
 import com.codepath.groupproject.AddUsersActivity;
 import com.codepath.groupproject.GeoCoderResponseHandler;
+import com.codepath.groupproject.GroupDetailActivity;
 import com.codepath.groupproject.MyFragment;
 import com.codepath.groupproject.R;
 import com.codepath.groupproject.models.Group;
 import com.codepath.groupproject.models.User;
 import com.loopj.android.http.AsyncHttpClient;
 import com.parse.GetCallback;
+import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
+import com.parse.ParseImageView;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.squareup.picasso.Picasso;
@@ -52,7 +55,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 
 public class CreateGroupDialog extends MyFragment {
 
-	private ImageView ivGroupPhoto;
+	private ParseImageView ivGroupPhoto;
 	private FloatLabeledEditText etGroupName;
 	private TextView tvOnwardTime;
 	private TextView tvReturnTime;
@@ -89,7 +92,6 @@ public class CreateGroupDialog extends MyFragment {
 	private static final int ADD_USERS_REQUEST_CODE = 20;
 	public String photoFileName = "photo.jpg";
 	
-	byte[] byteArray;
 	ParseFile photoFile;
 	
 	private ParseGeoPoint onwardLatLng;
@@ -104,6 +106,8 @@ public class CreateGroupDialog extends MyFragment {
 	ArrayList<User> groupMembers;
 	int queriesReturned;
 	
+	Activity fromActivity;
+		
 //INTERFACE LOGIC for passing data form fragment to activity	
 	// Define the listener of the interface type
 	// listener is the activity itself
@@ -124,6 +128,13 @@ public class CreateGroupDialog extends MyFragment {
 	        throw new ClassCastException(activity.toString()
 	            + " must implement MyListFragment.OnItemSelectedListenerDetails");
 	    }
+	    
+	    if (activity instanceof GroupDetailActivity) {
+	    	//((GroupDetailActivity) activity).sendGroupToPopulateCreateGroupFragment();
+	    	fromActivity = activity;
+	    } else {
+	    	fromActivity = null;
+	    }
 	}
 	
 	// Now we can fire the event when the user selects something in the fragment
@@ -131,7 +142,111 @@ public class CreateGroupDialog extends MyFragment {
 	//	listener.onActionSelected(aTweets.getItem(0), "");
 	//}
 //////////////	
+	
+	public void populateExistingGroup(Group fromGroup) {
+		//Toast.makeText(getActivity(), "Yes, called from activity!", Toast.LENGTH_LONG).show();
+		
+	       if (fromGroup.getPhotoFile() != null) {
+	    	   ivGroupPhoto.setParseFile(fromGroup.getPhotoFile());
+	    	   ivGroupPhoto.loadInBackground(new GetDataCallback() {
+	
+	    		   @Override
+	    		   public void done(byte[] data, ParseException e) {
+	                   // nothing to do
+	    		   }
+	    	   });
+	       } else {
+	    	   ivGroupPhoto.setImageResource(android.R.color.transparent);
+	       }
+		
+		etGroupName.setText(fromGroup.getName());
+		//tvOnwardTime.setText(fromGroup.getOnwardTime());
+		//tvReturnTime.setText(fromGroup.getReturnTime());
+		//tvDate.setText(fromGroup.);
+		//etOnwardLocation.setText(fromGroup.getOnwardLocation());
+		//etReturndLocation.setText(fromGroup.getReturnLocation());
+		cbIsPublic.setChecked(fromGroup.getIsPublic());
+		cbRecurring.setChecked(fromGroup.getRecurring());
+		cbMonday.setChecked(fromGroup.getDaysofWeek()[0]);
+		cbTuesday.setChecked(fromGroup.getDaysofWeek()[1]);
+		cbWednesday.setChecked(fromGroup.getDaysofWeek()[2]);
+		cbThursday.setChecked(fromGroup.getDaysofWeek()[3]);
+		cbFriday.setChecked(fromGroup.getDaysofWeek()[4]);
+		cbSaturday.setChecked(fromGroup.getDaysofWeek()[5]);
+		cbSunday.setChecked(fromGroup.getDaysofWeek()[6]);
+		
+		String time1 = fromGroup.getOnwardTime();
+		String[] time1Arr = time1.split(" ");
+		if (!time1Arr[1].equals("25:25")) {
+			tvOnwardTime.setText(time1Arr[1]);
+		}
+		
+		String time2 = fromGroup.getReturnTime();
+		String[] time2Arr = time2.split(" ");		
+		if (!time2Arr[1].equals("25:25")) {
+			tvReturnTime.setText(time2Arr[1]);
+		}
+		
+		if (!time1Arr[0].equals("01/01/3001")) {
+			tvDate.setText(time1Arr[0]);
+		}
+		
+		if (fromGroup.getOnwardLocation()!=null) {
+		    String url1 = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + fromGroup.getOnwardLocation().getLatitude() 
+		    												   				    + "," + fromGroup.getOnwardLocation().getLongitude();
+		    AsyncHttpClient client1 = new AsyncHttpClient();
+		    client1.get(url1, null, new GeoCoderResponseHandler(getActivity()) {
+		    	
+		    	@Override
+		    	public void onSuccess(int statusCode, Header[] headers,
+		    			JSONObject response) {
+		    		super.onSuccess(statusCode, headers, response);
+		    		etOnwardLocation.setText(getCheckedAdd());
+		    	}
+		    	
+		    	@Override
+		    	public void onFailure(int statusCode, Header[] headers,
+		    			String responseString, Throwable throwable) {
+		    		super.onFailure(statusCode, headers, responseString, throwable);
+		    		//BOZO: Handle this case
+		    	}
+		    	
+		    });
+		}
 
+		if (fromGroup.getReturnLocation()!=null) {
+			String url2 = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + fromGroup.getReturnLocation().getLatitude() 
+					   															+ "," + fromGroup.getReturnLocation().getLongitude();
+		    AsyncHttpClient client2 = new AsyncHttpClient();
+		    client2.get(url2, null, new GeoCoderResponseHandler(getActivity()) {
+		    	
+		    	@Override
+		    	public void onSuccess(int statusCode, Header[] headers,
+		    			JSONObject response) {
+		    		super.onSuccess(statusCode, headers, response);
+		    		etReturnLocation.setText(getCheckedAdd());
+		    	}
+		    	
+		    	@Override
+		    	public void onFailure(int statusCode, Header[] headers,
+		    			String responseString, Throwable throwable) {
+		    		super.onFailure(statusCode, headers, responseString, throwable);
+		    		//BOZO: Handle this case
+		    	}
+		    	
+		    });
+		}
+
+		groupMembersStr = new ArrayList<String>();
+		//add group members as string array of objectId and store in groupMembersStr
+		for (int i=0; i<fromGroup.getMembers().size(); i++) {
+			groupMembersStr.add(fromGroup.getMembers().get(i).getObjectId());
+		}
+		
+	}
+	
+	
+	
 	@Override
 	protected void onAnimationEnded() {
 		super.onAnimationStarted();
@@ -170,12 +285,16 @@ public class CreateGroupDialog extends MyFragment {
 
 		setupViews(view);
 		
+		if (fromActivity!=null) {
+			((GroupDetailActivity) fromActivity).sendGroupToPopulateCreateGroupFragment();
+		}
+		
 		return view;
 
 	}
 
 	private void setupViews(View v) {
-		ivGroupPhoto = (ImageView) v.findViewById(R.id.ivGroupPhoto);
+		ivGroupPhoto = (ParseImageView) v.findViewById(R.id.ivGroupPhoto);
 		etGroupName = (FloatLabeledEditText) v.findViewById(R.id.etGroupName);
 		tvOnwardTime = (TextView) v.findViewById(R.id.tvOnwardTime);
 		tvReturnTime = (TextView) v.findViewById(R.id.tvReturnTime);
@@ -379,15 +498,29 @@ public class CreateGroupDialog extends MyFragment {
     
 	public void prepareIntent() {
 		String tmpDate;
-		if (cbRecurring.isChecked()) {
+		if (cbRecurring.isChecked() && !tvDate.getText().toString().equals("")) {
 			tmpDate = tvDate.getText().toString();
 		} else {
 			tmpDate = "01/01/3001";
 		}
 		
+		String tmpOnwardTime;
+		if (tvOnwardTime.getText().toString().equals("")) {
+			tmpOnwardTime = "25:25";
+		} else {
+			tmpOnwardTime = tvOnwardTime.getText().toString();
+		}
+		
+		String tmpReturnTime;
+		if (tvReturnTime.getText().toString().equals("")) {
+			tmpReturnTime = "25:25";
+		} else {
+			tmpReturnTime = tvReturnTime.getText().toString();
+		}		
+		
 		newGroup.setName(etGroupName.getText().toString());
-		newGroup.setOnwardTime(tmpDate+" "+tvOnwardTime.getText().toString());
-		newGroup.setReturnTime(tmpDate+" "+tvReturnTime.getText().toString());
+		newGroup.setOnwardTime(tmpDate+" "+tmpOnwardTime);
+		newGroup.setReturnTime(tmpDate+" "+tmpReturnTime);
 		newGroup.setRecurring(cbRecurring.isChecked());
 		newGroup.setDaysOfWeek(daysOfWeek());
 		newGroup.setOnwardLocation(onwardLatLng);
@@ -396,8 +529,7 @@ public class CreateGroupDialog extends MyFragment {
 		newGroup.setIsPublic(cbIsPublic.isChecked());
 		newGroup.setOwner(ParseUser.getCurrentUser());
 
-		if (byteArray != null) {
-			ParseFile photoFile = new ParseFile("group_photo.jpg", byteArray);
+		if (photoFile != null) {
 			newGroup.setPhotoFile(photoFile);	    	 
 		}
 				
@@ -447,8 +579,10 @@ public class CreateGroupDialog extends MyFragment {
 		public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
 			ByteArrayOutputStream stream = new ByteArrayOutputStream();
 			bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-			byteArray = stream.toByteArray();
-			// photoFile = new ParseFile("group_photo.jpg", byteArray);
+			byte[] byteArray = stream.toByteArray();
+			if (byteArray != null) {
+				photoFile = new ParseFile("group_photo.jpg", byteArray);
+			}
 		}
 
 		@Override

@@ -51,13 +51,17 @@ public class MyCustomReceiver extends BroadcastReceiver {
          	   // Extract custom push data
          	   if (json.getString("customdata").equals("AddedToGroup")) {    
          	 	// Handle push notification by invoking activity directly
-         		launchSomeActivity(context, json.getString("customdata"), json.getString("groupsObjectId"), json.getString("ownersObjectId"));
+         		launchSomeActivity(context, "AddedToGroup", json.getString("groupsObjectId"), json.getString("ownersObjectId"));
          		// OR trigger a broadcast to activity
          		//triggerBroadcastToActivity(context);
          		// OR create a local notification
          		//createNotification(context);
          			
-         	    }
+         	    } else if (json.getString("customdata").equals("UpdateToGroup")) {    
+             	 	// Handle push notification by invoking activity directly
+             		launchSomeActivity(context, "UpdateToGroup", json.getString("groupsObjectId"), json.getString("ownersObjectId"));
+             			
+             	}
                     //Log.d(TAG, "..." + key + " => " + json.getString(key));
                //}
        	    } catch (JSONException ex) {
