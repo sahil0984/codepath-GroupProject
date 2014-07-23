@@ -86,6 +86,7 @@ public class MyCustomReceiver extends BroadcastReceiver {
            pupInt.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
     	   pupInt.putExtra("customdata", "ChatToGroup");
     	   pupInt.putExtra("groupObjectId", json.getString("groupObjectId"));
+    	   pupInt.putExtra("senderObjectId", json.getString("senderObjectId"));
     	   pupInt.putExtra("chatMessage", json.getString("chatMessage"));
     	   pupInt.putExtra("sender", json.getString("sender"));
     	   pupInt.putExtra("sentAt", json.getString("sentAt"));

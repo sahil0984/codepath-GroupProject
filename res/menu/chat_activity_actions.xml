@@ -6,7 +6,7 @@
         android:id="@+id/miGroupDetails"
         android:icon="@drawable/ic_edit_profile"
         myapp:showAsAction="always"
-        android:title="Edit Group">
+        android:title="View Group">
     </item>
     
 </menu>

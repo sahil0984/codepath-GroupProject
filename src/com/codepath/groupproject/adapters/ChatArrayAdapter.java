@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.codepath.groupproject.R;
 import com.codepath.groupproject.models.Chat;
+import com.parse.ParseUser;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -20,6 +21,21 @@ public class ChatArrayAdapter extends ArrayAdapter<Chat> {
 		this.context = context;
 	}
 	
+	@Override
+	public int getItemViewType(int position) {
+	    // Define a way to determine which layout to use, here it's just evens and odds.
+	    if (getItem(position).getSenderObjectId().equals(ParseUser.getCurrentUser().getObjectId())) {
+	    	return 1;
+	    } else {
+	    	return 0;
+	    }
+	    	
+	}
+	
+	@Override
+	public int getViewTypeCount() {
+	    return 2; // Count of different layouts
+	}
 	
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
@@ -31,7 +47,12 @@ public class ChatArrayAdapter extends ArrayAdapter<Chat> {
        if (convertView == null) {
     	   
   		LayoutInflater inflater = LayoutInflater.from(getContext());
-  		convertView = inflater.inflate(R.layout.chat_item, parent, false);
+  		
+  		if (getItemViewType(position) == 1) {
+  			convertView = inflater.inflate(R.layout.chat_item_right, parent, false);
+  		} else {
+  			convertView = inflater.inflate(R.layout.chat_item_left, parent, false);
+  		}
   	    holder = new ViewHolder();
   	    
 

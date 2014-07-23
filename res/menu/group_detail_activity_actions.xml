@@ -16,4 +16,10 @@
         android:title="Chat">
     </item>
     
+    <item
+        android:id="@+id/miRequest"
+        android:icon="@drawable/ic_done_edit_profile"
+        myapp:showAsAction="always"
+        android:title="Request to add">
+    </item>
 </menu>

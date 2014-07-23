@@ -37,6 +37,9 @@ public class Chat extends ParseObject {
 	public String getGroupObjectId() {
 		return getString("groupObjectId");
 	}
+	public String getSenderObjectId() {
+		return getString("senderObjectId");
+	}
 	
 	// Use put to modify field values
 	// Associate each item with a user
@@ -53,10 +56,13 @@ public class Chat extends ParseObject {
 		put("sender", value);
 	}
 	public void setTimeStamp(String value) {
-		put("timestamp", value);
+		put("timeStamp", value);
 	}
 	public void setGroupObjectId(String value) {
 		put("groupObjectId", value);
+	}
+	public void setSenderObjectId(String value) {
+		put("senderObjectId", value);
 	}
 	
 }

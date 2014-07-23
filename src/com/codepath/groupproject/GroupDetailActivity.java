@@ -128,6 +128,20 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
 		    		if (!currentGroup.getUser().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())) {
 		    			hideMenuOption(R.id.miEdit);
 		    		}
+		    		
+		    		hideMenuOption(R.id.miChat);
+		    		boolean isMember = false;
+		    		for (int i=0; i<currentGroup.getMembers().size(); i++) {
+		    			if (currentGroup.getMembers().get(i).getObjectId().equals(ParseUser.getCurrentUser().getObjectId())) {
+		    				showMenuOption(R.id.miChat);
+		    				isMember = true;
+		    				break;
+		    			}
+		    		}
+	    			hideMenuOption(R.id.miRequest);
+		    		if (isMember) {
+		    			showMenuOption(R.id.miRequest);
+		    		}
 		            
 		    } else {
 		        Log.d("MyApp", "oops");
@@ -404,7 +418,12 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
        MenuItem item = mOptionsMenu.findItem(id);
        item.setVisible(false);
    }
-    
+   private void showMenuOption(int id)
+   {
+       MenuItem item = mOptionsMenu.findItem(id);
+       item.setVisible(true);
+   }
+   
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
@@ -428,6 +447,7 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
         i.putExtra("groupObjectId", currentGroup.getObjectId());
         //Use the Request Code to send the index of the list (pos)
         startActivity(i);
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 	}
     
 	public void sendGroupToPopulateCreateGroupFragment() {

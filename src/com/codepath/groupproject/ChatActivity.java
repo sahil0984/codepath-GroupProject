@@ -79,10 +79,12 @@ public class ChatActivity extends Activity {
 				
 				newChat = new Chat();
 				newChat.setGroupObjectId(currentGroup.getObjectId());
-				//newChat.setOwner(user)GroupOwnerId(groupOwnerId);
+				newChat.setSenderObjectId(ParseUser.getCurrentUser().getObjectId());
 				newChat.setMessage(etNewMsg.getText().toString());
 				newChat.setSender(ParseUser.getCurrentUser().get("firstName") + " " + ParseUser.getCurrentUser().get("lastName"));
 				newChat.setTimeStamp(dateFormat.format(cal.getTime()).toString());
+				
+				//Toast.makeText(getApplicationContext(), dateFormat.format(cal.getTime()).toString(), Toast.LENGTH_SHORT).show();
 				
 				newChat.saveInBackground(new SaveCallback() {
 					
@@ -93,8 +95,11 @@ public class ChatActivity extends Activity {
 						// send parse push on this channel
 						JSONObject obj;
 						try {
+							// Adding new chat message to listview
 							aChats.add(newChat);						
 							
+							
+							// Sending Parse Push
 							DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.US);
 							Calendar cal = Calendar.getInstance();
 							
@@ -103,7 +108,7 @@ public class ChatActivity extends Activity {
 							obj.put("action", MyCustomReceiver.intentAction);
 							obj.put("customdata", "ChatToGroup");
 							obj.put("groupObjectId", currentGroup.getObjectId());
-							//obj.put("ownersObjectId", currentGroup.getUser().getObjectId());
+							obj.put("senderObjectId", ParseUser.getCurrentUser().getObjectId());
 							obj.put("chatMessage", etNewMsg.getText().toString());
 							obj.put("sender", ParseUser.getCurrentUser().get("firstName") + " " + ParseUser.getCurrentUser().get("lastName"));
 							obj.put("sentAt", dateFormat.format(cal.getTime()).toString());
@@ -214,7 +219,13 @@ public class ChatActivity extends Activity {
         i.putExtra("group", currentGroup.getObjectId());
         //Use the Request Code to send the index of the list (pos)
         startActivity(i);
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 	}
+    @Override
+    public void onBackPressed() {
+	finish();
+	overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+    }
 	
 	
 	//Local broadcast receivers	
@@ -225,7 +236,6 @@ public class ChatActivity extends Activity {
 	        	Toast.makeText(getApplicationContext(), "onReceive invoked!", Toast.LENGTH_LONG).show();
 	        	populateExistingChat(currentGroup.getObjectId());
 	    }
-
     };
 	@Override
     public void onPause() {
