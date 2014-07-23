@@ -122,6 +122,8 @@ public class GroupArrayAdapter extends ArrayAdapter<Group> {
 		
 		long dateMillis;
 		String relativeDate = "";
+		
+		// Add Recurring parameter.(repeat/or not) absolute or relative depending on Ans.
 		try {
 			dateMillis = new SimpleDateFormat("MM/dd/yyyy hh:mm", Locale.ENGLISH).parse(dateTime).getTime();
 			//dateMillis = new SimpleDateFormat("MM/dd/yyyy'T'hh:mm", Locale.ENGLISH).parse(dateTime).getTime();

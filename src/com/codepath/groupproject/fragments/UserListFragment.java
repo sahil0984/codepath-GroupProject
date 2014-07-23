@@ -26,11 +26,15 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import dev.dworks.libs.astickyheader.SimpleSectionedListAdapter;
+import dev.dworks.libs.astickyheader.SimpleSectionedListAdapter.Section;
+
 public abstract class UserListFragment extends Fragment {
 	private ArrayList<User> users;
 	private ArrayAdapter<User> aUsers;
 	private ListView lvUsers;
-
+	SimpleSectionedListAdapter simpleSectionedListAdapter;
+	ArrayList<Section> sections;
 	private ProgressBar pbLoading;
 
 	
@@ -40,11 +44,17 @@ public abstract class UserListFragment extends Fragment {
 		//Non-view initialization
 		users = new ArrayList<User>();
 		aUsers = new UserArrayAdapter(getActivity(), users);
-		
+		sections = new ArrayList<Section>();
+		sections.add(new Section(0,"All Users"));	
+		simpleSectionedListAdapter = new SimpleSectionedListAdapter(getActivity(), aUsers, R.layout.list_item_header, R.id.header);
+		simpleSectionedListAdapter.setSections(sections.toArray(new Section[0]));
+	
 
 		//populateUsers(getArguments().getString("group"));
 	}
-
+	public void addSection(String name, int index){
+		sections.add(new Section(index,name));
+	}
 	public void appendUser(User newUser) {
 		aUsers.add(newUser);
 	}
@@ -64,9 +74,8 @@ public abstract class UserListFragment extends Fragment {
 		View v = inflater.inflate(R.layout.fragment_users_list, container, false);
 		//Assign our view references
 		lvUsers = (ListView) v.findViewById(R.id.lvUsers);
-		lvUsers.setAdapter(aUsers);
+		lvUsers.setAdapter(simpleSectionedListAdapter);
 		lvUsers.setOnItemClickListener(new OnItemClickListener() {
-
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
