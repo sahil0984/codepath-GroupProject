@@ -1,7 +1,11 @@
 package com.codepath.groupproject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -13,10 +17,16 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -27,21 +37,28 @@ import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
 
+import com.codepath.groupproject.adapters.MyPagerAdapter;
+import com.codepath.groupproject.adapters.SmartFragmentStatePagerAdapter;
 import com.codepath.groupproject.dialogs.ChoosePhotoDialog;
+import com.codepath.groupproject.dialogs.ChoosePhotoDialog.OnDataPass;
+import com.codepath.groupproject.dialogs.CreateGroupDialog;
+import com.codepath.groupproject.dialogs.CreateGroupDialog.OnActionSelectedListenerCreateGroup;
 import com.codepath.groupproject.dialogs.SavingsDialog;
-import com.codepath.groupproject.fragments.MyGroupListFragment;
-import com.codepath.groupproject.fragments.MyNetworkGroupListFragment;
-import com.codepath.groupproject.fragments.PublicGroupListFragment;
-
 
 import com.codepath.groupproject.listeners.SupportFragmentTabListener;
 import com.codepath.groupproject.models.Group;
 import com.codepath.groupproject.models.User;
+import com.fourmob.datetimepicker.date.DatePickerDialog;
+import com.fourmob.datetimepicker.date.DatePickerDialog.OnDateSetListener;
+import com.nineoldandroids.animation.AnimatorSet;
+import com.nineoldandroids.animation.ObjectAnimator;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.LogInCallback;
@@ -58,15 +75,24 @@ import com.parse.ParseUser;
 import com.parse.PushService;
 import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
+import com.sleepbot.datetimepicker.time.RadialPickerLayout;
+import com.sleepbot.datetimepicker.time.TimePickerDialog;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
-public class HomeActivity extends ActionBarActivity {
+public class HomeActivity extends ActionBarActivity implements OnActionSelectedListenerCreateGroup,
+															   OnDataPass,
+															   OnDateSetListener,
+															   TimePickerDialog.OnTimeSetListener {
 
 	private final int REQUEST_CODE = 20;
 	ArrayList<User> groupMembers;
 	
+	private TextView tvPageTitleLeft;
 	private TextView tvPageTitle;
-	
-	MyGroupListFragment myGroupListFragment;
+	private TextView tvPageTitleRight;
+		
+	int animationDone;
 	
 	Group newGroup;
 	int queriesReturned;
@@ -80,6 +106,8 @@ public class HomeActivity extends ActionBarActivity {
 		groupMembers = new ArrayList<User>();
 		//setupTabs();
 		
+		animationDone=0;
+		
 		//Instantiating the view pager
 		ViewPager vpPager = (ViewPager) findViewById(R.id.vpPager);
 		adapterViewPager = new MyPagerAdapter(getSupportFragmentManager());
@@ -88,32 +116,47 @@ public class HomeActivity extends ActionBarActivity {
 		vpPager.setAdapter(adapterViewPager);
 		//vpPager.setPageTransformer(true, new ZoomOutPageTransformer());
 		
+		tvPageTitleLeft = (TextView) findViewById(R.id.tvPageTitleLeft);
 		tvPageTitle = (TextView) findViewById(R.id.tvPageTitle);
+		tvPageTitleRight = (TextView) findViewById(R.id.tvPageTitleRight);
 		tvPageTitle.setText("My Groups");
+		tvPageTitleRight.setText("My Network List");
+		tvPageTitleRight.setTranslationX(40);
+		tvPageTitleLeft.setTranslationX(-40);
 		
 		vpPager.setOnPageChangeListener(new OnPageChangeListener() {
 			
 			// This method will be invoked when a new page becomes selected.
 			@Override
 			public void onPageSelected(int position) {
-				String title;
 				switch (position) {
 				case 0:
-					title = "My Groups";
+					tvPageTitleLeft.setVisibility(View.INVISIBLE);
+					tvPageTitleRight.setVisibility(View.VISIBLE);
+					tvPageTitle.setText("My Groups");
+					tvPageTitleRight.setText("My Network List");
+					
 					break;
 				case 1:
-					title = "My Network List";
+					tvPageTitleLeft.setVisibility(View.VISIBLE);
+					tvPageTitleRight.setVisibility(View.VISIBLE);
+					tvPageTitleLeft.setText("My Groups");
+					tvPageTitle.setText("My Network List");
+					tvPageTitleRight.setText("Public List");
+					
 					break;
 				case 2:
-					title = "Public List";
+					tvPageTitleLeft.setVisibility(View.VISIBLE);
+					tvPageTitleRight.setVisibility(View.INVISIBLE);
+					tvPageTitleLeft.setText("My Network List");					
+					tvPageTitle.setText("Public List");
 					break;
 				default:
-					title = "";
+					tvPageTitleLeft.setText("");
+					tvPageTitle.setText("");
+					tvPageTitleRight.setText("");
 					break;
 				}
-				
-				tvPageTitle.setText(title);
-				
 				
 			}
 
@@ -132,38 +175,41 @@ public class HomeActivity extends ActionBarActivity {
 		String classFrom = getIntent().getStringExtra("classFrom");
 		String myCustomReceiverClass = MyCustomReceiver.class.toString();
 		if (classFrom != null && classFrom.equals(myCustomReceiverClass)) {
-			if (!getIntent().getStringExtra("ownersObjectId").equals(
-					ParseUser.getCurrentUser().getObjectId())) {
-				String objectId = getIntent().getStringExtra("customdata");
-
-				Toast.makeText(getApplicationContext(),
-						"Home called from MyCustomReceiver", Toast.LENGTH_SHORT)
-						.show();
-
-				ParseQuery<Group> queryGroup = ParseQuery.getQuery(Group.class);
-				queryGroup.include("members");
-				queryGroup.getInBackground(objectId, new GetCallback<Group>() {
-
-					@Override
-					public void done(Group foundGroup, ParseException e) {
-						if (e == null) {
-							MyGroupListFragment myGroupListFragment = (MyGroupListFragment) adapterViewPager.getRegisteredFragment(0);
-							myGroupListFragment.appendNewGroup(foundGroup);
-							
-							// Adding Parse Push channel for the new group in current users installation
-							addChannelToInstallation(foundGroup.getObjectId());
-
-							Toast.makeText(getApplicationContext(),
-									"added group: " + foundGroup.getName(),
-									Toast.LENGTH_SHORT).show();
-						} else {
-							Log.d("item", "Error: " + e.getMessage());
+			if (getIntent().getStringExtra("customdata").equals("AddedToGroup")) {
+				//if (!getIntent().getStringExtra("ownersObjectId").equals(
+				//		ParseUser.getCurrentUser().getObjectId())) {
+					String objectId = getIntent().getStringExtra("groupsObjectId");
+	
+					Toast.makeText(getApplicationContext(),
+							"Home called from MyCustomReceiver", Toast.LENGTH_SHORT)
+							.show();
+	
+					ParseQuery<Group> queryGroup = ParseQuery.getQuery(Group.class);
+					queryGroup.include("members");
+					queryGroup.getInBackground(objectId, new GetCallback<Group>() {
+	
+						@Override
+						public void done(Group foundGroup, ParseException e) {
+							if (e == null) {
+								// Adding Parse Push channel for the new group in current users installation
+								addChannelToInstallation(foundGroup.getObjectId());
+	
+								Toast.makeText(getApplicationContext(),
+										"added group: " + foundGroup.getName(),
+										Toast.LENGTH_SHORT).show();
+							} else {
+								Log.d("item", "Error: " + e.getMessage());
+							}
+	
 						}
-
-					}
-
-				});
-
+	
+					});
+	
+				//}
+			} else if (getIntent().getStringExtra("customdata").equals("UpdateToGroup")) {
+				Toast.makeText(getApplicationContext(),
+						"Group updated.",
+						Toast.LENGTH_SHORT).show();
 			}
 		}
 
@@ -191,61 +237,6 @@ public class HomeActivity extends ActionBarActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver, new IntentFilter(MyCustomReceiver.intentAction));
     }
 	
-	//Following helper methods need to be updated whenever we update the User model and User ParseObject
-	//BOZO: Move it to utils??
-	private User getUserFromParseUser(ParseUser pUser) {
-		User mUser = new User();
-		mUser.setFirstName(pUser.get("first_name").toString());
-		mUser.setLastName(pUser.get("last_name").toString());
-		//Add more stuff here
-		return mUser;
-	}
-	private ParseUser getParseUserFromUser(User mUser) {
-		ParseUser pUser = new ParseUser();
-		pUser.put("first_name", mUser.getFirstName());
-		pUser.put("last_name", mUser.getLastName());
-		//Add more stuff here
-		return pUser;
-	}
-	
-
-
-//	private void setupTabs() {
-//		ActionBar actionBar = getSupportActionBar();
-//		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-//		actionBar.setDisplayShowTitleEnabled(true);
-//
-//		Tab tab1 = actionBar
-//		    .newTab()
-//		    .setText("My Groups")
-//		    //.setIcon(R.drawable.ic_profile)
-//		    .setTag("MyGroupListFragment")
-//			.setTabListener(new SupportFragmentTabListener<MyGroupListFragment>(R.id.flContainer, this,
-//                        "MyGroupListFragment", MyGroupListFragment.class));
-//
-//		actionBar.addTab(tab1);
-//		actionBar.selectTab(tab1);
-//
-//		Tab tab2 = actionBar
-//		    .newTab()
-//		    .setText("My Network Groups")
-//		    //.setIcon(R.drawable.ic_profile)
-//		    .setTag("MyNetworkGroupListFragment")
-//			.setTabListener(new SupportFragmentTabListener<MyNetworkGroupListFragment>(R.id.flContainer, this,
-//                        "MyNetworkGroupListFragment", MyNetworkGroupListFragment.class));
-//		actionBar.addTab(tab2);
-//		
-//		Tab tab3 = actionBar
-//			    .newTab()
-//			    .setText("Public Groups")
-//			    //.setIcon(R.drawable.ic_profile)
-//			    .setTag("PublicGroups")
-//				.setTabListener(new SupportFragmentTabListener<PublicGroupListFragment>(R.id.flContainer, this,
-//	                        "PublicGroups", PublicGroupListFragment.class));
-//		actionBar.addTab(tab3);
-//	}
-	
-	
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -261,7 +252,8 @@ public class HomeActivity extends ActionBarActivity {
             	gotoProfileActivity();
                 break;
             case R.id.miCreateGroup:
-            	gotoCreateGroupActivity();
+            	openCreateGroupDialog();
+            	//gotoCreateGroupActivity();
                 break;
             case R.id.miSavings:
             	gotoSavingsDialogFragment();
@@ -272,123 +264,125 @@ public class HomeActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
     
-    //BOZO: Create a util for this since it is used at multiple places
+    private void openCreateGroupDialog() {
+    	getActionBar().hide();
+    	
+    	FrameLayout flCreateGroup = (FrameLayout)  findViewById(R.id.flCreateGroup);
+    	flCreateGroup.setVisibility(View.VISIBLE);
+    	
+    	// Begin the transaction
+    	FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+    	ft.setCustomAnimations(R.anim.slide_down, R.anim.hide);
+    	ft.disallowAddToBackStack();
+    	// Replace the container with the new fragment
+    	ft.replace(R.id.flCreateGroup, new CreateGroupDialog(), "createGroupFragmentTag");
+    	// Execute the changes specified
+    	ft.commit();
+    	
+	}
+
 	public void gotoProfileActivity() {
 		Intent i = new Intent(getApplicationContext(), ProfileActivity.class);
 		startActivity(i);
 	}
 	
-	public void gotoCreateGroupActivity() {
-		Intent i = new Intent(getApplicationContext(), CreateGroupActivity.class);
-		startActivityForResult(i, REQUEST_CODE);
-	}
+//	public void gotoCreateGroupActivity() {
+//		Intent i = new Intent(getApplicationContext(), CreateGroupActivity.class);
+//		startActivityForResult(i, REQUEST_CODE);
+//	}
 	public void gotoSavingsDialogFragment() {
 	  	FragmentManager fm = getSupportFragmentManager();
 	  	SavingsDialog savingsDialog = new SavingsDialog();
 	  	savingsDialog.show(fm, "dialog_savings");
 	}
 
-	public void createUserListfromObjectId(ArrayList<String> userListStr)
-	{
-		int i;
-		//ArrayList<User> userList = new ArrayList<User>();
-		final int userListSize = userListStr.size();
-		queriesReturned=0;
-		for (i = 0; i < userListSize; i++)
-		{
-			ParseQuery<User> queryUsers = ParseQuery.getQuery(User.class);
-			String objectId = userListStr.get(i);
-			// Define our query conditions
-			Log.d("geUserFromObjectId", "objectId: " + objectId);
-			
-			queryUsers.include("groups");
-			// Execute the find asynchronously
-			
-			queryUsers.getInBackground(objectId, new GetCallback<User>() {
-			  public void done(User user, ParseException e) {
-			    if (e == null) {
-		        		// Access the array of results here
-			    		//Adding member to the group adapter
-			    		groupMembers.add(user);
-		        		Log.d("MyApp", user.toString());
-		        		
-		        		//ParseUser.getCurrentUser().put("groups", groupList);
-		        		//ParseUser.getCurrentUser().saveInBackground();
-		        		
 
-		        		
-		        		if (queriesReturned==userListSize-1) {
-		        			newGroup.setMembers(groupMembers);
-		        			saveGroupToParse();
-		        		} else {
-			        		queriesReturned = queriesReturned + 1;
-		        		}
 
-		        		
-			    } else {
-			        Log.d("MyApp", "oops");
-			    }
-			  }
-			});
-		}
+    
+    
 
-		
-	}
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-	  // REQUEST_CODE is defined above
-	  if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
-		  
-	     // Extract name value from result extras
-	     //final Group 
-		     newGroup = new Group(data.getStringExtra("groupName"));
-	     
-	     newGroup.setOwner(ParseUser.getCurrentUser());
-	     newGroup.setOnwardTime(data.getStringExtra("onwardTime"));
-	     newGroup.setReturnTime(data.getStringExtra("returnTime"));
-	     newGroup.setRecurring(data.getBooleanExtra("recurring", false));
-	     newGroup.setDaysOfWeek(data.getBooleanArrayExtra("daysOfWeek"));
-	     ParseGeoPoint onwardLocation = new ParseGeoPoint(data.getDoubleExtra("onwardLat", 0), 
-	    		 										  data.getDoubleExtra("onwardLng", 0));
-	     newGroup.setOnwardLocation(onwardLocation);
-	     ParseGeoPoint returnLocation = new ParseGeoPoint(data.getDoubleExtra("returnLat", 0), 
-				  										  data.getDoubleExtra("returnLng", 0));
-	     newGroup.setReturnLocation(returnLocation);
-	     
-	     newGroup.setIsPublic(data.getBooleanExtra("isPublic", false));
+	public void onActionSelectedCreateGroup(Group newGroup, String action) {
+		if (action.equals("choosePhoto")) {
+			
+		  	FragmentManager fm = getSupportFragmentManager();
+		  	ChoosePhotoDialog photoDialog = new ChoosePhotoDialog();
+		  	photoDialog.show(fm, "dialog_choose_photo");
+		  	
+		} else if (action.equals("pickDate")) {
+			
+	       	final Calendar calendar = Calendar.getInstance();
+	        final DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), false);
+	        
+            datePickerDialog.setYearRange(1985, 2028);
+            datePickerDialog.setCloseOnSingleTapDay(false);
+            datePickerDialog.show(getSupportFragmentManager(), "datepicker");
+            
+		} else if (action.equals("pickOnwardTime")) {
+			
+		    final Calendar calendar = Calendar.getInstance();
+	        final TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(this, calendar.get(Calendar.HOUR_OF_DAY) ,calendar.get(Calendar.MINUTE), false, false);
 
-	     
-	     //newGroup.set	     
-	     if (data.getByteArrayExtra("photoBytes") != null) {
-		     ParseFile photoFile = new ParseFile("group_photo.jpg", data.getByteArrayExtra("photoBytes"));
-		     newGroup.setPhotoFile(photoFile);	    	 
-	     }
-	     
-	     
-	     //Hack to add current user
-	     ArrayList<String> groupMembersStr =  data.getStringArrayListExtra("groupMembers");
-	     groupMembersStr.add(ParseUser.getCurrentUser().getObjectId());
-	     
-	     try {
-	    	 createUserListfromObjectId(groupMembersStr);
-	     } catch (Exception e) {
-	    	 e.printStackTrace();
-	     }
-	     
-	     //Toast.makeText(getApplicationContext(), newGroup.getName(), Toast.LENGTH_SHORT).show();
-	     
-	  }
+	        timePickerDialog.setCloseOnSingleTapMinute(false);
+		    timePickerDialog.show(getSupportFragmentManager(), "OnwardTimePicker");
+		    
+		} else if (action.equals("pickReturnTime")) {
+			
+		    final Calendar calendar = Calendar.getInstance();
+	        final TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(this, calendar.get(Calendar.HOUR_OF_DAY) ,calendar.get(Calendar.MINUTE), false, false);
+
+	        timePickerDialog.setCloseOnSingleTapMinute(false);
+		    timePickerDialog.show(getSupportFragmentManager(), "ReturnTimePicker");
+		    
+		} else if (action.equals("createGroup")) {
+	    	this.newGroup = newGroup;
+	    	saveGroupToParse();
+	    	
+	    	exitFragment();
+		} else if (action.equals("cancel")) {
+	    	exitFragment();
+		} else if (action.equals("animationEnded")) {
+			
+			//if (getSupportFragmentManager().findFragmentByTag("createGroupFragmentTag")!=null) {
+			if (animationDone==0) {
+				//Toast.makeText(getApplicationContext(),
+				//		"Animation half done",
+				//		Toast.LENGTH_SHORT).show();
+				animationDone=1;
+			} else {
+				//Toast.makeText(getApplicationContext(),
+				//		"Animation ended",
+				//		Toast.LENGTH_SHORT).show();
+				getActionBar().show();
+				animationDone=0;
+		    	//getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag("createGroupFragmentTag")).commit();
+		    	FrameLayout flCreateGroup = (FrameLayout)  findViewById(R.id.flCreateGroup);
+		    	flCreateGroup.setVisibility(View.INVISIBLE);
+			}
+		}
 	}
 	
+	public void exitFragment() {
+    	// Begin the transaction
+    	FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+    	ft.setCustomAnimations(R.anim.hide, R.anim.slide_up);
 
+    	// Replace the container with the new fragment
+    	//ft.remove(getSupportFragmentManager().findFragmentByTag("createGroupFragmentTag"));
+    	ft.replace(R.id.flCreateGroup, new CreateGroupDialog(), "dummyTag");
+    	// Execute the changes specified
+    	ft.disallowAddToBackStack();
+    	ft.commit();
+	}
+	
+//Create group related code:
+//------------------------------------------------------
 	public void saveGroupToParse() {
 	    newGroup.saveInBackground(new SaveCallback() {
 			
 			@Override
 			public void done(ParseException e) {
 				if (e == null) {
-					MyGroupListFragment myGroupListFragment = (MyGroupListFragment) adapterViewPager.getRegisteredFragment(0);
-					myGroupListFragment.appendNewGroup(newGroup);
 			        //Toast.makeText(getApplicationContext(), newGroup.getObjectId(), Toast.LENGTH_SHORT).show();
 			        
 			        sendPushNotification();
@@ -428,7 +422,7 @@ public class HomeActivity extends ActionBarActivity {
 			//push.sendInBackground();
 			
 			
-			addChannelToInstallation(newGroup.getObjectId());
+			//addChannelToInstallation(newGroup.getObjectId());
 		} catch (JSONException e) {
 
 			e.printStackTrace();
@@ -444,50 +438,113 @@ public class HomeActivity extends ActionBarActivity {
         //push.setMessage("The Giants just scored! It's now 2-2 against the Mets.");
         //push.sendInBackground();
 	}
-
-
-
-	//PagerAdapter for ViewPager		
-    public static class MyPagerAdapter extends SmartFragmentStatePagerAdapter {
-    	private static int NUM_ITEMS = 3;
-    		
-            public MyPagerAdapter(FragmentManager fragmentManager) {
-                super(fragmentManager);
-            }
-            
-    	    @Override
-    		public float getPageWidth(int position) {
-    	    	return 0.93f;
-    		}
-            
-            // Returns total number of pages
-            @Override
-            public int getCount() {
-                return NUM_ITEMS;
-            }
-     
-            // Returns the fragment to display for that page
-            @Override
-            public Fragment getItem(int position) {
-    	        switch (position) {
-    	        case 0:
-    	            return MyGroupListFragment.newInstance(0, "MyGroups");
-    	        case 1:
-    	            return MyNetworkGroupListFragment.newInstance(1, "MyNetworkGroups");
-    	        case 2:
-    	            return PublicGroupListFragment.newInstance(2, "PublicGroups");
-    	        default:
-    	        	return null;
-                }
-            }
-            
-            // Returns the page title for the top indicator
-            @Override
-            public CharSequence getPageTitle(int position) {
-            	return "Page " + position;
-            }
-            
-            
+	
+//Pick date and pick time related code:
+//------------------------------------------------------
+	//Interface method for SelectDateFragment Class
+	@Override
+	public void onDateSet(
+			com.fourmob.datetimepicker.date.DatePickerDialog datePickerDialog,
+			int year, int month, int day) {
+		
+		CreateGroupDialog createGroupFragment = (CreateGroupDialog) 
+                getSupportFragmentManager().findFragmentById(R.id.flCreateGroup);
+		createGroupFragment.populateSetDate(year, month + 1, day);
+		
+	}
+	//Interface method for SelectDateFragment Class
+	@Override
+	public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
+		CreateGroupDialog createGroupFragment = (CreateGroupDialog) 
+                getSupportFragmentManager().findFragmentById(R.id.flCreateGroup);
+		
+        TimePickerDialog tpdOnwardTime = (TimePickerDialog) getSupportFragmentManager().findFragmentByTag("OnwardTimePicker");
+        TimePickerDialog tpdReturnTime = (TimePickerDialog) getSupportFragmentManager().findFragmentByTag("ReturnTimePicker");
+        if (tpdOnwardTime!=null) {
+        	createGroupFragment.populateOnwardSetTime(hourOfDay, minute);
+            //tvOnwardTime.setText(formatter.format(hour) + ":" + formatter.format(minute));
+        } else if (tpdReturnTime!=null) {
+        	createGroupFragment.populateReturnSetTime(hourOfDay, minute);
+        	//tvReturnTime.setText(formatter.format(hour) + ":" + formatter.format(minute));
         }
+
+	}
+	
+//Camera/Gallery related code:
+//------------------------------------------------------
+	public final String APP_TAG = "GroupProjectApp";
+	public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
+	public final static int PICK_PHOTO_CODE = 1046;
+	private static final int ADD_USERS_REQUEST_CODE = 20;
+	public String photoFileName = "photo.jpg";
+	
+	byte[] byteArray;
+	ParseFile photoFile;
+	
+	@Override
+	public void onDataPass(String action) {
+		if (action == "gallery") {
+			onLaunchGallery();
+		} else if (action == "camera") {
+			onLaunchCamera();
+		}
+			
+	}
+	
+	public void onLaunchCamera() {
+	    // create Intent to take a picture and return control to the calling application
+	    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+	    intent.putExtra(MediaStore.EXTRA_OUTPUT, getPhotoFileUri(photoFileName)); // set the image file name
+	    // Start the image capture intent to take photo
+	    startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+	}
+	public void onLaunchGallery() {
+	    // Create intent for picking a photo from the gallery
+	    Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+	    // Bring up gallery to select a photo
+	    startActivityForResult(intent, PICK_PHOTO_CODE);
+	}
+
+	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (resultCode == RESULT_OK) {
+			Uri photoUri = null;
+			if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+				photoUri = getPhotoFileUri(photoFileName);
+				// by this point we have the camera photo on disk
+				// Load the taken image into a preview
+				
+				CreateGroupDialog createGroupFragment = (CreateGroupDialog) 
+		                getSupportFragmentManager().findFragmentById(R.id.flCreateGroup);
+				createGroupFragment.manageGroupPhtotoUri(photoUri);
+		            
+			} else if (requestCode == PICK_PHOTO_CODE) {
+				photoUri = data.getData();
+				// Do something with the photo based on Uri
+				
+				CreateGroupDialog createGroupFragment = (CreateGroupDialog) 
+		                getSupportFragmentManager().findFragmentById(R.id.flCreateGroup);
+				createGroupFragment.manageGroupPhtotoUri(photoUri);
+			}
+		}	
+	}
+
+	// Returns the Uri for a photo stored on disk given the fileName
+	public Uri getPhotoFileUri(String fileName) {
+	    // Get safe storage directory for photos
+	    File mediaStorageDir = new File(
+	        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), APP_TAG);
+
+	    // Create the storage directory if it does not exist
+	    if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()){
+	        Log.d(APP_TAG, "failed to create directory");
+	    }
+
+	    // Return the file target for the photo based on filename
+	    return Uri.fromFile(new File(mediaStorageDir.getPath() + File.separator + fileName));
+	}
+
 
 }

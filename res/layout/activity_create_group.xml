@@ -17,7 +17,7 @@
         tools:context="${packageName}.${activityClass}" >
 
 
-        <ImageView
+    	<com.parse.ParseImageView
             android:id="@+id/ivGroupPhoto"
             android:layout_width="80dp"
             android:layout_height="80dp"
@@ -184,7 +184,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/llAddresses"
             android:layout_marginTop="10dp"
-            android:onClick="onAddUsers"
             android:text="Add Users" />
         
         <CheckBox 
@@ -206,7 +205,14 @@
             android:layout_below="@+id/cbIsPublic"
             android:text="Create" />
 
-
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/cbIsPublic"
+            android:text="Cancel" />
+        
     </RelativeLayout>
 
 </ScrollView>

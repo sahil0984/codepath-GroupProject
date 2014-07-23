@@ -1,26 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="20dp"
     android:orientation="vertical" >
-    
-    <TextView 
-        android:id="@+id/tvCarbonFootprint"
-        android:layout_width="match_parent"
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Carbon Foorprint: 0.2 k tons CO2 per year"/>
-    
-    <TextView 
-        android:id="@+id/tvDollarSavings"
-        android:layout_width="match_parent"
+        android:layout_weight="1"
+        />
+    <com.viewpagerindicator.CirclePageIndicator
+        android:id="@+id/indicator"
+        android:padding="20dip"
         android:layout_height="wrap_content"
-        android:text="Dollars Saved: $600"/>
-        
-    <Button 
-        android:id="@+id/btnGoBack"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="onGoBack"
-        android:text="Go Back"/>
+        android:layout_width="fill_parent"
+        android:background="#FFCCCCCC"
+        app:radius="10dp"
+        app:fillColor="#FF888888"
+        app:pageColor="#88FF0000"
+        app:strokeColor="#FF000000"
+        app:strokeWidth="2dp"
+        />
     
 </LinearLayout>

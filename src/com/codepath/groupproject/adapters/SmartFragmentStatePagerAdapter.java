@@ -1,4 +1,4 @@
-package com.codepath.groupproject;
+package com.codepath.groupproject.adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

@@ -2,14 +2,21 @@ package com.codepath.groupproject;
 
 
 
+
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardHeader;
 import it.gmariotti.cardslib.library.view.CardView;
+
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.apache.http.Header;
@@ -17,23 +24,42 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ScrollView;
+
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
+
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.codepath.groupproject.dialogs.ChoosePhotoDialog;
+import com.codepath.groupproject.dialogs.CreateGroupDialog;
+import com.codepath.groupproject.dialogs.ChoosePhotoDialog.OnDataPass;
+import com.codepath.groupproject.dialogs.CreateGroupDialog.OnActionSelectedListenerCreateGroup;
 import com.codepath.groupproject.fragments.GroupMemberListFragment;
+import com.codepath.groupproject.fragments.MyGroupListFragment;
 import com.codepath.groupproject.models.Group;
 import com.codepath.groupproject.models.User;
+import com.fourmob.datetimepicker.date.DatePickerDialog;
+import com.fourmob.datetimepicker.date.DatePickerDialog.OnDateSetListener;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -50,10 +76,21 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.parse.GetCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
+import com.parse.ParseInstallation;
+import com.parse.ParsePush;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
+import com.parse.PushService;
+import com.parse.SaveCallback;
+import com.sleepbot.datetimepicker.time.RadialPickerLayout;
+import com.sleepbot.datetimepicker.time.TimePickerDialog;
 
-public class GroupDetailActivity extends FragmentActivity {
+public class GroupDetailActivity extends FragmentActivity implements OnActionSelectedListenerCreateGroup,
+																	 OnDataPass,
+																	 OnDateSetListener,
+																	 TimePickerDialog.OnTimeSetListener {
 
 	private LocationClient mLocationClient;
 	private SupportMapFragment mapFragment;
@@ -154,6 +191,25 @@ public class GroupDetailActivity extends FragmentActivity {
 		    		setTitle(group.getName());
 		    		addMarkers();
 		    		addRoute();
+		    		
+		    		//Added by Sahil: Dont show edit option if the user is not the owner of the group
+		    		if (!currentGroup.getUser().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())) {
+		    			hideMenuOption(R.id.miEdit);
+		    		}
+		    		
+		    		hideMenuOption(R.id.miChat);
+		    		boolean isMember = false;
+		    		for (int i=0; i<currentGroup.getMembers().size(); i++) {
+		    			if (currentGroup.getMembers().get(i).getObjectId().equals(ParseUser.getCurrentUser().getObjectId())) {
+		    				showMenuOption(R.id.miChat);
+		    				isMember = true;
+		    				break;
+		    			}
+		    		}
+	    			hideMenuOption(R.id.miRequest);
+		    		if (isMember) {
+		    			showMenuOption(R.id.miRequest);
+		    		}
 		            
 		    } else {
 		        Log.d("MyApp", "oops");
@@ -403,4 +459,323 @@ public class GroupDetailActivity extends FragmentActivity {
 	        return urlString.toString();
 	 }
 
+// --------------------------------- SAHIL's code below this ---------------------------------	 
+// NEAL, I added the following code to add edit group functionality. I have to replicate a lot of code for now.
+// But, if I get a chance, I will try to make most of it shared.
+		Group newGroup;
+		int queriesReturned;
+		
+		private Menu mOptionsMenu;
+		
+		int animationDone;
+
+	 @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.group_detail_activity_actions, menu);
+        mOptionsMenu = menu;
+        
+        animationDone = 0;
+
+        return true;
+    }
+   private void hideMenuOption(int id)
+   {
+       MenuItem item = mOptionsMenu.findItem(id);
+       item.setVisible(false);
+   }
+   private void showMenuOption(int id)
+   {
+       MenuItem item = mOptionsMenu.findItem(id);
+       item.setVisible(true);
+   }
+   
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case R.id.miEdit:
+            	openEditGroupDialog();
+                break;
+            case R.id.miChat:
+            	openChatActivity();
+                break; 
+            default:
+            	break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+      
+    
+    private void openChatActivity() {
+        Intent i = new Intent(getApplicationContext(),ChatActivity.class);
+        i.putExtra("customdata", "fromGroupDetailActivity");
+        i.putExtra("groupObjectId", currentGroup.getObjectId());
+        //Use the Request Code to send the index of the list (pos)
+        startActivity(i);
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+	}
+    
+	public void sendGroupToPopulateCreateGroupFragment() {
+        CreateGroupDialog tmp = (CreateGroupDialog) 
+                getSupportFragmentManager().findFragmentById(R.id.flCreateGroup);
+        tmp.populateExistingGroup(currentGroup);
+    }
+    
+    private void openEditGroupDialog() {
+    	
+    	//Create the existing group object and pass it to dialog and populate in there.
+    	
+    	getActionBar().hide();
+    	
+    	FrameLayout flCreateGroup = (FrameLayout)  findViewById(R.id.flCreateGroup);
+    	flCreateGroup.setVisibility(View.VISIBLE);
+    	
+    	// Begin the transaction
+    	FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+    	ft.setCustomAnimations(R.anim.slide_down, R.anim.hide);
+    	ft.disallowAddToBackStack();
+    	// Replace the container with the new fragment
+    	ft.replace(R.id.flCreateGroup, new CreateGroupDialog(), "editGroupFragmentTag");
+    	// Execute the changes specified
+    	ft.commit();
+
+	}
+    
+	@Override
+	public void onActionSelectedCreateGroup(Group newGroup, String action) {
+		if (action.equals("choosePhoto")) {
+			
+		  	FragmentManager fm = getSupportFragmentManager();
+		  	ChoosePhotoDialog photoDialog = new ChoosePhotoDialog();
+		  	photoDialog.show(fm, "dialog_choose_photo");
+		  	
+		} else if (action.equals("pickDate")) {
+			
+	       	final Calendar calendar = Calendar.getInstance();
+	        final DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), false);
+	        
+            datePickerDialog.setYearRange(1985, 2028);
+            datePickerDialog.setCloseOnSingleTapDay(false);
+            datePickerDialog.show(getSupportFragmentManager(), "datepicker");
+            
+		} else if (action.equals("pickOnwardTime")) {
+			
+		    final Calendar calendar = Calendar.getInstance();
+	        final TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(this, calendar.get(Calendar.HOUR_OF_DAY) ,calendar.get(Calendar.MINUTE), false, false);
+
+	        timePickerDialog.setCloseOnSingleTapMinute(false);
+		    timePickerDialog.show(getSupportFragmentManager(), "OnwardTimePicker");
+		    
+		} else if (action.equals("pickReturnTime")) {
+			
+		    final Calendar calendar = Calendar.getInstance();
+	        final TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(this, calendar.get(Calendar.HOUR_OF_DAY) ,calendar.get(Calendar.MINUTE), false, false);
+
+	        timePickerDialog.setCloseOnSingleTapMinute(false);
+		    timePickerDialog.show(getSupportFragmentManager(), "ReturnTimePicker");
+		    
+		} else if (action.equals("createGroup")) {
+	    	this.newGroup = newGroup;
+	    	saveGroupToParse();
+	    	
+	    	exitFragment();
+		} else if (action.equals("cancel")) {
+	    	exitFragment();
+		} else if (action.equals("animationEnded")) {
+			
+			//if (getSupportFragmentManager().findFragmentByTag("createGroupFragmentTag")!=null) {
+			if (animationDone==0) {
+				//Toast.makeText(getApplicationContext(),
+				//		"Animation half done",
+				//		Toast.LENGTH_SHORT).show();
+				animationDone=1;
+			} else {
+				//Toast.makeText(getApplicationContext(),
+				//		"Animation ended",
+				//		Toast.LENGTH_SHORT).show();
+				getActionBar().show();
+				animationDone=0;
+		    	//getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag("createGroupFragmentTag")).commit();
+		    	FrameLayout flCreateGroup = (FrameLayout)  findViewById(R.id.flCreateGroup);
+		    	flCreateGroup.setVisibility(View.INVISIBLE);
+			}
+		}
+	}
+	
+	public void exitFragment() {
+    	// Begin the transaction
+    	FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+    	ft.setCustomAnimations(R.anim.hide, R.anim.slide_up);
+
+    	// Replace the container with the new fragment
+    	//ft.remove(getSupportFragmentManager().findFragmentByTag("createGroupFragmentTag"));
+    	ft.replace(R.id.flCreateGroup, new CreateGroupDialog(), "dummyTag");
+    	// Execute the changes specified
+    	ft.disallowAddToBackStack();
+    	ft.commit();
+	}
+	
+	
+	
+//Create group related code:
+//------------------------------------------------------
+	public void saveGroupToParse() {
+	    newGroup.saveInBackground(new SaveCallback() {
+			
+			@Override
+			public void done(ParseException e) {
+				if (e == null) {
+			        //Toast.makeText(getApplicationContext(), newGroup.getObjectId(), Toast.LENGTH_SHORT).show();
+			        
+			        sendPushNotification();
+			        
+				} else {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+	
+	private void sendPushNotification() {
+		JSONObject obj;
+		try {
+			obj = new JSONObject();
+			obj.put("alert", "Updates for " + newGroup.getName() + " group!");
+			obj.put("action", MyCustomReceiver.intentAction);
+			obj.put("customdata", "UpdateToGroup");
+			obj.put("groupsObjectId", newGroup.getObjectId());
+			obj.put("ownersObjectId", newGroup.getUser().getObjectId());
+
+//			for (int i=0; i<newGroup.getMembers().size(); i++) {
+//				ParsePush push = new ParsePush();
+//
+//				ParseQuery<ParseInstallation> query = ParseInstallation.getQuery();
+//				query.whereEqualTo("userObjectId", newGroup.getMembers().get(i).getObjectId());
+//				
+//				push.setQuery(query);
+//				push.setData(obj);
+//				push.sendInBackground();
+//			}
+//			Toast.makeText(getApplicationContext(), "Num members: " + newGroup.getMembers(), Toast.LENGTH_SHORT).show();
+			
+			
+			ParsePush push = new ParsePush();
+			push.setChannel("channel_" + newGroup.getObjectId());
+			//push.setMessage(newGroup.getName() + "has been updated");
+			push.setData(obj);
+			push.sendInBackground();
+			
+		} catch (JSONException e) {
+
+			e.printStackTrace();
+		}
+	}
+	
+//Pick date and pick time related code:
+//------------------------------------------------------
+	//Interface method for SelectDateFragment Class
+	@Override
+	public void onDateSet(
+			com.fourmob.datetimepicker.date.DatePickerDialog datePickerDialog,
+			int year, int month, int day) {
+		
+		CreateGroupDialog createGroupFragment = (CreateGroupDialog) 
+                getSupportFragmentManager().findFragmentById(R.id.flCreateGroup);
+		createGroupFragment.populateSetDate(year, month + 1, day);
+		
+	}
+	//Interface method for SelectDateFragment Class
+	@Override
+	public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
+		CreateGroupDialog createGroupFragment = (CreateGroupDialog) 
+                getSupportFragmentManager().findFragmentById(R.id.flCreateGroup);
+		
+        TimePickerDialog tpdOnwardTime = (TimePickerDialog) getSupportFragmentManager().findFragmentByTag("OnwardTimePicker");
+        TimePickerDialog tpdReturnTime = (TimePickerDialog) getSupportFragmentManager().findFragmentByTag("ReturnTimePicker");
+        if (tpdOnwardTime!=null) {
+        	createGroupFragment.populateOnwardSetTime(hourOfDay, minute);
+            //tvOnwardTime.setText(formatter.format(hour) + ":" + formatter.format(minute));
+        } else if (tpdReturnTime!=null) {
+        	createGroupFragment.populateReturnSetTime(hourOfDay, minute);
+        	//tvReturnTime.setText(formatter.format(hour) + ":" + formatter.format(minute));
+        }
+
+	}
+	
+//Camera/Gallery related code:
+//------------------------------------------------------
+	public final String APP_TAG = "GroupProjectApp";
+	public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
+	public final static int PICK_PHOTO_CODE = 1046;
+	private static final int ADD_USERS_REQUEST_CODE = 20;
+	public String photoFileName = "photo.jpg";
+	
+	byte[] byteArray;
+	ParseFile photoFile;
+	
+	@Override
+	public void onDataPass(String action) {
+		if (action == "gallery") {
+			onLaunchGallery();
+		} else if (action == "camera") {
+			onLaunchCamera();
+		}
+			
+	}
+	
+	public void onLaunchCamera() {
+	    // create Intent to take a picture and return control to the calling application
+	    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+	    intent.putExtra(MediaStore.EXTRA_OUTPUT, getPhotoFileUri(photoFileName)); // set the image file name
+	    // Start the image capture intent to take photo
+	    startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+	}
+	public void onLaunchGallery() {
+	    // Create intent for picking a photo from the gallery
+	    Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+	    // Bring up gallery to select a photo
+	    startActivityForResult(intent, PICK_PHOTO_CODE);
+	}
+
+	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (resultCode == RESULT_OK) {
+			Uri photoUri = null;
+			if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+				photoUri = getPhotoFileUri(photoFileName);
+				// by this point we have the camera photo on disk
+				// Load the taken image into a preview
+				
+				CreateGroupDialog createGroupFragment = (CreateGroupDialog) 
+		                getSupportFragmentManager().findFragmentById(R.id.flCreateGroup);
+				createGroupFragment.manageGroupPhtotoUri(photoUri);
+		            
+			} else if (requestCode == PICK_PHOTO_CODE) {
+				photoUri = data.getData();
+				// Do something with the photo based on Uri
+				
+				CreateGroupDialog createGroupFragment = (CreateGroupDialog) 
+		                getSupportFragmentManager().findFragmentById(R.id.flCreateGroup);
+				createGroupFragment.manageGroupPhtotoUri(photoUri);
+			}
+		}	
+	}
+
+	// Returns the Uri for a photo stored on disk given the fileName
+	public Uri getPhotoFileUri(String fileName) {
+	    // Get safe storage directory for photos
+	    File mediaStorageDir = new File(
+	        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), APP_TAG);
+
+	    // Create the storage directory if it does not exist
+	    if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()){
+	        Log.d(APP_TAG, "failed to create directory");
+	    }
+
+	    // Return the file target for the photo based on filename
+	    return Uri.fromFile(new File(mediaStorageDir.getPath() + File.separator + fileName));
+	}
 }

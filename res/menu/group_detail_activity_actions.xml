@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:myapp="http://schemas.android.com/apk/res-auto">
+    
+    <item
+        android:id="@+id/miEdit"
+        android:icon="@drawable/ic_edit_profile"
+        myapp:showAsAction="always"
+        android:title="Edit Group">
+    </item>
+    
+    <item
+        android:id="@+id/miChat"
+        android:icon="@drawable/ic_create_group"
+        myapp:showAsAction="always"
+        android:title="Chat">
+    </item>
+    
+    <item
+        android:id="@+id/miRequest"
+        android:icon="@drawable/ic_done_edit_profile"
+        myapp:showAsAction="always"
+        android:title="Request to add">
+    </item>
+</menu>

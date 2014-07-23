@@ -12,9 +12,11 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.codepath.groupproject.R.string;
+import com.codepath.groupproject.models.Group;
 import com.codepath.groupproject.models.User;
 import com.facebook.HttpMethod;
 import com.facebook.Request;
@@ -28,17 +30,26 @@ import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseInstallation;
 import com.parse.ParseQuery;
+import com.parse.PushService;
 import com.parse.SaveCallback;
 import com.parse.ParseFacebookUtils.Permissions;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
 public class LoginActivity extends ActionBarActivity {
-
+	
+	ProgressBar pbLoading;
+	
+	String userType;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
+		
+		pbLoading = (ProgressBar) findViewById(R.id.pbLoading);
+		
+		pbLoading.setVisibility(ProgressBar.INVISIBLE);
 		
 		getActionBar().hide();
 		
@@ -46,25 +57,30 @@ public class LoginActivity extends ActionBarActivity {
     	ParseUser currentUser = ParseUser.getCurrentUser();
     	if (currentUser != null && ParseFacebookUtils.isLinked(currentUser)) {
     		// do stuff with the user
-    		//signInParseUser(); //Don't do this: User does not need to login if its already cached.
+    		userType = "existingUser";
     		getFacebookDetailsInBackground();
-    		gotoProfileActivity();
+    		pbLoading.setVisibility(ProgressBar.VISIBLE);
     	} else {
     		// show the signup or login screen
+    		userType = "newUser";
     	}
     	
 	}
 	
 	
 	public void gotoProfileActivity() {
+		pbLoading.setVisibility(ProgressBar.INVISIBLE);
 		Intent i = new Intent(getApplicationContext(), ProfileActivity.class);
 		startActivity(i);
 		overridePendingTransition(R.anim.fade_in, R.anim.slide_up);
 	}
 	
 	public void gotoHomeActivity() {
+		pbLoading.setVisibility(ProgressBar.INVISIBLE);
+		pbLoading.setEnabled(false);
 		Intent i = new Intent(getApplicationContext(), HomeActivity.class);
 		startActivity(i);
+		overridePendingTransition(R.anim.fade_in, R.anim.slide_up);
 	}
 	
 	//Arrays.asList("email", Permissions.User.EMAIL),
@@ -73,6 +89,9 @@ public class LoginActivity extends ActionBarActivity {
 			//Dont do anything.
 			
 		//} else {
+		
+		pbLoading.setVisibility(ProgressBar.VISIBLE);
+
 
 			ParseFacebookUtils.logIn(Arrays.asList("email", "user_friends"), this, new LogInCallback() {
 			//ParseFacebookUtils.logIn(Arrays.asList("email", "user_friends", "user_friendlists"), this, new LogInCallback() {
@@ -92,7 +111,7 @@ public class LoginActivity extends ActionBarActivity {
 					}
 				}
 			});
-		//}
+			
 	}
 	
 	
@@ -125,14 +144,50 @@ public class LoginActivity extends ActionBarActivity {
 						@Override
 						public void done(ParseException pE) {
 							if (pE==null) {
+								//Get current installation and save the userObjectId corresponding to the installation
 								ParseInstallation.getCurrentInstallation().put("userObjectId", ParseUser.getCurrentUser().getObjectId().toString());
 								ParseInstallation.getCurrentInstallation().saveInBackground();
+								
+								
+								ParseQuery<User> innerUserQuery = ParseQuery.getQuery(User.class);
+								innerUserQuery.whereEqualTo("objectId", ParseUser.getCurrentUser().getObjectId());
+								
+								ParseQuery<Group> queryGroup = ParseQuery.getQuery(Group.class);
+								queryGroup.include("members");
+								queryGroup.whereMatchesQuery("members", innerUserQuery);
+								queryGroup.findInBackground(new FindCallback<Group>() {
+
+									@Override
+									public void done(List<Group> groupList, ParseException e) {
+								        if (e == null) {
+								        	if (groupList.size()!=0) {
+								        		for (int i=0; i<groupList.size(); i++) {
+								        			PushService.subscribe(getApplicationContext(),
+								        					"channel_" + groupList.get(i).getObjectId(), HomeActivity.class);
+
+								        		}
+								        	} else {
+								        		//Toast.makeText(getApplicationContext(), "No groups found.", Toast.LENGTH_SHORT).show();
+								        	}
+								        } else {
+								        	Log.d("item", "Error: " + e.getMessage());
+								        }
+									}
+								});
+								
+								
+								if (userType=="newUser") {
+									gotoProfileActivity();									
+								} else {
+									gotoHomeActivity();
+								}
+								
 							} else {
 								Log.d("FBJSON", pE.toString());
 							}
 						}
 					});
-			          gotoProfileActivity();
+			          //gotoProfileActivity();
 			          
 			      }
 			  }

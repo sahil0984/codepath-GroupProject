@@ -3,6 +3,7 @@ package com.codepath.groupproject;
 import android.app.Application;
 import android.content.Context;
 
+import com.codepath.groupproject.models.Chat;
 import com.codepath.groupproject.models.Group;
 import com.codepath.groupproject.models.Installation;
 import com.codepath.groupproject.models.User;
@@ -24,6 +25,7 @@ public class GroupProjectApplication extends Application {
 
 	    ParseObject.registerSubclass(User.class);
 	    ParseObject.registerSubclass(Group.class);
+	    ParseObject.registerSubclass(Chat.class);
 	    ParseObject.registerSubclass(Installation.class);
 		
 
