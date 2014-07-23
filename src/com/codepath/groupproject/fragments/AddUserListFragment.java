@@ -24,6 +24,7 @@ public class AddUserListFragment extends UserListFragment {
 		// TODO Auto-generated method stu
 		super.onCreate(savedInstanceState);
 		addedUsers = new ArrayList<User>();
+	//	addSection("Current Members",0);
 		populateUsersByObjectId(getArguments().getStringArrayList("currentMembers"));
 		
 		
@@ -41,7 +42,10 @@ public class AddUserListFragment extends UserListFragment {
 		}
 
 	}
-
+	public void addHeaders()
+	{
+		
+	}
     public static AddUserListFragment newInstance(ArrayList<String> currentMembers)
     {
 	    AddUserListFragment fragmentUser = new AddUserListFragment();

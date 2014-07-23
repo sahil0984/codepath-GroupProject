@@ -1,7 +1,11 @@
 package com.codepath.groupproject;
 
-import java.io.IOException;
-import java.io.InputStream;
+
+
+import it.gmariotti.cardslib.library.internal.Card;
+import it.gmariotti.cardslib.library.internal.CardHeader;
+import it.gmariotti.cardslib.library.view.CardView;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -21,6 +25,9 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,6 +68,59 @@ public class GroupDetailActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_group_detail);
 		
+		String groupObjectId = getIntent().getStringExtra("group");
+		
+        //Create a Card
+        GroupDetailCard card = new GroupDetailCard(this);
+        card.setId("myId");
+
+        //Set card in the cardView
+        CardView cardView = (CardView) findViewById(R.id.carddemo);
+        cardView.setCard(card);
+        
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		GroupMemberListFragment gmlF = GroupMemberListFragment.newInstance(groupObjectId);
+        ft.replace(R.id.flUserList, gmlF);
+        ft.commit();
+         
+        //Create a Card
+        Card card2 = new Card(this,R.layout.carddemo_example_inner_content);
+
+        //Set the card inner text
+        card2.setTitle("Map");
+
+        //Set card in the cardView
+        CardView cardView2 = (CardView)findViewById(R.id.carddemo2);
+        cardView2.setCard(card2);
+		
+        View transparentImageView = (View) findViewById(R.id.View1);
+        final ScrollView mainScrollView = (ScrollView) findViewById(R.id.main_scrollview);
+        transparentImageView.setOnTouchListener(new View.OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+                int action = event.getAction();
+                switch (action) {
+                   case MotionEvent.ACTION_DOWN:
+                        // Disallow ScrollView to intercept touch events.
+                        mainScrollView.requestDisallowInterceptTouchEvent(true);
+                        // Disable touch on transparent view
+                        return false;
+
+                   case MotionEvent.ACTION_UP:
+                        // Allow ScrollView to intercept touch events.
+                        mainScrollView.requestDisallowInterceptTouchEvent(false);
+                        return true;
+
+                   case MotionEvent.ACTION_MOVE:
+                        mainScrollView.requestDisallowInterceptTouchEvent(true);
+                        return false;
+
+                   default: 
+                        return true;
+                }   
+			}
+        });
 		tvOnwardLocation = (TextView) findViewById(R.id.tvOnwardLocation);
 		tvReturnLocation = (TextView) findViewById(R.id.tvReturnLocation);
 		
@@ -76,7 +136,7 @@ public class GroupDetailActivity extends FragmentActivity {
 		} else {
 			Toast.makeText(this, "Error - Map Fragment was null!!", Toast.LENGTH_SHORT).show();
 		}
-		String groupObjectId = getIntent().getStringExtra("group");
+	
 		
         ParseQuery<Group> queryGroup = ParseQuery.getQuery(Group.class);
         queryGroup.include("members");
@@ -101,10 +161,8 @@ public class GroupDetailActivity extends FragmentActivity {
 		  }
 		});
 
-		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        GroupMemberListFragment gmlF = GroupMemberListFragment.newInstance(groupObjectId);
-        ft.replace(R.id.flUserList, gmlF);
-        ft.commit();
+
+         
 	
 	}
 	protected void getOnwardAddFromCoord(ParseGeoPoint pCoord) {
