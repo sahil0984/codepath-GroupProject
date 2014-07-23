@@ -44,11 +44,8 @@ public abstract class UserListFragment extends Fragment {
 		//Non-view initialization
 		users = new ArrayList<User>();
 		aUsers = new UserArrayAdapter(getActivity(), users);
-		sections = new ArrayList<Section>();
-		sections.add(new Section(0,"All Users"));	
-		simpleSectionedListAdapter = new SimpleSectionedListAdapter(getActivity(), aUsers, R.layout.list_item_header, R.id.header);
-		simpleSectionedListAdapter.setSections(sections.toArray(new Section[0]));
 	
+
 
 		//populateUsers(getArguments().getString("group"));
 	}
@@ -74,7 +71,7 @@ public abstract class UserListFragment extends Fragment {
 		View v = inflater.inflate(R.layout.fragment_users_list, container, false);
 		//Assign our view references
 		lvUsers = (ListView) v.findViewById(R.id.lvUsers);
-		lvUsers.setAdapter(simpleSectionedListAdapter);
+		lvUsers.setAdapter(aUsers);
 		lvUsers.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,

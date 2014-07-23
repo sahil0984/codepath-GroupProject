@@ -18,6 +18,8 @@
 
 package com.codepath.groupproject;
 
+import com.codepath.groupproject.models.Group;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
@@ -42,9 +44,11 @@ import it.gmariotti.cardslib.library.internal.CardThumbnail;
 public class GroupDetailCard extends Card {
 
     public int USE_VIGNETTE=0;
-
-    public GroupDetailCard(Context context) {
+    private Group currentGroup;
+    
+    public GroupDetailCard(Context context, Group group) {
         super(context,R.layout.carddemo_groupdetail_inner_main);
+        currentGroup = group;
         init();
     }
 
@@ -58,7 +62,7 @@ public class GroupDetailCard extends Card {
         //Add Header
         GroupDetailHeader header = new GroupDetailHeader(getContext(), R.layout.carddemo_groupdetail_inner_header);
         header.setButtonExpandVisible(true);
-        header.mName = "Gabriele Mariotti";
+        header.mName = currentGroup.getName();
         header.mSubName = "Birthday today";
         addCardHeader(header);
 

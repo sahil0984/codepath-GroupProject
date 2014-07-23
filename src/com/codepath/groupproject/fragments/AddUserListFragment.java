@@ -24,7 +24,7 @@ public class AddUserListFragment extends UserListFragment {
 		// TODO Auto-generated method stu
 		super.onCreate(savedInstanceState);
 		addedUsers = new ArrayList<User>();
-	//	addSection("Current Members",0);
+
 		populateUsersByObjectId(getArguments().getStringArrayList("currentMembers"));
 		
 		

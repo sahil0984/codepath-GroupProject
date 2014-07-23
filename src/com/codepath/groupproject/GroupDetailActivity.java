@@ -98,6 +98,7 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
 	private Group currentGroup;
 	private TextView tvOnwardLocation;
 	private TextView tvReturnLocation;
+	private CardView cardView;
 	
 	ArrayList<Marker> markers ;
 	@Override
@@ -108,21 +109,13 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
 		String groupObjectId = getIntent().getStringExtra("group");
 		
         //Create a Card
-        GroupDetailCard card = new GroupDetailCard(this);
-        card.setId("myId");
 
-        //Set card in the cardView
-        CardView cardView = (CardView) findViewById(R.id.carddemo);
-        cardView.setCard(card);
         
-		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		GroupMemberListFragment gmlF = GroupMemberListFragment.newInstance(groupObjectId);
-        ft.replace(R.id.flUserList, gmlF);
-        ft.commit();
+
          
         //Create a Card
         Card card2 = new Card(this,R.layout.carddemo_example_inner_content);
-
+        cardView = (CardView) findViewById(R.id.carddemo);
         //Set the card inner text
         card2.setTitle("Map");
 
@@ -188,6 +181,19 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
 	        		// Access the array of results here
 		    		Log.d("MyApp","Loading: " + group.getName());	 
 		    		currentGroup = group;
+		    		
+		            GroupDetailCard card = new GroupDetailCard(getApplicationContext(),currentGroup);
+		            card.setId("myId");
+
+		            //Set card in the cardView
+		            
+		            cardView.setCard(card);
+		            
+		    		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		    		GroupMemberListFragment gmlF = GroupMemberListFragment.newInstance(currentGroup.getObjectId());
+		            ft.replace(R.id.flUserList, gmlF);
+		            ft.commit();
+		            
 		    		setTitle(group.getName());
 		    		addMarkers();
 		    		addRoute();
@@ -221,43 +227,7 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
          
 	
 	}
-	protected void getOnwardAddFromCoord(ParseGeoPoint pCoord) {
-    	Double lat = pCoord.getLatitude();
-    	Double lng = pCoord.getLongitude();
-	    String url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lng;
-	    AsyncHttpClient client = new AsyncHttpClient();
-	    client.get(url, null, new GeoCoderResponseHandler(getApplicationContext()) {
-	    	
-	    	@Override
-	    	public void onSuccess(int statusCode, Header[] headers,
-	    			JSONObject response) {
-	    		super.onSuccess(statusCode, headers, response);
-		    		tvOnwardLocation.setText(getCheckedAdd());
-	    	}
-	    	
-	    });
-		return;
-	}
-	protected void getReturnAddFromCoord(ParseGeoPoint pCoord) {
-    	Double lat = pCoord.getLatitude();
-    	Double lng = pCoord.getLongitude();
-	    String url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lng;
-	    AsyncHttpClient client = new AsyncHttpClient();
-	    client.get(url, null, new GeoCoderResponseHandler(getApplicationContext()) {
-	    	
-	    	@Override
-	    	public void onSuccess(int statusCode, Header[] headers,
-	    			JSONObject response) {
-	    		super.onSuccess(statusCode, headers, response);
-	    	
-	    		tvReturnLocation.setText(getCheckedAdd());
-	    			
 
-	    	}
-	    	
-	    });
-		return;
-	}
 	public void addMarkers() {
 		// TODO Auto-generated method stub
 		int i;
@@ -267,8 +237,8 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
 		ParseGeoPoint startPoint = currentGroup.getOnwardLocation();
 		ParseGeoPoint endPoint = currentGroup.getReturnLocation();
 		
-		getOnwardAddFromCoord(startPoint);
-		getReturnAddFromCoord(endPoint);
+		//getOnwardAddFromCoord(startPoint);
+	//	getReturnAddFromCoord(endPoint);
 	
 		Marker s = map.addMarker(new MarkerOptions()
 									.position(new LatLng(startPoint.getLatitude(), startPoint.getLongitude()))
