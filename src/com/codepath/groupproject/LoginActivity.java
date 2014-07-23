@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.codepath.groupproject.R.string;
+import com.codepath.groupproject.models.Group;
 import com.codepath.groupproject.models.User;
 import com.facebook.HttpMethod;
 import com.facebook.Request;
@@ -29,6 +30,7 @@ import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseInstallation;
 import com.parse.ParseQuery;
+import com.parse.PushService;
 import com.parse.SaveCallback;
 import com.parse.ParseFacebookUtils.Permissions;
 import com.parse.ParseUser;
@@ -142,8 +144,36 @@ public class LoginActivity extends ActionBarActivity {
 						@Override
 						public void done(ParseException pE) {
 							if (pE==null) {
+								//Get current installation and save the userObjectId corresponding to the installation
 								ParseInstallation.getCurrentInstallation().put("userObjectId", ParseUser.getCurrentUser().getObjectId().toString());
 								ParseInstallation.getCurrentInstallation().saveInBackground();
+								
+								
+								ParseQuery<User> innerUserQuery = ParseQuery.getQuery(User.class);
+								innerUserQuery.whereEqualTo("objectId", ParseUser.getCurrentUser().getObjectId());
+								
+								ParseQuery<Group> queryGroup = ParseQuery.getQuery(Group.class);
+								queryGroup.include("members");
+								queryGroup.whereMatchesQuery("members", innerUserQuery);
+								queryGroup.findInBackground(new FindCallback<Group>() {
+
+									@Override
+									public void done(List<Group> groupList, ParseException e) {
+								        if (e == null) {
+								        	if (groupList.size()!=0) {
+								        		for (int i=0; i<groupList.size(); i++) {
+								        			PushService.subscribe(getApplicationContext(),
+								        					"channel_" + groupList.get(i).getObjectId(), HomeActivity.class);
+
+								        		}
+								        	} else {
+								        		//Toast.makeText(getApplicationContext(), "No groups found.", Toast.LENGTH_SHORT).show();
+								        	}
+								        } else {
+								        	Log.d("item", "Error: " + e.getMessage());
+								        }
+									}
+								});
 								
 								
 								if (userType=="newUser") {

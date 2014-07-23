@@ -413,14 +413,24 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
             	openEditGroupDialog();
                 break;
             case R.id.miChat:
+            	openChatActivity();
                 break; 
             default:
             	break;
         }
         return super.onOptionsItemSelected(item);
     }
+      
     
-    public void sendGroupToPopulateCreateGroupFragment() {
+    private void openChatActivity() {
+        Intent i = new Intent(getApplicationContext(),ChatActivity.class);
+        i.putExtra("customdata", "fromGroupDetailActivity");
+        i.putExtra("groupObjectId", currentGroup.getObjectId());
+        //Use the Request Code to send the index of the list (pos)
+        startActivity(i);
+	}
+    
+	public void sendGroupToPopulateCreateGroupFragment() {
         CreateGroupDialog tmp = (CreateGroupDialog) 
                 getSupportFragmentManager().findFragmentById(R.id.flCreateGroup);
         tmp.populateExistingGroup(currentGroup);
@@ -551,22 +561,24 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
 			obj.put("groupsObjectId", newGroup.getObjectId());
 			obj.put("ownersObjectId", newGroup.getUser().getObjectId());
 
-			for (int i=0; i<newGroup.getMembers().size(); i++) {
-				ParsePush push = new ParsePush();
-
-				ParseQuery<ParseInstallation> query = ParseInstallation.getQuery();
-				query.whereEqualTo("userObjectId", newGroup.getMembers().get(i).getObjectId());
-				
-				push.setQuery(query);
-				push.setData(obj);
-				push.sendInBackground();
-			}
-			Toast.makeText(getApplicationContext(), "Num members: " + newGroup.getMembers(), Toast.LENGTH_SHORT).show();
-			// Push the notification to Android users
-			//query.whereEqualTo("deviceType", "android");
-			//push.setQuery(query);
-			//push.setData(obj);
-			//push.sendInBackground();
+//			for (int i=0; i<newGroup.getMembers().size(); i++) {
+//				ParsePush push = new ParsePush();
+//
+//				ParseQuery<ParseInstallation> query = ParseInstallation.getQuery();
+//				query.whereEqualTo("userObjectId", newGroup.getMembers().get(i).getObjectId());
+//				
+//				push.setQuery(query);
+//				push.setData(obj);
+//				push.sendInBackground();
+//			}
+//			Toast.makeText(getApplicationContext(), "Num members: " + newGroup.getMembers(), Toast.LENGTH_SHORT).show();
+			
+			
+			ParsePush push = new ParsePush();
+			push.setChannel("channel_" + newGroup.getObjectId());
+			//push.setMessage(newGroup.getName() + "has been updated");
+			push.setData(obj);
+			push.sendInBackground();
 			
 		} catch (JSONException e) {
 

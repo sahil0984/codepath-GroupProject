@@ -10,6 +10,7 @@ import com.codepath.groupproject.models.Group;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
@@ -23,6 +24,7 @@ import android.widget.Toast;
 public class MyCustomReceiver extends BroadcastReceiver {
    private static final String TAG = "MyCustomReceiver";
    public static final String intentAction = "SEND_PUSH";
+   public static final String intentActionChat = "SEND_CHAT";
 
    @Override
    public void onReceive(Context context, Intent intent) {
@@ -61,6 +63,11 @@ public class MyCustomReceiver extends BroadcastReceiver {
              	 	// Handle push notification by invoking activity directly
              		launchSomeActivity(context, "UpdateToGroup", json.getString("groupsObjectId"), json.getString("ownersObjectId"));
              			
+             	} else if (json.getString("customdata").equals("ChatToGroup")) {
+             	 	// Handle push notification by invoking activity directly
+             		//launchChatActivity(context, json);
+             		triggerBroadcastToChatActivity(context);
+             		
              	}
                     //Log.d(TAG, "..." + key + " => " + json.getString(key));
                //}
@@ -70,17 +77,27 @@ public class MyCustomReceiver extends BroadcastReceiver {
        }
    }
    
-   public static final int NOTIFICATION_ID = 45;
-   // Create a local dashboard notification to tell user about the event
-   private void createNotification(Context context) {
-       NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context).setSmallIcon(
-          		R.drawable.ic_launcher).setContentTitle("Successfully logged in");
-       NotificationManager mNotificationManager = (NotificationManager) context
-          		.getSystemService(Context.NOTIFICATION_SERVICE);
-       mNotificationManager.notify(45, mBuilder.build());
-   }
+
    
-   // Handle push notification by invoking activity directly
+   private void launchChatActivity(Context context, JSONObject json) {
+       Intent pupInt = new Intent(context, ChatActivity.class);
+       
+       try {
+           pupInt.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
+    	   pupInt.putExtra("customdata", "ChatToGroup");
+    	   pupInt.putExtra("groupObjectId", json.getString("groupObjectId"));
+    	   pupInt.putExtra("chatMessage", json.getString("chatMessage"));
+    	   pupInt.putExtra("sender", json.getString("sender"));
+    	   pupInt.putExtra("sentAt", json.getString("sentAt"));
+           context.startActivity(pupInt);
+
+       } catch (JSONException e) {
+    	   e.printStackTrace();
+       }
+       
+   }
+
+// Handle push notification by invoking activity directly
    private void launchSomeActivity(Context context, String customdata, String groupsObjectId, String ownersObjectId) {
        Intent pupInt = new Intent(context, HomeActivity.class);
        pupInt.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
@@ -91,9 +108,21 @@ public class MyCustomReceiver extends BroadcastReceiver {
        context.startActivity(pupInt);
    }
    
+   
    // Handle push notification by sending a local broadcast 
    // to which the activity subscribes to
-   private void triggerBroadcastToActivity(Context context) {
-       LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent(intentAction));
+   private void triggerBroadcastToChatActivity(Context context) {
+       LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent(intentActionChat));
+   }
+   
+   
+   public static final int NOTIFICATION_ID = 45;
+   // Create a local dashboard notification to tell user about the event
+   private void createNotification(Context context) {
+       NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context).setSmallIcon(
+          		R.drawable.ic_launcher).setContentTitle("Successfully logged in");
+       NotificationManager mNotificationManager = (NotificationManager) context
+          		.getSystemService(Context.NOTIFICATION_SERVICE);
+       mNotificationManager.notify(45, mBuilder.build());
    }
 }
