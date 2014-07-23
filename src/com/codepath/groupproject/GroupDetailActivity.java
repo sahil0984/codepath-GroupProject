@@ -434,10 +434,24 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
             case R.id.miChat:
             	openChatActivity();
                 break; 
+            case R.id.miRequest:
+            	//requestAddToGroup();
+                break; 
             default:
             	break;
         }
         return super.onOptionsItemSelected(item);
+    }
+    
+    private void openRequestDialog() {
+    	// Begin the transaction
+    	FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+    	ft.setCustomAnimations(R.anim.slide_down, R.anim.hide);
+    	ft.disallowAddToBackStack();
+    	// Replace the container with the new fragment
+    	//ft.replace(R.id.flAddToGroup, new AddToGroupRequestFragment(), "addToGroupRequestFragmentTag");
+    	// Execute the changes specified
+    	ft.commit();
     }
       
     
