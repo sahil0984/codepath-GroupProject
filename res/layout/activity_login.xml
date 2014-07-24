@@ -48,7 +48,7 @@
 	        android:background="#af000000"
 	        android:textSize="25sp"
 	        android:textStyle="bold"
-	        android:text="Find My Ride"/>
+	        android:text="RideSo"/>
 	    
 	    <TextView 
 	        android:id="@+id/tvTagline"

@@ -8,15 +8,6 @@
         myapp:showAsAction="always"
         android:title="Edit Profile">
     </item>
-
-
-    
-    <item
-        android:id="@+id/miCreateGroup"
-        android:icon="@drawable/ic_action_add"
-        myapp:showAsAction="withText|always"
-        android:title="Create Group">
-    </item> 
     
     <item
         android:id="@+id/miSavings"
@@ -25,4 +16,10 @@
         android:title="Savings">
     </item> 
     
+    <item
+        android:id="@+id/miCreateGroup"
+        android:icon="@drawable/ic_action_add"
+        myapp:showAsAction="always"
+        android:title="Create Group">
+    </item> 
 </menu>

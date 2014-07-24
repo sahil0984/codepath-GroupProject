@@ -87,7 +87,6 @@ public class LoginActivity extends ActionBarActivity {
 	
 	public void gotoHomeActivity() {
 		pbLoading.setVisibility(ProgressBar.INVISIBLE);
-		pbLoading.setEnabled(false);
 		Intent i = new Intent(getApplicationContext(), HomeActivity.class);
 		startActivity(i);
 		overridePendingTransition(R.anim.fade_in, R.anim.slide_up);
@@ -330,6 +329,8 @@ public class LoginActivity extends ActionBarActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 	  super.onActivityResult(requestCode, resultCode, data);
 	  ParseFacebookUtils.finishAuthentication(requestCode, resultCode, data);
+	  
+	  //BOZO: Need to handle faliure result here.
 	}
 
 	

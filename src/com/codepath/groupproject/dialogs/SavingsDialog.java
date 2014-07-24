@@ -118,7 +118,7 @@ public class SavingsDialog extends DialogFragment {
 	        case 1:
 	            return SavingsFragment.newInstance(1, "Monthly");
 	        case 2:
-	            return SavingsFragment.newInstance(2, "Annualy");
+	            return SavingsFragment.newInstance(2, "Annual");
 	        case 3:
 	            return SavingsFragment.newInstance(3, "Overall");
 	        default:

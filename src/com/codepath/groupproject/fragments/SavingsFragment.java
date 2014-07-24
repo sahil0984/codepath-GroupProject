@@ -17,8 +17,10 @@ import com.parse.ParseGeoPoint;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -112,6 +114,7 @@ public final class SavingsFragment extends Fragment {
         text.setText(title);
         text.setTextSize(20 * getResources().getDisplayMetrics().density);
         text.setPadding(20, 20, 20, 20);
+        
 
         setupViews(v);
         
@@ -132,8 +135,23 @@ public final class SavingsFragment extends Fragment {
 		tvCarbonSavings = (TextView) view.findViewById(R.id.tvCarbonSavings);
 		tvDollarSavings = (TextView) view.findViewById(R.id.tvDollarSavings);
 		
+		TextView tvCarbonMax = (TextView) view.findViewById(R.id.tvCarbonMax);
+		TextView tvDollarsMax = (TextView) view.findViewById(R.id.tvDollarsMax);
+		
 		tvPageTitle = (TextView) view.findViewById(R.id.tvPageTitle);
 		tvPageTitle.setText(title);
+		
+		
+	    Typeface robotoBoldCondensedItalic = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Roboto-Light.ttf");
+	    tvCarbonMax.setTypeface(robotoBoldCondensedItalic);
+	    tvDollarsMax.setTypeface(robotoBoldCondensedItalic);
+	    
+	    tvCarbonSavings.setTypeface(robotoBoldCondensedItalic);
+	    tvDollarSavings.setTypeface(robotoBoldCondensedItalic);
+	    
+	    tvCarbonContribution.setTypeface(robotoBoldCondensedItalic);
+	    tvDollarsSpent.setTypeface(robotoBoldCondensedItalic);
+	    
 	}
     
 	public void calculateSavings() {
@@ -246,14 +264,16 @@ public final class SavingsFragment extends Fragment {
 	        animator.setObjectValues(0, count);
 	        animator.addUpdateListener(new AnimatorUpdateListener() {
 	            public void onAnimationUpdate(ValueAnimator animation) {
+	            	String valueOfString;
+	            	valueOfString = String.valueOf(animation.getAnimatedValue());
 	            	if (tv.equals("tvCarbonContribution")) {
-	            		tvCarbonContribution.setText(String.valueOf(animation.getAnimatedValue()) + " lbs");
+	            		tvCarbonContribution.setText(valueOfString + " lbs");
 	            	} else if (tv.equals("tvDollarsSpent")) {
-	            		tvDollarsSpent.setText("$ " + String.valueOf(animation.getAnimatedValue()));
+	            		tvDollarsSpent.setText("$ " + valueOfString);
 	            	} else if (tv.equals("tvCarbonSavings")) {
-	            		tvCarbonSavings.setText("Saved, " + String.valueOf(animation.getAnimatedValue()) + " lbs of CO2");
+	            		tvCarbonSavings.setText(Html.fromHtml("Saved, <b>" + valueOfString + "</b> lbs of CO2"));
 	            	} else if (tv.equals("tvDollarSavings")) {
-	            		tvDollarSavings.setText("Saved, $ " + String.valueOf(animation.getAnimatedValue()));
+	            		tvDollarSavings.setText(Html.fromHtml("Saved, $ <b>" + valueOfString + "</b>"));
 	            	}
 	            }
 	        });

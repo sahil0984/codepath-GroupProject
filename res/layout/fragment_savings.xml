@@ -12,9 +12,19 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="70dp"
+		style="@style/SavingsSubTextView"
         android:text="CO2"/>
         
-        
+    <TextView 
+        android:id="@+id/tvCarbonMax"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="70dp"
+        android:layout_alignParentRight="true"
+        style="@style/SavingsMaxTextView"
+        android:text="MAX."/>
+    
 	<RelativeLayout 
 	    android:id="@+id/rlCarbon"
 	    android:layout_width="match_parent"
@@ -65,6 +75,7 @@
 		android:layout_centerHorizontal="true"
 		android:layout_marginTop="20dp"
 		android:layout_marginBottom="60dp"
+		style="@style/SavingsMainTextView"
         android:text="CO2"/>
 	
     <TextView 
@@ -73,8 +84,19 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/rlDollars"
         android:layout_marginLeft="20dp"
+		style="@style/SavingsSubTextView"
         android:text="$"/>
     
+    <TextView 
+        android:id="@+id/tvDollarsMax"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/rlDollars"
+        android:layout_marginRight="20dp"
+        android:layout_alignParentRight="true"
+        style="@style/SavingsMaxTextView"
+        android:text="MAX."/>
+        
 	<RelativeLayout 
 	    android:id="@+id/rlDollars"
 	    android:layout_width="match_parent"
@@ -127,6 +149,7 @@
         android:layout_below="@+id/rlDollars"
 		android:layout_centerHorizontal="true"
 		android:layout_marginTop="20dp"
+		style="@style/SavingsMainTextView"
         android:text="$"/>
 
         
@@ -138,6 +161,7 @@
 		android:layout_centerHorizontal="true"
 		android:gravity="center_horizontal"
 		android:layout_marginBottom="20dp"
+		style="@style/SavingsSubTextView"
         android:text=""/>
     
 </RelativeLayout>
