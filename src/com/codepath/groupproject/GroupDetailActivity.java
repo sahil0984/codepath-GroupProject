@@ -109,9 +109,6 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
 		String groupObjectId = getIntent().getStringExtra("group");
 		
         //Create a Card
-
-        
-
          
         //Create a Card
         Card card2 = new Card(this,R.layout.carddemo_example_inner_content);

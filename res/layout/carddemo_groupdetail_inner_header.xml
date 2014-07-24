@@ -18,7 +18,7 @@
   ~  *****************************************************************************
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:card="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical"
               style="@style/card"
@@ -28,15 +28,23 @@
     <!-- This is the base Inner View inside a CardHeader.
          You can customize it with your layout xml file and your CardHeader.
          You can popolate your element with CardHeader#setupInnerViewElements() method -->
+	    <com.parse.ParseImageView
+    android:id="@+id/ivGroupImage"
+    android:layout_width="40dp"
+    android:layout_height="40dp"
+    android:layout_margin="8dp"
+    android:src="@drawable/ic_launcher" />
+
     <TextView
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:id="@+id/text_birth1"
-              android:textSize="24sp"
-              android:layout_marginLeft="20dp"
-              android:textColor="@color/cyan"
-              android:lines="2"
-        />
+        android:id="@+id/text_birth1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/ivGroupImage"
+        android:layout_alignTop="@+id/ivGroupImage"
+        android:layout_toRightOf="@+id/ivGroupImage"
+        android:lines="2"
+        android:textColor="@color/cyan"
+        android:textSize="24sp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -44,7 +52,8 @@
         android:textColor="@color/blue"
         android:layout_marginLeft="20dp"
         android:id="@+id/text_birth2"
+        android:layout_below="@+id/text_birth1"
         android:textSize="14sp"
         />
 
-</LinearLayout>
+</RelativeLayout>

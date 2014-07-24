@@ -18,7 +18,16 @@
 
 package com.codepath.groupproject;
 
+import org.apache.http.Header;
+import org.json.JSONObject;
+
 import com.codepath.groupproject.models.Group;
+import com.loopj.android.http.AsyncHttpClient;
+import com.parse.GetDataCallback;
+import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ParseGeoPoint;
+import com.parse.ParseImageView;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -56,7 +65,44 @@ public class GroupDetailCard extends Card {
         super(context, innerLayout);
         init();
     }
+    
+	protected void getOnwardAddFromCoord(ParseGeoPoint pCoord) {
+    	Double lat = pCoord.getLatitude();
+    	Double lng = pCoord.getLongitude();
+	    String url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lng;
+	    AsyncHttpClient client = new AsyncHttpClient();
+	    client.get(url, null, new GeoCoderResponseHandler(this.mContext) {
+	    	
+	    	@Override
+	    	public void onSuccess(int statusCode, Header[] headers,
+	    			JSONObject response) {
+	    		super.onSuccess(statusCode, headers, response);
+		    		//tvOnwardLocation.setText(getCheckedAdd());
+	    	}
+	    	
+	    });
+		return;
+	}
+	protected void getReturnAddFromCoord(ParseGeoPoint pCoord) {
+    	Double lat = pCoord.getLatitude();
+    	Double lng = pCoord.getLongitude();
+	    String url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lng;
+	    AsyncHttpClient client = new AsyncHttpClient();
+	    client.get(url, null, new GeoCoderResponseHandler(this.mContext) {
+	    	
+	    	@Override
+	    	public void onSuccess(int statusCode, Header[] headers,
+	    			JSONObject response) {
+	    		super.onSuccess(statusCode, headers, response);
+	    	
+	    		//tvReturnLocation.setText(getCheckedAdd());
+	    			
 
+	    	}
+	    	
+	    });
+		return;
+	}
     private void init() {
 
         //Add Header
@@ -64,6 +110,7 @@ public class GroupDetailCard extends Card {
         header.setButtonExpandVisible(true);
         header.mName = currentGroup.getName();
         header.mSubName = "Birthday today";
+        
         addCardHeader(header);
 
         //Add Expand Area
@@ -79,12 +126,14 @@ public class GroupDetailCard extends Card {
         });
 
         //Add Thumbnail
+        /*
         GoogleNowBirthThumb thumbnail = new GoogleNowBirthThumb(getContext());
         float density = getContext().getResources().getDisplayMetrics().density;
         int size= (int)(125*density);
         thumbnail.setUrlResource("https://lh5.googleusercontent.com/-squZd7FxR8Q/UyN5UrsfkqI/AAAAAAAAbAo/VoDHSYAhC_E/s"+size+"/new%2520profile%2520%25282%2529.jpg");
         thumbnail.setErrorResource(R.drawable.ic_launcher);
         addCardThumbnail(thumbnail);
+        */
     }
 
     @Override
@@ -138,7 +187,20 @@ public class GroupDetailCard extends Card {
 
             TextView txName = (TextView) view.findViewById(R.id.text_birth1);
             TextView txSubName = (TextView) view.findViewById(R.id.text_birth2);
+            ParseImageView ivGroupImage = (ParseImageView) view.findViewById(R.id.ivGroupImage);
+            ParseFile photoFile = currentGroup.getPhotoFile();
+            if (photoFile != null) {
+            	ivGroupImage.setParseFile(photoFile);
+            	ivGroupImage.loadInBackground(new GetDataCallback() {
 
+         		   @Override
+         		   public void done(byte[] data, ParseException e) {
+                        // nothing to do
+         		   }
+         	   });
+            } else {
+         	   ivGroupImage.setImageResource(android.R.color.transparent);
+            }
             txName.setText(mName);
             txSubName.setText(mSubName);
         }

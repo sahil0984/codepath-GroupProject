@@ -33,8 +33,6 @@ public abstract class UserListFragment extends Fragment {
 	private ArrayList<User> users;
 	private ArrayAdapter<User> aUsers;
 	private ListView lvUsers;
-	SimpleSectionedListAdapter simpleSectionedListAdapter;
-	ArrayList<Section> sections;
 	private ProgressBar pbLoading;
 
 	
@@ -49,9 +47,7 @@ public abstract class UserListFragment extends Fragment {
 
 		//populateUsers(getArguments().getString("group"));
 	}
-	public void addSection(String name, int index){
-		sections.add(new Section(index,name));
-	}
+
 	public void appendUser(User newUser) {
 		aUsers.add(newUser);
 	}
