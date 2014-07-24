@@ -7,6 +7,7 @@ import com.codepath.groupproject.models.Chat;
 import com.parse.ParseUser;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,12 +56,19 @@ public class ChatArrayAdapter extends ArrayAdapter<Chat> {
   		}
   	    holder = new ViewHolder();
   	    
-
-  
+        
   	    holder.tvSender = (TextView) convertView.findViewById(R.id.tvSender);
   	    holder.tvMessage = (TextView) convertView.findViewById(R.id.tvMessage);
   	    holder.tvTimeStamp = (TextView) convertView.findViewById(R.id.tvTimeStamp);
 
+  	    
+        Typeface robotoBoldCondensedItalic = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Light.ttf");
+        //Typeface fontAwesome = Typeface.createFromAsset(context.getAssets(), "fonts/fontawesome-webfont.ttf");
+        holder.tvSender.setTypeface(robotoBoldCondensedItalic);
+        holder.tvMessage.setTypeface(robotoBoldCondensedItalic);
+        holder.tvTimeStamp.setTypeface(robotoBoldCondensedItalic);
+    
+  	    
   		convertView.setTag(holder);
 
   	    
