@@ -157,8 +157,8 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
                 }   
 			}
         });
-		tvOnwardLocation = (TextView) findViewById(R.id.tvOnwardLocation);
-		tvReturnLocation = (TextView) findViewById(R.id.tvReturnLocation);
+		tvOnwardLocation = (TextView) findViewById(R.id.tvReturn);
+		tvReturnLocation = (TextView) findViewById(R.id.tvOnward);
 		
 		mapFragment = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map));
 		if (mapFragment != null) {

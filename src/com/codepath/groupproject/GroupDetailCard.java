@@ -30,7 +30,9 @@ import com.parse.ParseGeoPoint;
 import com.parse.ParseImageView;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.view.Gravity;
 import android.view.View;
@@ -54,6 +56,12 @@ public class GroupDetailCard extends Card {
 
     public int USE_VIGNETTE=0;
     private Group currentGroup;
+	private TextView tvOnward;
+	private TextView tvReturn;
+	
+	private TextView tvOnwardTime;
+	private TextView tvReturnTime;
+    
     
     public GroupDetailCard(Context context, Group group) {
         super(context,R.layout.carddemo_groupdetail_inner_main);
@@ -77,7 +85,7 @@ public class GroupDetailCard extends Card {
 	    	public void onSuccess(int statusCode, Header[] headers,
 	    			JSONObject response) {
 	    		super.onSuccess(statusCode, headers, response);
-		    		//tvOnwardLocation.setText(getCheckedAdd());
+		    		tvOnward.setText(getCheckedAdd());
 	    	}
 	    	
 	    });
@@ -94,8 +102,8 @@ public class GroupDetailCard extends Card {
 	    	public void onSuccess(int statusCode, Header[] headers,
 	    			JSONObject response) {
 	    		super.onSuccess(statusCode, headers, response);
-	    	
-	    		//tvReturnLocation.setText(getCheckedAdd());
+	    		
+	    		tvReturn.setText(getCheckedAdd());
 	    			
 
 	    	}
@@ -103,13 +111,44 @@ public class GroupDetailCard extends Card {
 	    });
 		return;
 	}
-    private void init() {
+	public void stringToDateTime(String[] dateTimeQualified, String dateTime) {
+		
+		String date = "";
+		String time = "";
+		
+		date = dateTime.replaceAll(" .*:.*", "");
+		time = dateTime.replaceAll(".*/.*/.* ", "");
 
+		if (date.equals("01/01/3001")) {
+			date = "";
+		}
+		if (time.equals("25:25")) {
+			time = "";
+		}
+		
+		dateTimeQualified[0] = date;
+		dateTimeQualified[1] = time;
+		
+	
+	}
+    private void init() {
+    	
+ 
+        
         //Add Header
         GroupDetailHeader header = new GroupDetailHeader(getContext(), R.layout.carddemo_groupdetail_inner_header);
         header.setButtonExpandVisible(true);
         header.mName = currentGroup.getName();
-        header.mSubName = "Birthday today";
+        
+        String onwardTime[] = new String[2];
+        stringToDateTime(onwardTime,currentGroup.getOnwardTime());
+
+        //Setting Date
+        header.mSubName = onwardTime[0];
+        getOnwardAddFromCoord(currentGroup.getOnwardLocation());
+        getReturnAddFromCoord(currentGroup.getReturnLocation());
+
+
         
         addCardHeader(header);
 
@@ -138,12 +177,29 @@ public class GroupDetailCard extends Card {
 
     @Override
     public void setupInnerViewElements(ViewGroup parent, View view) {
+    	Typeface robotoBoldCondensedItalic = Typeface.createFromAsset(mContext.getAssets(), "fonts/fontawesome-webfont.ttf");
 
-        TextView title = (TextView) view.findViewById(R.id.card_main_inner_simple_title);
-        title.setText("Wish Happy Birthday");
-        title.setTextColor(mContext.getResources().getColor(R.color.black));
-        title.setGravity(Gravity.CENTER_VERTICAL);
-
+        tvOnward =  (TextView) view.findViewById(R.id.tvOnward);  
+        tvReturn = (TextView) view.findViewById(R.id.tvReturn);
+        
+        tvOnwardTime =  (TextView) view.findViewById(R.id.tvOnwardTime);
+        tvReturnTime = (TextView) view.findViewById(R.id.tvReturnTime);
+        
+        String onwardTime[] = new String[2];
+        stringToDateTime(onwardTime,currentGroup.getOnwardTime());
+        
+        String returnTime[] = new String[2];
+        stringToDateTime(returnTime,currentGroup.getReturnTime());
+        
+        tvOnwardTime.setText(onwardTime[1]);
+        tvReturnTime.setText(returnTime[1]);
+        
+       
+        tvOnward.setTypeface(robotoBoldCondensedItalic);
+        tvReturn.setTypeface(robotoBoldCondensedItalic);
+        
+        tvOnwardTime.setTypeface(robotoBoldCondensedItalic);
+        tvReturnTime.setTypeface(robotoBoldCondensedItalic);
     }
 
 
@@ -198,9 +254,10 @@ public class GroupDetailCard extends Card {
                         // nothing to do
          		   }
          	   });
-            } else {
-         	   ivGroupImage.setImageResource(android.R.color.transparent);
-            }
+            } //else {
+         	   //ivGroupImage.setImageResource(android.R.color.transparent);
+            //}
+            
             txName.setText(mName);
             txSubName.setText(mSubName);
         }

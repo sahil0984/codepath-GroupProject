@@ -75,8 +75,6 @@ public class UserArrayAdapter extends ArrayAdapter<User> {
        holder.ivProfileImage.setProfileId((String)user.get("fbId"));
 
        holder.tvName.setText(user.getFirstName());
-       holder.tvOnwardTime.setText("Estimated");
-       holder.tvReturnTime.setText("Estimated");
        holder.tvLocation.setText("Location");
        
 		

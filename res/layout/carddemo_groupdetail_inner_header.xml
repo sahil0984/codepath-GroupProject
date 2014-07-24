@@ -15,25 +15,29 @@
   ~   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   ~   See the License for the specific language governing permissions and
   ~   limitations under the License.
-  ~  *****************************************************************************
-  -->
+  ~  *****************************************************************************
+-->
+
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:card="http://schemas.android.com/apk/res-auto"
-              android:orientation="vertical"
-              style="@style/card"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content">
+    xmlns:card="http://schemas.android.com/apk/res-auto"
+    style="@style/card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
 
-    <!-- This is the base Inner View inside a CardHeader.
+    <!--
+         This is the base Inner View inside a CardHeader.
          You can customize it with your layout xml file and your CardHeader.
-         You can popolate your element with CardHeader#setupInnerViewElements() method -->
-	    <com.parse.ParseImageView
-    android:id="@+id/ivGroupImage"
-    android:layout_width="40dp"
-    android:layout_height="40dp"
-    android:layout_margin="8dp"
-    android:src="@drawable/ic_launcher" />
+         You can popolate your element with CardHeader#setupInnerViewElements() method
+    -->
+
+    <com.parse.ParseImageView
+        android:id="@+id/ivGroupImage"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="8dp"
+        android:src="@drawable/ic_launcher_new" />
 
     <TextView
         android:id="@+id/text_birth1"
@@ -43,17 +47,18 @@
         android:layout_alignTop="@+id/ivGroupImage"
         android:layout_toRightOf="@+id/ivGroupImage"
         android:lines="2"
-        android:textColor="@color/cyan"
+        android:textColor="@color/theme_color3"
         android:textSize="24sp" />
 
     <TextView
+        android:id="@+id/text_birth2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/blue"
-        android:layout_marginLeft="20dp"
-        android:id="@+id/text_birth2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:gravity="center"
         android:layout_below="@+id/text_birth1"
-        android:textSize="14sp"
-        />
+        android:textColor="@color/theme_color4"
+        android:textSize="14sp" />
 
 </RelativeLayout>

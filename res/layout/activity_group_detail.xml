@@ -6,16 +6,6 @@
     android:background="@color/background_grey"    
     tools:context="${packageName}.${activityClass}" >
 
-    <TextView
-        android:id="@+id/tvOnwardLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/tvReturnLocation"
-        android:layout_alignParentTop="true"
-        android:layout_alignRight="@+id/map"
-        android:layout_marginBottom="50dp"
-        android:layout_marginTop="10dp"
-        android:text="Home" />
 
 
     
@@ -47,17 +37,7 @@
 		 	   card:card_layout_resourceID="@layout/card_thumbnail_layout"
 		       android:layout_marginTop="12dp"/>
 		</LinearLayout>	
-    </ScrollView> 
-
-    <TextView
-        android:id="@+id/tvReturnLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/flUserList"
-        android:layout_alignLeft="@+id/map"
-        android:layout_alignRight="@+id/map"
-        android:layout_marginBottom="18dp"
-        android:text="Work" />
+    </ScrollView>
 
     <FrameLayout
        android:id="@+id/flCreateGroup"

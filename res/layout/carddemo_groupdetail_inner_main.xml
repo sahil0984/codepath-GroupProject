@@ -21,21 +21,90 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               	android:layout_gravity="center_vertical"
               	android:layout_width="wrap_content"
-              	android:layout_height="30dp">
+              	android:layout_height="wrap_content">
 
 
     <!-- This is the base Inner View inside a CardHeader.
          You can customize it with your layout xml file and your CardHeader.
          You can popolate your element with CardHeader#setupInnerViewElements() method -->
 
-    <TextView
-        android:id="@+id/card_main_inner_simple_title"
-        style="@style/card.base_simple_title"
+    <ImageView
+        android:id="@+id/imageView1"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_centerHorizontal="true"
-        android:gravity="center_vertical"
-        android:text="hello"
-        android:textColor="@color/black" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_alignParentLeft="true"
+        android:src="@drawable/ic_marker" />
+
+    <ImageView
+        android:id="@+id/ImageView01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/imageView1"
+        android:src="@drawable/ic_marker" />
+
+    <RelativeLayout
+        android:id="@+id/llOnward"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/imageView1"
+       	android:layout_alignBottom="@+id/imageView1"        
+        android:layout_toRightOf="@+id/imageView1"
+        android:gravity="center_vertical"       
+		>
+
+        <TextView
+            android:id="@+id/tvOnward"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="5dp"
+            android:layout_toLeftOf="@+id/tvOnwardTime"
+            android:text="Onward" />
+
+        <TextView
+            android:id="@+id/tvOnwardTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignBaseline="@+id/tvOnward"
+            android:textStyle="bold"
+          	android:layout_marginRight="10dp"
+            android:text="12:00 pm" />
+
+    </RelativeLayout>
+    
+    <RelativeLayout
+        android:id="@+id/llReturn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/ImageView01"
+       	android:layout_alignBottom="@+id/ImageView01"        
+        android:layout_toRightOf="@+id/ImageView01"
+        android:gravity="center_vertical"       
+		>
+
+        <TextView
+            android:id="@+id/tvReturn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="5dp"
+            android:layout_toLeftOf="@+id/tvReturnTime"
+            android:text="Return" />
+
+        <TextView
+            android:id="@+id/tvReturnTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+          	android:layout_marginRight="10dp"
+          	android:textStyle="bold"
+            android:text="5:00 pm" />
+
+    </RelativeLayout>
+  
 
 </RelativeLayout>

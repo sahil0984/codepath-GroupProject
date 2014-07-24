@@ -25,4 +25,6 @@
 
     
     <string name="icon_car">&#xf1b9;</string>
+    <string name="icon_marker">&#xf041;</string>
+    
 </resources>

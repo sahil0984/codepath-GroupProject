@@ -35,19 +35,6 @@
         android:text="Name" />
 
     <TextView
-        android:id="@+id/tvOnwardTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="5dp"
-        android:layout_alignBottom="@+id/tvName"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="10dp"
-        android:textSize="10sp"
-        android:textColor="@color/grey"
-        android:text="Onward: 9:00am" />
-
-    <TextView
         android:id="@+id/tvLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -58,16 +45,6 @@
         android:textStyle="italic"
         android:textColor="@color/grey"
         android:textSize="10sp" />
-
-    <TextView
-        android:id="@+id/tvReturnTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/ivProfileImage"
-        android:layout_alignLeft="@+id/tvOnwardTime"
-        android:textSize="10sp"
-        android:textColor="@color/grey"
-        android:text="Return: 6:00pm" />
 
     </RelativeLayout>
 </RelativeLayout>
