@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Locale;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -74,8 +75,9 @@ public class GroupArrayAdapter extends ArrayAdapter<Group> {
   	    holder.tvOnwardTime = (TextView) convertView.findViewById(R.id.tvOnwardTime);
   	    holder.tvDate = (TextView) convertView.findViewById(R.id.tvDate);
   	    holder.tvReturnTime = (TextView) convertView.findViewById(R.id.tvReturnTime);
-  	    holder.tvMembersList = (TextView) convertView.findViewById(R.id.tvLocation);
+  	    holder.tvMembersList = (TextView) convertView.findViewById(R.id.tvMembersList);
   	    
+
   	    holder.tvMon = (TextView) convertView.findViewById(R.id.tvMon);
   	    holder.tvTue = (TextView) convertView.findViewById(R.id.tvTue);
   	    holder.tvWed = (TextView) convertView.findViewById(R.id.tvWed);
@@ -83,6 +85,29 @@ public class GroupArrayAdapter extends ArrayAdapter<Group> {
   	    holder.tvFri = (TextView) convertView.findViewById(R.id.tvFri);
   	    holder.tvSat = (TextView) convertView.findViewById(R.id.tvSat);
   	    holder.tvSun = (TextView) convertView.findViewById(R.id.tvSun);
+  	    
+  	    
+	  	Typeface fontFontAwesome = Typeface.createFromAsset(context.getAssets(), "fonts/fontawesome-webfont.ttf");
+	  	Typeface fontRobotoBold = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Bold.ttf");
+	  	Typeface fontRobotoLight = Typeface.createFromAsset(context.getAssets(), "fonts/Roboto-Light.ttf");
+	  	
+	  	holder.tvGroupName.setTypeface(fontRobotoBold);
+	  	holder.tvOnwardTime.setTypeface(fontFontAwesome);
+	  	holder.tvReturnTime.setTypeface(fontFontAwesome);
+	  	holder.tvMembersList.setTypeface(fontFontAwesome);
+
+  		if (getItemViewType(position) == 1) {
+  		  	holder.tvMon.setTypeface(fontFontAwesome);
+  		  	holder.tvTue.setTypeface(fontFontAwesome);
+  		  	holder.tvWed.setTypeface(fontFontAwesome);
+  		  	holder.tvThu.setTypeface(fontFontAwesome);
+  		  	holder.tvFri.setTypeface(fontFontAwesome);
+  		  	holder.tvSat.setTypeface(fontFontAwesome);
+  		  	holder.tvSun.setTypeface(fontFontAwesome);
+  		} else {
+  		  	holder.tvDate.setTypeface(fontFontAwesome);
+  		}	  	
+	  	
 
   		convertView.setTag(holder);
 
@@ -118,7 +143,7 @@ public class GroupArrayAdapter extends ArrayAdapter<Group> {
        formattedOnwardDateTime = stringToDateTime(group.getOnwardTime());
        String[] formattedReturnDateTime = new String[2];
        formattedReturnDateTime = stringToDateTime(group.getOnwardTime());      
-       
+              
  		if (getItemViewType(position) == 0) {
  			holder.tvDate.setText(formattedOnwardDateTime[0]);
  		} else {
@@ -209,13 +234,25 @@ public class GroupArrayAdapter extends ArrayAdapter<Group> {
 		date = dateTime.replaceAll(" .*:.*", "");
 		time = dateTime.replaceAll(".*/.*/.* ", "");
 
+		//Toast.makeText(context, date, Toast.LENGTH_SHORT).show();
+		
 		if (date.equals("01/01/3001")) {
 			date = "";
 		}
 		if (time.equals("25:25")) {
 			time = "";
+		} else {
+			String hr = time.replaceAll(":.*", "");
+			String min = time.replaceAll(".*:", "");
+			if (Integer.parseInt(hr)>12) {
+				time = (Integer.parseInt(hr)-12) + ":" + min + "pm";
+			} else {
+				time = hr + ":" + min + "am";
+			}
 		}
 				
+		//Toast.makeText(context, date, Toast.LENGTH_SHORT).show();
+
 		String[] dateTimeQualified = new String[2];
 		
 		dateTimeQualified[0] = date;

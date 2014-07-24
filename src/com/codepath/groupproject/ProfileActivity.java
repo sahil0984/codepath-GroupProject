@@ -6,6 +6,7 @@ import java.util.Locale;
 import org.apache.http.Header;
 import org.json.JSONObject;
 
+import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.facebook.widget.ProfilePictureView;
 import com.loopj.android.http.AsyncHttpClient;
 import com.parse.ParseException;
@@ -24,6 +25,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -44,9 +46,10 @@ public class ProfileActivity extends ActionBarActivity {
 	//private FloatLabeledEditText etPhone;
 	private FloatLabeledEditText etPersonalEmail;
 	private FloatLabeledEditText etEmail;
-	private CheckBox cbIsPublic;
+	private TextView cbIsPublic;
+	private boolean isPublic;
 	
-	private Button btnVerifyEmail;
+	private BootstrapButton btnVerifyEmail;
 	//private Button btnGoHome;
 	
 	private Menu mOptionsMenu;
@@ -86,22 +89,25 @@ public class ProfileActivity extends ActionBarActivity {
 		//etPhone         = (FloatLabeledEditText) findViewById(R.id.etPhone);
 		etPersonalEmail = (FloatLabeledEditText) findViewById(R.id.etPersonalEmail);
 		etEmail         = (FloatLabeledEditText) findViewById(R.id.etEmail);
-		cbIsPublic		= (CheckBox) findViewById(R.id.cbIsPublic);
+		cbIsPublic		= (TextView) findViewById(R.id.cbIsPublic);
 		
-		btnVerifyEmail = (Button) findViewById(R.id.btnVerifyEmail);
+		btnVerifyEmail = (BootstrapButton) findViewById(R.id.btnVerifyEmail);
 		//btnGoHome      = (Button) findViewById(R.id.btnDone);
 
 		//btnVerifyEmail.setEnabled(false);
 		
-		cbIsPublic.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+        Typeface fontAwesome = Typeface.createFromAsset(getAssets(), "fonts/fontawesome-webfont.ttf");
+        cbIsPublic.setTypeface(fontAwesome);
+		
+		isPublic = false;
+		updateIsPublicIcon();
+		
+		cbIsPublic.setOnClickListener(new OnClickListener() {
 			
 			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				if (isChecked) {
-					buttonView.setText("Public Profile");
-				} else {
-					buttonView.setText("Local Profile");
-				}
+			public void onClick(View v) {
+				isPublic = !isPublic;
+				updateIsPublicIcon();
 			}
 		});
 				
@@ -109,6 +115,14 @@ public class ProfileActivity extends ActionBarActivity {
 		//etPhone.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
 	}
 	
+	private void updateIsPublicIcon() {
+		if (isPublic) {
+			cbIsPublic.setText(getResources().getString(R.string.icon_microphone) + " Public Profile");
+		} else {
+			cbIsPublic.setText(getResources().getString(R.string.icon_headphone) + " Local Profile");
+		}
+	}
+
 	public void stopEditProfile() {
 		
 		//This sends a request and callback changes the states and call this function to finish things.
@@ -160,8 +174,10 @@ public class ProfileActivity extends ActionBarActivity {
 		etEmail.requestFocus();
 
 		//IsPublic
-		cbIsPublic.setChecked(isPublic);
-
+		//cbIsPublic.setChecked(isPublic);
+		this.isPublic = isPublic;
+		updateIsPublicIcon();
+		
 		
 		etFirstName.requestFocus();
 
@@ -277,7 +293,7 @@ public class ProfileActivity extends ActionBarActivity {
 		//ParseUser.getCurrentUser().put("phone", etPhone.getText().toString());
 		ParseUser.getCurrentUser().put("personalEmail", etPersonalEmail.getText().toString());
 		ParseUser.getCurrentUser().put("email", etEmail.getText().toString());
-		ParseUser.getCurrentUser().put("isPublic", cbIsPublic.isChecked());
+		ParseUser.getCurrentUser().put("isPublic", isPublic);
 		ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
 			
 			@Override

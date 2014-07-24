@@ -15,7 +15,7 @@
     <!-- Application theme. -->
     <style name="MyAppTheme" parent="MyAppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
-        <item name="android:actionBarStyle">@style/MyActionBarTheme</item>        
+        <item name="android:actionBarStyle">@style/MyActionBarTheme</item>
     </style>
 
     <style name="MyActionBarTheme" parent="android:Widget.Holo.Light.ActionBar.Solid.Inverse">
@@ -31,9 +31,43 @@
       
       
       
-      
-      
-      
+     <!-- TextView styles. -->
+     
+     <!-- Following styles are for group list view but feel free to use them anywhere, but do not modify them. -->
+    <style name="ListHeadTextView" parent="android:Widget.TextView">
+  		<item name="android:textSize">14sp</item>
+  		<item name="android:textStyle">bold</item>
+  		<item name="android:textColor">@color/black</item>
+	</style>
+    <style name="ListSubHeadTextView" parent="android:Widget.TextView">
+  		<item name="android:textSize">12sp</item>
+  		<item name="android:textStyle">normal</item>
+  		<item name="android:textColor">@color/black</item>
+	</style>  
+    <style name="ListDetailTextView" parent="android:Widget.TextView">
+  		<item name="android:textSize">10sp</item>
+  		<item name="android:textStyle">italic</item>
+  		<item name="android:textColor">@color/grey</item>
+	</style>  	
+    
+    <style name="SavingsMainTextView" parent="android:Widget.TextView">
+  		<item name="android:textSize">20sp</item>
+  		<item name="android:textStyle">bold</item>
+  		<item name="android:textColor">@color/black</item>
+	</style>
+    <style name="SavingsSubTextView" parent="android:Widget.TextView">
+  		<item name="android:textSize">15sp</item>
+  		<item name="android:textStyle">normal</item>
+  		<item name="android:textColor">@color/black</item>
+	</style>
+    <style name="SavingsMaxTextView" parent="android:Widget.TextView">
+  		<item name="android:textSize">15sp</item>
+  		<item name="android:textStyle">normal</item>
+  		<item name="android:textColor">@color/red</item>
+	</style>
+	
+    
+    
     
 	<style name="VericalDivider">
 	    <item name="android:layout_width">1dp</item>

@@ -116,16 +116,21 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
+        //Setting the Title text typeface - Use same format for all activities
+        int actionBarTitle = Resources.getSystem().getIdentifier("action_bar_title", "id", "android");
+        TextView actionBarTitleView = (TextView) getWindow().findViewById(actionBarTitle);
+        Typeface robotoBoldCondensedItalic = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Light.ttf");
+        if(actionBarTitleView != null){
+            actionBarTitleView.setTypeface(robotoBoldCondensedItalic);
+        }
+        
+		
 		groupMembers = new ArrayList<User>();
 		//setupTabs();
 		
 		animationDone=0;
 
-		
-		
-		
-		
-		
+		//ViewPager code
 		adapterViewPager = new GroupPagerAdapter(getSupportFragmentManager());
 
 		ViewPager vpPager = (ViewPager) findViewById(R.id.vpPager);
@@ -133,6 +138,9 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
 		vpPager.setClipToPadding(false);
 		vpPager.setPageMargin(12);
 		vpPager.setAdapter(adapterViewPager);
+		
+		//vpPager.setPageTransformer(true, new ZoomOutPageTransformer());
+
 		
 		TitlePageIndicator mIndicator = (TitlePageIndicator)findViewById(R.id.indicator);
         mIndicator.setViewPager(vpPager);
@@ -153,14 +161,7 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
 		
 
         
-        //Setting the Title text typeface - Use same format for all activities
-        int actionBarTitle = Resources.getSystem().getIdentifier("action_bar_title", "id", "android");
-        TextView actionBarTitleView = (TextView) getWindow().findViewById(actionBarTitle);
-        Typeface robotoBoldCondensedItalic = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Light.ttf");
-        if(actionBarTitleView != null){
-            actionBarTitleView.setTypeface(robotoBoldCondensedItalic);
-        }
-        
+
 		
 		String classFrom = getIntent().getStringExtra("classFrom");
 		String myCustomReceiverClass = MyCustomReceiver.class.toString();
@@ -209,9 +210,11 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
 	
 	
 	
-	static class GroupPagerAdapter extends FragmentPagerAdapter {
-    	private static int NUM_ITEMS = 3;
+	static class GroupPagerAdapter extends SmartFragmentStatePagerAdapter {
+    	//private static int NUM_ITEMS = 3;
 
+        private int mCount = 3 ;// = CONTENT.length;
+    	
 	    public GroupPagerAdapter(FragmentManager fm) {
 	        super(fm);
 	    }
@@ -238,7 +241,7 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
         // Returns total number of pages
         @Override
         public int getCount() {
-            return NUM_ITEMS;
+            return mCount;
         }
 
         // Returns the page title for the top indicator
@@ -254,6 +257,13 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
         		return "No List Found";
         	}
         	
+        }
+        
+        public void setCount(int count) {
+            if (count > 0 && count <= 10) {
+                mCount = count;
+                notifyDataSetChanged();
+            }
         }
 		
 	}

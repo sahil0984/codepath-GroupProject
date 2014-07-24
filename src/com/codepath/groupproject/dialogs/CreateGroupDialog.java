@@ -3,11 +3,13 @@ package com.codepath.groupproject.dialogs;
 import java.io.ByteArrayOutputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.http.Header;
 import org.json.JSONObject;
 
+import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.codepath.groupproject.AddUsersActivity;
 import com.codepath.groupproject.GeoCoderResponseHandler;
 import com.codepath.groupproject.GroupDetailActivity;
@@ -32,10 +34,13 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.ColorRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
@@ -62,24 +67,27 @@ public class CreateGroupDialog extends MyFragment {
 	
 	private TextView tvDate;
 
-	private CheckBox cbRecurring;
+	private TextView tvIsRecurring;
+	private boolean isRecurring;
 	private LinearLayout llCheckBoxDays;
-	private CheckBox cbMonday;
-	private CheckBox cbTuesday;
-	private CheckBox cbWednesday;
-	private CheckBox cbThursday;
-	private CheckBox cbFriday;
-	private CheckBox cbSaturday;
-	private CheckBox cbSunday;
+	private TextView tvMon;
+	private TextView tvTue;
+	private TextView tvWed;
+	private TextView tvThu;
+	private TextView tvFri;
+	private TextView tvSat;
+	private TextView tvSun;
+	private boolean[] daysOfWeek;
 	
 	private FloatLabeledEditText etOnwardLocation;
 	private FloatLabeledEditText etReturnLocation;
 	
-	private CheckBox cbIsPublic;
+	private TextView cbIsPublic;
+	private boolean isPublic;
 	
-	private Button btnAddUsers;
-	private Button btnCreate;
-	private Button btnCancel;
+	private BootstrapButton btnAddUsers;
+	private BootstrapButton btnCreate;
+	private BootstrapButton btnCancel;
 	
 	private String onwardTime;
 	private String returnTime;
@@ -145,6 +153,9 @@ public class CreateGroupDialog extends MyFragment {
 	
 	public void populateExistingGroup(Group fromGroup) {
 		//Toast.makeText(getActivity(), "Yes, called from activity!", Toast.LENGTH_LONG).show();
+
+		btnAddUsers.setText("Members (" + fromGroup.getMembers().size() + ")");
+		
 		
 	       if (fromGroup.getPhotoFile() != null) {
 	    	   ivGroupPhoto.setParseFile(fromGroup.getPhotoFile());
@@ -167,15 +178,24 @@ public class CreateGroupDialog extends MyFragment {
 		//tvDate.setText(fromGroup.);
 		//etOnwardLocation.setText(fromGroup.getOnwardLocation());
 		//etReturndLocation.setText(fromGroup.getReturnLocation());
-		cbIsPublic.setChecked(fromGroup.getIsPublic());
-		cbRecurring.setChecked(fromGroup.getRecurring());
-		cbMonday.setChecked(fromGroup.getDaysofWeek()[0]);
-		cbTuesday.setChecked(fromGroup.getDaysofWeek()[1]);
-		cbWednesday.setChecked(fromGroup.getDaysofWeek()[2]);
-		cbThursday.setChecked(fromGroup.getDaysofWeek()[3]);
-		cbFriday.setChecked(fromGroup.getDaysofWeek()[4]);
-		cbSaturday.setChecked(fromGroup.getDaysofWeek()[5]);
-		cbSunday.setChecked(fromGroup.getDaysofWeek()[6]);
+		//cbIsPublic.setChecked(fromGroup.getIsPublic());
+		isPublic = fromGroup.getIsPublic();
+		updateIsPublicIcon();
+		
+		
+		//tvIsRecurring.setChecked(fromGroup.getRecurring());
+		isRecurring = fromGroup.getRecurring();
+		updateIsRecurringIcon();
+		
+		//tvMon.setChecked(fromGroup.getDaysofWeek()[0]);
+		//tvTue.setChecked(fromGroup.getDaysofWeek()[1]);
+		//tvWed.setChecked(fromGroup.getDaysofWeek()[2]);
+		//tvThu.setChecked(fromGroup.getDaysofWeek()[3]);
+		//tvFri.setChecked(fromGroup.getDaysofWeek()[4]);
+		//tvSat.setChecked(fromGroup.getDaysofWeek()[5]);
+		//tvSun.setChecked(fromGroup.getDaysofWeek()[6]);
+		daysOfWeek = fromGroup.getDaysofWeek();
+		updateColorsOfDays();
 		
 		String time1 = fromGroup.getOnwardTime();
 		String[] time1Arr = time1.split(" ");
@@ -252,7 +272,8 @@ public class CreateGroupDialog extends MyFragment {
 	}
 	
 	
-	
+
+
 	@Override
 	protected void onAnimationEnded() {
 		super.onAnimationStarted();
@@ -308,30 +329,42 @@ public class CreateGroupDialog extends MyFragment {
 		
 		tvDate = (TextView) v.findViewById(R.id.tvDate);
 
-		cbRecurring = (CheckBox) v.findViewById(R.id.cbRecurring);
+		tvIsRecurring = (TextView) v.findViewById(R.id.tvIsRecurring);
 		
 		llCheckBoxDays = (LinearLayout) v.findViewById(R.id.llCheckBoxDays);
-		cbMonday = (CheckBox) v.findViewById(R.id.cbMonday);
-		cbTuesday = (CheckBox) v.findViewById(R.id.cbTuesday);
-		cbWednesday = (CheckBox) v.findViewById(R.id.cbWednesday);
-		cbThursday = (CheckBox) v.findViewById(R.id.cbThursday);
-		cbFriday = (CheckBox) v.findViewById(R.id.cbFriday);
-		cbSaturday = (CheckBox) v.findViewById(R.id.cbSaturday);
-		cbSunday = (CheckBox) v.findViewById(R.id.cbSunday);
+		tvMon = (TextView) v.findViewById(R.id.tvMon);
+		tvTue = (TextView) v.findViewById(R.id.tvTue);
+		tvWed = (TextView) v.findViewById(R.id.tvWed);
+		tvThu = (TextView) v.findViewById(R.id.tvThu);
+		tvFri = (TextView) v.findViewById(R.id.tvFri);
+		tvSat = (TextView) v.findViewById(R.id.tvSat);
+		tvSun = (TextView) v.findViewById(R.id.tvSun);
+		daysOfWeek = new boolean[7];
+		Arrays.fill(daysOfWeek, Boolean.FALSE);
+		
 		
 		etOnwardLocation = (FloatLabeledEditText) v.findViewById(R.id.etOnwardLocation);
 		etReturnLocation = (FloatLabeledEditText) v.findViewById(R.id.etReturnLocation);
 		
-		cbIsPublic = (CheckBox) v.findViewById(R.id.cbIsPublic);
+		cbIsPublic = (TextView) v.findViewById(R.id.tvIsPublic);
 		
-		btnAddUsers = (Button) v.findViewById(R.id.btnAddUsers);
-		btnCreate = (Button) v.findViewById(R.id.btnCreate);
-		btnCancel = (Button) v.findViewById(R.id.btnCancel);
+		btnAddUsers = (BootstrapButton) v.findViewById(R.id.btnAddUsers);
+		btnCreate = (BootstrapButton) v.findViewById(R.id.btnCreate);
+		btnCancel = (BootstrapButton) v.findViewById(R.id.btnCancel);
+						
 		
-		cbIsPublic.setChecked(true);
-		cbIsPublic.setText("Public Group");
+        Typeface fontAwesome = Typeface.createFromAsset(getActivity().getAssets(), "fonts/fontawesome-webfont.ttf");
+        tvIsRecurring.setTypeface(fontAwesome);
+        cbIsPublic.setTypeface(fontAwesome);
+		//cbIsPublic.setChecked(true);
+		//cbIsPublic.setText("Public Group");
+		isPublic = false;
+		updateIsPublicIcon();
 		
-		cbRecurring.setChecked(false);
+		//tvIsRecurring.setChecked(false);
+		isRecurring = false;
+		updateIsRecurringIcon();
+		
 		llCheckBoxDays.setVisibility(View.INVISIBLE);
 		tvDate.setVisibility(View.VISIBLE);	
 		
@@ -365,11 +398,13 @@ public class CreateGroupDialog extends MyFragment {
 			}
 		});	
 		
-		cbRecurring.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+		tvIsRecurring.setOnClickListener(new OnClickListener() {
 			
 			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {			
-				if (isChecked) {
+			public void onClick(View v) {
+				isRecurring = !isRecurring;
+				updateIsRecurringIcon();
+				if (isRecurring) {
 					llCheckBoxDays.setVisibility(View.VISIBLE);
 					tvDate.setVisibility(View.INVISIBLE);
 				} else {
@@ -379,15 +414,12 @@ public class CreateGroupDialog extends MyFragment {
 			}
 		});
 		
-		cbIsPublic.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+		cbIsPublic.setOnClickListener(new OnClickListener() {
 			
 			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				if (isChecked) {
-					buttonView.setText("Public Group");
-				} else {
-					buttonView.setText("Local Group");
-				}
+			public void onClick(View arg0) {
+				isPublic = !isPublic;
+				updateIsPublicIcon();
 			}
 		});
 		
@@ -420,8 +452,95 @@ public class CreateGroupDialog extends MyFragment {
 				listener.onActionSelectedCreateGroup(null, "cancel");
 			}
 		});
+		
+		
+		//Listeners for days of week check clicks
+		tvMon.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				daysOfWeek[0] = !daysOfWeek[0];
+				updateColorsOfDays();
+			}
+		});
+		tvTue.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				daysOfWeek[1] = !daysOfWeek[1];
+				updateColorsOfDays();
+			}
+		});
+		tvWed.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				daysOfWeek[2] = !daysOfWeek[2];
+				updateColorsOfDays();
+			}
+		});
+		tvThu.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				daysOfWeek[3] = !daysOfWeek[3];
+				updateColorsOfDays();
+			}
+		});
+		tvFri.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				daysOfWeek[4] = !daysOfWeek[4];
+				updateColorsOfDays();
+			}
+		});
+		tvSat.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				daysOfWeek[5] = !daysOfWeek[5];
+				updateColorsOfDays();
+			}
+		});
+		tvSun.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				daysOfWeek[6] = !daysOfWeek[6];
+				updateColorsOfDays();
+			}
+		});
+	}
+	
+	
+	private void updateIsPublicIcon() {
+		if (isPublic) {
+			cbIsPublic.setText(getResources().getString(R.string.icon_microphone) + " Public Group");
+		} else {
+			cbIsPublic.setText(getResources().getString(R.string.icon_headphone) + " Local Group");
+		}
+	}
+	
+	private void updateIsRecurringIcon() {
+		if (isRecurring) {
+			tvIsRecurring.setText(R.string.icon_repeat);
+		} else {
+			tvIsRecurring.setText(R.string.icon_calendar);
+		}
 	}
 
+	public void updateColorsOfDays() {
+		int colorTrue = R.color.theme_color4;
+		int colorFalse = R.color.background_grey;
+		if (daysOfWeek[0]) {tvMon.setBackgroundColor(getResources().getColor(colorTrue));}
+		else			   {tvMon.setBackgroundColor(getResources().getColor(colorFalse));}
+		if (daysOfWeek[1]) {tvTue.setBackgroundColor(getResources().getColor(colorTrue));}
+		else			   {tvTue.setBackgroundColor(getResources().getColor(colorFalse));}
+		if (daysOfWeek[2]) {tvWed.setBackgroundColor(getResources().getColor(colorTrue));}
+		else			   {tvWed.setBackgroundColor(getResources().getColor(colorFalse));}
+		if (daysOfWeek[3]) {tvThu.setBackgroundColor(getResources().getColor(colorTrue));}
+		else			   {tvThu.setBackgroundColor(getResources().getColor(colorFalse));}
+		if (daysOfWeek[4]) {tvFri.setBackgroundColor(getResources().getColor(colorTrue));}
+		else			   {tvFri.setBackgroundColor(getResources().getColor(colorFalse));}
+		if (daysOfWeek[5]) {tvSat.setBackgroundColor(getResources().getColor(colorTrue));}
+		else			   {tvSat.setBackgroundColor(getResources().getColor(colorFalse));}
+		if (daysOfWeek[6]) {tvSun.setBackgroundColor(getResources().getColor(colorTrue));}
+		else			   {tvSun.setBackgroundColor(getResources().getColor(colorFalse));}
+	}
 	
 //Code for adding a group	
 	private void onAddGroupTasks() {
@@ -505,7 +624,7 @@ public class CreateGroupDialog extends MyFragment {
     
 	public void prepareIntent() {
 		String tmpDate;
-		if (cbRecurring.isChecked() && !tvDate.getText().toString().equals("")) {
+		if (!isRecurring && !tvDate.getText().toString().equals("")) {
 			tmpDate = tvDate.getText().toString();
 		} else {
 			tmpDate = "01/01/3001";
@@ -528,12 +647,12 @@ public class CreateGroupDialog extends MyFragment {
 		newGroup.setName(etGroupName.getText().toString());
 		newGroup.setOnwardTime(tmpDate+" "+tmpOnwardTime);
 		newGroup.setReturnTime(tmpDate+" "+tmpReturnTime);
-		newGroup.setRecurring(cbRecurring.isChecked());
-		newGroup.setDaysOfWeek(daysOfWeek());
+		newGroup.setRecurring(isRecurring);
+		newGroup.setDaysOfWeek(this.daysOfWeek);
 		newGroup.setOnwardLocation(onwardLatLng);
 		newGroup.setReturnLocation(returnLatLng);
 		newGroup.setMembers(groupMembers);
-		newGroup.setIsPublic(cbIsPublic.isChecked());
+		newGroup.setIsPublic(isPublic);
 		newGroup.setOwner(ParseUser.getCurrentUser());
 
 		if (photoFile != null) {
@@ -542,17 +661,18 @@ public class CreateGroupDialog extends MyFragment {
 				
 	}
 	
-	private boolean[] daysOfWeek() {
-		boolean[] daysOfWeekArray = new boolean[7];
-		daysOfWeekArray[0] = cbMonday.isChecked();
-		daysOfWeekArray[1] = cbTuesday.isChecked();
-		daysOfWeekArray[2] = cbWednesday.isChecked();
-		daysOfWeekArray[3] = cbThursday.isChecked();
-		daysOfWeekArray[4] = cbFriday.isChecked();
-		daysOfWeekArray[5] = cbSaturday.isChecked();
-		daysOfWeekArray[6] = cbSunday.isChecked();
-		return daysOfWeekArray;
-	}
+//	private boolean[] daysOfWeek() {
+//		boolean[] daysOfWeekArray = new boolean[7];
+//		//daysOfWeekArray[0] = tvMon.isChecked();
+//		//daysOfWeekArray[1] = tvTue.isChecked();
+//		//daysOfWeekArray[2] = tvWed.isChecked();
+//		//daysOfWeekArray[3] = tvThu.isChecked();
+//		//daysOfWeekArray[4] = tvFri.isChecked();
+//		//daysOfWeekArray[5] = tvSat.isChecked();
+//		//daysOfWeekArray[6] = tvSun.isChecked();
+//		daysOfWeekArray = this.daysOfWeek;
+//		return daysOfWeekArray;
+//	}
 
 //Code for updating date and time returned from home activity
 	public void populateSetDate(int year, int month, int day) {
@@ -609,6 +729,9 @@ public class CreateGroupDialog extends MyFragment {
 				
 				groupMembersStr = data.getStringArrayListExtra("groupMembers");
 				groupMembersStr.add(ParseUser.getCurrentUser().getObjectId());
+				
+				btnAddUsers.setText("Members (" + groupMembersStr.size() + ")");
+
 			     try {
 			    	 //BOZO: Start progress bar
 			    	 createUserListfromObjectId(groupMembersStr);

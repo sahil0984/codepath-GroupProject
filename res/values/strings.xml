@@ -25,6 +25,12 @@
 
     
     <string name="icon_car">&#xf1b9;</string>
-    <string name="icon_marker">&#xf041;</string>
-    
+    <string name="icon_group">&#xf0c0;</string>
+    <string name="icon_plus">&#xf067;</string>
+    <string name="icon_times">&#xf00d;</string>
+    <string name="icon_repeat">&#xf01e;</string>
+    <string name="icon_calendar">&#xf073;</string>
+    <string name="icon_microphone">&#xf130;</string>
+    <string name="icon_headphone">&#xf025;</string>
+
 </resources>

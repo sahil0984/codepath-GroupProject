@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/background_grey"
      >
 
 <RelativeLayout 
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
 	android:layout_marginLeft="8dp"
 	android:layout_marginRight="8dp"
 	android:layout_marginTop="8dp" 
@@ -20,7 +20,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_margin="8dp"
-        android:src="@drawable/ic_launcher" />
+        android:src="@drawable/ic_launcher_new" />
 
     <TextView
         android:id="@+id/tvName"
@@ -28,8 +28,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/ivGroupImage"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="4dp"
         android:layout_marginRight="4dp"
+        style="@style/ListHeadTextView"
         android:text="Group Name" />
 
     <LinearLayout 
@@ -49,6 +51,7 @@
 	        android:layout_height="wrap_content"
 	        android:layout_weight="0.33"	
 	        android:gravity="left"	                
+        	style="@style/ListSubHeadTextView"
 	        android:text="9:00am" />
 	    
 	    <LinearLayout 
@@ -62,42 +65,49 @@
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        android:background="@drawable/choice_shape"
+	        	style="@style/ListSubHeadTextView"
 		        android:text="M"/>
 		    <TextView 
 		        android:id="@+id/tvTue"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        android:background="@drawable/choice_shape"
+	        	style="@style/ListSubHeadTextView"
 		        android:text="T"/>
 		    <TextView 
 		        android:id="@+id/tvWed"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        android:background="@drawable/choice_shape"
+	        	style="@style/ListSubHeadTextView"
 		        android:text="W"/>
 		    <TextView 
 		        android:id="@+id/tvThu"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        android:background="@drawable/choice_shape"
+	        	style="@style/ListSubHeadTextView"
 		        android:text="T"/>
 		    <TextView 
 		        android:id="@+id/tvFri"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        android:background="@drawable/choice_shape"
+	        	style="@style/ListSubHeadTextView"
 		        android:text="F"/>
 		    <TextView 
 		        android:id="@+id/tvSat"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        android:background="@drawable/choice_shape"
+	        	style="@style/ListSubHeadTextView"
 		        android:text="S"/>
 		    <TextView 
 		        android:id="@+id/tvSun"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        android:background="@drawable/choice_shape"
+	        	style="@style/ListSubHeadTextView"
 		        android:text="S"/>
 	    </LinearLayout>
 	    	    	    	    
@@ -107,20 +117,34 @@
 	        android:layout_height="wrap_content"
 	        android:layout_weight="0.33"
 	        android:gravity="right"
+	        style="@style/ListSubHeadTextView"
 	        android:text="6:00pm" />
     
     </LinearLayout>
 
     
     <TextView
-        android:id="@+id/tvLocation"
+        android:id="@+id/tvMembersList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/llDateTime"
         android:layout_toRightOf="@+id/ivGroupImage"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"      
+        android:minLines="2"
+      	style="@style/ListDetailTextView"
         android:text="Jack, Tom, Joe, Jill..." />
 
     </RelativeLayout>
+    
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="6dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:background="#4f000000" >
+    </RelativeLayout>
+    
 </RelativeLayout>
