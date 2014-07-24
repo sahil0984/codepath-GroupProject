@@ -728,8 +728,11 @@ public class CreateGroupDialog extends MyFragment {
 			if (requestCode == ADD_USERS_REQUEST_CODE) {
 				
 				groupMembersStr = data.getStringArrayListExtra("groupMembers");
-				groupMembersStr.add(ParseUser.getCurrentUser().getObjectId());
-				
+				if (!groupMembersStr.contains(ParseUser.getCurrentUser().getObjectId()))
+				{
+					groupMembersStr.add(ParseUser.getCurrentUser().getObjectId());
+				}
+						
 				btnAddUsers.setText("Members (" + groupMembersStr.size() + ")");
 
 			     try {
