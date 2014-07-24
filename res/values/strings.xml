@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <string name="app_name">Find My Ride</string>
+    <string name="app_name">RideSo</string>
     <string name="app_id">260804040793784</string>
     <string name="title_activity_profile">Profile</string>
     <string name="title_activity_login">Login</string>
@@ -10,7 +10,8 @@
     <string name="title_activity_group_detail">Group</string>
     <string name="title_activity_add_users">Add People</string>
     <string name="title_activity_view_profile">Loading Profile</string>
-
+    <string name="title_activity_chat">Group Chat</string>
+    
     <!-- Profile Activity strings -->
     <string name="first_name_hint"><i>First Name</i></string>
     <string name="last_name_hint"><i>Last Name</i></string>
@@ -21,7 +22,7 @@
     <string name="email_hint"><i>Work Email</i></string>
     <string name="done_btn_text"><i>Done</i></string>
     <string name="verify_email_btn_text"><i>Verify</i></string>
-    <string name="title_activity_chat">ChatActivity</string>
-    <string name="hello_world">Hello world!</string>
 
+    
+    <string name="icon_car">&#xf1b9;</string>
 </resources>

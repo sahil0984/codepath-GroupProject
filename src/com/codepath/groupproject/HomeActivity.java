@@ -17,7 +17,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -33,7 +35,10 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBar.Tab;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.format.DateUtils;
+import android.text.style.TypefaceSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -51,6 +56,10 @@ import com.codepath.groupproject.dialogs.ChoosePhotoDialog.OnDataPass;
 import com.codepath.groupproject.dialogs.CreateGroupDialog;
 import com.codepath.groupproject.dialogs.CreateGroupDialog.OnActionSelectedListenerCreateGroup;
 import com.codepath.groupproject.dialogs.SavingsDialog;
+import com.codepath.groupproject.fragments.MyGroupListFragment;
+import com.codepath.groupproject.fragments.MyNetworkGroupListFragment;
+import com.codepath.groupproject.fragments.PublicGroupListFragment;
+import com.codepath.groupproject.fragments.SavingsFragment;
 
 import com.codepath.groupproject.listeners.SupportFragmentTabListener;
 import com.codepath.groupproject.models.Group;
@@ -79,6 +88,8 @@ import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+import com.viewpagerindicator.CirclePageIndicator;
+import com.viewpagerindicator.TitlePageIndicator;
 
 public class HomeActivity extends ActionBarActivity implements OnActionSelectedListenerCreateGroup,
 															   OnDataPass,
@@ -97,7 +108,9 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
 	Group newGroup;
 	int queriesReturned;
 	
-    private SmartFragmentStatePagerAdapter adapterViewPager;
+    //private SmartFragmentStatePagerAdapter adapterViewPager;
+    
+    private GroupPagerAdapter adapterViewPager;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -107,70 +120,47 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
 		//setupTabs();
 		
 		animationDone=0;
+
 		
-		//Instantiating the view pager
+		
+		
+		
+		
+		adapterViewPager = new GroupPagerAdapter(getSupportFragmentManager());
+
 		ViewPager vpPager = (ViewPager) findViewById(R.id.vpPager);
-		adapterViewPager = new MyPagerAdapter(getSupportFragmentManager());
+		
 		vpPager.setClipToPadding(false);
 		vpPager.setPageMargin(12);
 		vpPager.setAdapter(adapterViewPager);
-		//vpPager.setPageTransformer(true, new ZoomOutPageTransformer());
 		
-		tvPageTitleLeft = (TextView) findViewById(R.id.tvPageTitleLeft);
-		tvPageTitle = (TextView) findViewById(R.id.tvPageTitle);
-		tvPageTitleRight = (TextView) findViewById(R.id.tvPageTitleRight);
-		tvPageTitle.setText("My Groups");
-		tvPageTitleRight.setText("My Network List");
-		tvPageTitleRight.setTranslationX(40);
-		tvPageTitleLeft.setTranslationX(-40);
-		
-		vpPager.setOnPageChangeListener(new OnPageChangeListener() {
-			
-			// This method will be invoked when a new page becomes selected.
-			@Override
-			public void onPageSelected(int position) {
-				switch (position) {
-				case 0:
-					tvPageTitleLeft.setVisibility(View.INVISIBLE);
-					tvPageTitleRight.setVisibility(View.VISIBLE);
-					tvPageTitle.setText("My Groups");
-					tvPageTitleRight.setText("My Network List");
-					
-					break;
-				case 1:
-					tvPageTitleLeft.setVisibility(View.VISIBLE);
-					tvPageTitleRight.setVisibility(View.VISIBLE);
-					tvPageTitleLeft.setText("My Groups");
-					tvPageTitle.setText("My Network List");
-					tvPageTitleRight.setText("Public List");
-					
-					break;
-				case 2:
-					tvPageTitleLeft.setVisibility(View.VISIBLE);
-					tvPageTitleRight.setVisibility(View.INVISIBLE);
-					tvPageTitleLeft.setText("My Network List");					
-					tvPageTitle.setText("Public List");
-					break;
-				default:
-					tvPageTitleLeft.setText("");
-					tvPageTitle.setText("");
-					tvPageTitleRight.setText("");
-					break;
-				}
-				
-			}
+		TitlePageIndicator mIndicator = (TitlePageIndicator)findViewById(R.id.indicator);
+        mIndicator.setViewPager(vpPager);
+        
+        mIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+            }
 
-			@Override
-			public void onPageScrollStateChanged(int arg0) {				
-			}
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
 
-			@Override
-			public void onPageScrolled(int arg0, float arg1, int arg2) {				
-			}
-			
-		});
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
 		
-		
+
+        
+        //Setting the Title text typeface - Use same format for all activities
+        int actionBarTitle = Resources.getSystem().getIdentifier("action_bar_title", "id", "android");
+        TextView actionBarTitleView = (TextView) getWindow().findViewById(actionBarTitle);
+        Typeface robotoBoldCondensedItalic = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Light.ttf");
+        if(actionBarTitleView != null){
+            actionBarTitleView.setTypeface(robotoBoldCondensedItalic);
+        }
+        
 		
 		String classFrom = getIntent().getStringExtra("classFrom");
 		String myCustomReceiverClass = MyCustomReceiver.class.toString();
@@ -214,6 +204,63 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
 		}
 
 	}
+	
+	
+	
+	
+	
+	static class GroupPagerAdapter extends FragmentPagerAdapter {
+    	private static int NUM_ITEMS = 3;
+
+	    public GroupPagerAdapter(FragmentManager fm) {
+	        super(fm);
+	    }
+	    
+	    @Override
+		public float getPageWidth(int position) {
+	    	return 0.93f;
+		}
+
+	    @Override
+	    public Fragment getItem(int position) {
+	        switch (position) {
+	        case 0:
+	            return MyGroupListFragment.newInstance(0, "MyGroups");
+	        case 1:
+	            return MyNetworkGroupListFragment.newInstance(1, "MyNetworkGroups");
+	        case 2:
+	            return PublicGroupListFragment.newInstance(2, "PublicGroups");
+	        default:
+	        	return null;
+            } 
+	    }
+
+        // Returns total number of pages
+        @Override
+        public int getCount() {
+            return NUM_ITEMS;
+        }
+
+        // Returns the page title for the top indicator
+        @Override
+        public CharSequence getPageTitle(int position) {
+        	if (position==0) {
+        		return "My Groups";
+        	} else if (position==1) {
+        		return "Network Groups";
+        	} else if (position==2) {
+        		return "Public List";
+        	} else {
+        		return "No List Found";
+        	}
+        	
+        }
+		
+	}
+	
+	
+	
+	
 	
 	private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
 

@@ -17,7 +17,7 @@ public class ChatArrayAdapter extends ArrayAdapter<Chat> {
     private Context context;
 
 	public ChatArrayAdapter(Context context, List<Chat> objects) {
-		super(context, R.layout.group_item, objects);
+		super(context, R.layout.group_item_no_repeat, objects);
 		this.context = context;
 	}
 	

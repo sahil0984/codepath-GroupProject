@@ -156,9 +156,9 @@ public class CreateGroupDialog extends MyFragment {
 	    		   }
 	    	   });
 	    	   photoFile = fromGroup.getPhotoFile();
-	       } else {
-	    	   ivGroupPhoto.setImageResource(android.R.color.transparent);
-	       }
+	       }// else {
+	    	//   ivGroupPhoto.setImageResource(android.R.color.transparent);
+	       //}
 		
 	    
 		etGroupName.setText(fromGroup.getName());

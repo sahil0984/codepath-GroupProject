@@ -25,6 +25,7 @@ public class MyCustomReceiver extends BroadcastReceiver {
    private static final String TAG = "MyCustomReceiver";
    public static final String intentAction = "SEND_PUSH";
    public static final String intentActionChat = "SEND_CHAT";
+   public static final String intentActionRequestAdd = "SEND_REQUEST_ADD";
 
    @Override
    public void onReceive(Context context, Intent intent) {

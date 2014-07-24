@@ -32,7 +32,7 @@
     <application
         android:name=".GroupProjectApplication"
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/ic_launcher_new"
         android:label="@string/app_name"
         android:theme="@style/MyAppTheme" >
         <meta-data

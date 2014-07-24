@@ -26,7 +26,7 @@ public class UserArrayAdapter extends ArrayAdapter<User> {
 	private Context context;
 	
 	public UserArrayAdapter(Context context,List<User> objects) {
-		super(context, R.layout.group_item, objects);
+		super(context, R.layout.group_item_no_repeat, objects);
 		this.context = context;
 	}
 	@Override

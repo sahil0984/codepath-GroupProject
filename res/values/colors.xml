@@ -7,7 +7,7 @@
    <color name="red">#7fff0000</color>
    <color name="blue">#7f4060ff</color>   
    <color name="white">#ffffffff</color>
-   <color name="grey">#bf000000</color>
+   <color name="grey">#7f000000</color>
    <color name="bg">#7f6f9fff</color>
    <color name="cyan">#ffa0dfff</color>
     
@@ -17,5 +17,13 @@
          
    <color name="button_blue">#bf6d7b8d</color>
       
+   
+   
+   <color name="theme_color1">#FF344459</color>
+   <color name="theme_color2">#FF485F73</color>
+   <color name="theme_color3">#FF5DA6A6</color>
+   <color name="theme_color4">#FFA9D9CB</color>
+   <color name="theme_color5">#FFF2EAD0</color>
+   
    
 </resources>
