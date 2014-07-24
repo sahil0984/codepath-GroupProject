@@ -11,6 +11,7 @@ import java.util.Locale;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.codepath.groupproject.adapters.ChatArrayAdapter;
 import com.codepath.groupproject.adapters.GroupArrayAdapter;
 import com.codepath.groupproject.models.Chat;
@@ -56,7 +57,7 @@ public class ChatActivity extends Activity {
 	private ListView lvChat;
 	
 	private EditText etNewMsg;
-	private Button btnSendMsg;
+	private BootstrapButton btnSendMsg;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +70,8 @@ public class ChatActivity extends Activity {
         if(actionBarTitleView != null){
             actionBarTitleView.setTypeface(robotoBoldCondensedItalic);
         }
+        
+        
 		
 		chats = new ArrayList<Chat>();
 		aChats = new ChatArrayAdapter(this, chats);
@@ -77,7 +80,10 @@ public class ChatActivity extends Activity {
 		lvChat.setAdapter(aChats);
 		
 		etNewMsg = (EditText) findViewById(R.id.etNewMsg);
-		btnSendMsg = (Button) findViewById(R.id.btnSendMsg);
+		btnSendMsg = (BootstrapButton) findViewById(R.id.btnSendMsg);
+		
+        //Typeface robotoBoldCondensedItalic = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Light.ttf");
+        etNewMsg.setTypeface(robotoBoldCondensedItalic);
 		
 		btnSendMsg.setOnClickListener(new OnClickListener() {
 			
