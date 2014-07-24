@@ -25,9 +25,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -105,6 +107,13 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_group_detail);
+        //Setting the Title text typeface - Use same format for all activities
+        int actionBarTitle = Resources.getSystem().getIdentifier("action_bar_title", "id", "android");
+        TextView actionBarTitleView = (TextView) getWindow().findViewById(actionBarTitle);
+        Typeface robotoBoldCondensedItalic = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Light.ttf");
+        if(actionBarTitleView != null){
+            actionBarTitleView.setTypeface(robotoBoldCondensedItalic);
+        }
 		
 		String groupObjectId = getIntent().getStringExtra("group");
 		
@@ -210,7 +219,7 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
 		    			}
 		    		}
 	    			hideMenuOption(R.id.miRequest);
-		    		if (isMember) {
+		    		if (!isMember) {
 		    			showMenuOption(R.id.miRequest);
 		    		}
 		            
@@ -468,7 +477,7 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
             	openChatActivity();
                 break; 
             case R.id.miRequest:
-            	//requestAddToGroup();
+            	requestAddToGroup();
                 break; 
             default:
             	break;
@@ -476,15 +485,37 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
         return super.onOptionsItemSelected(item);
     }
     
-    private void openRequestDialog() {
-    	// Begin the transaction
-    	FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-    	ft.setCustomAnimations(R.anim.slide_down, R.anim.hide);
-    	ft.disallowAddToBackStack();
-    	// Replace the container with the new fragment
-    	//ft.replace(R.id.flAddToGroup, new AddToGroupRequestFragment(), "addToGroupRequestFragmentTag");
-    	// Execute the changes specified
-    	ft.commit();
+    private void requestAddToGroup() {
+		JSONObject obj;
+		try {
+			obj = new JSONObject();
+			obj.put("alert", "Request to join " + currentGroup.getName() + " form " + User.getCurrentUser().getString("firstName"));
+			obj.put("action", MyCustomReceiver.intentActionRequestAdd);
+			obj.put("customdata", "RequestToGroup");
+			obj.put("groupObjectId", currentGroup.getObjectId());
+			obj.put("requestorObjectId", User.getCurrentUser().getObjectId());
+
+				ParsePush push = new ParsePush();
+
+				ParseQuery<ParseInstallation> query = ParseInstallation.getQuery();
+				query.whereEqualTo("userObjectId", currentGroup.getUser().getObjectId());
+				
+				push.setQuery(query);
+				push.setData(obj);
+				push.sendInBackground();
+
+			// Push the notification to Android users
+			//query.whereEqualTo("deviceType", "android");
+			//push.setQuery(query);
+			//push.setData(obj);
+			//push.sendInBackground();
+			
+			
+			//addChannelToInstallation(newGroup.getObjectId());
+		} catch (JSONException e) {
+
+			e.printStackTrace();
+		}
     }
       
     

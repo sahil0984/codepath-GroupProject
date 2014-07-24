@@ -13,7 +13,7 @@
     
     <item
         android:id="@+id/miCreateGroup"
-        android:icon="@drawable/ic_create_group"
+        android:icon="@drawable/ic_action_add"
         myapp:showAsAction="withText|always"
         android:title="Create Group">
     </item> 

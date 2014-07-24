@@ -24,7 +24,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_margin="5dp"
-            android:src="@drawable/ic_launcher" />
+            android:src="@drawable/ic_launcher_new" />
 
         <com.wrapp.floatlabelededittext.FloatLabeledEditText
             android:id="@+id/etGroupName"

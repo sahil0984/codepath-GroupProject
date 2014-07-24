@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
@@ -13,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.Toast;
 
@@ -28,6 +31,15 @@ public class AddUsersActivity extends FragmentActivity implements AddUserListFra
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_add_users);
+        //Setting the Title text typeface - Use same format for all activities
+        int actionBarTitle = Resources.getSystem().getIdentifier("action_bar_title", "id", "android");
+        TextView actionBarTitleView = (TextView) getWindow().findViewById(actionBarTitle);
+        Typeface robotoBoldCondensedItalic = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Light.ttf");
+        if(actionBarTitleView != null){
+            actionBarTitleView.setTypeface(robotoBoldCondensedItalic);
+        }
+		
+		
 		toAddUsers = getIntent().getStringArrayListExtra("currentGroupMembers");
 		
 		if (toAddUsers == null)
