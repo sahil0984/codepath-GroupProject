@@ -9,20 +9,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="onCamera"
-        android:text="Use Camera"/>
+        android:text="Use Camera"
+        android:background="@color/theme_color3"/>
     
     <Button 
         android:id="@+id/btnGallery"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="onGallery"
-        android:text="Pick from gallery"/>
+        android:text="Pick from gallery"
+        android:background="@color/theme_color3"/>
     
     <Button 
         android:id="@+id/btnCancel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="onCancel"
-        android:text="Cancel"/>
-        
+        android:text="Cancel"
+        android:background="@color/red"/>
+    
 </LinearLayout>
