@@ -32,6 +32,22 @@
       
       
      <!-- TextView styles. -->
+    <style name="LoginHeadTextView" parent="android:Widget.TextView">
+  		<item name="android:textSize">30sp</item>
+  		<item name="android:textStyle">bold</item>
+  		<item name="android:textColor">@color/black</item>
+	</style>     
+    <style name="LoginSubHeadTextView" parent="android:Widget.TextView">
+  		<item name="android:textSize">20sp</item>
+  		<item name="android:textStyle">normal</item>
+  		<item name="android:textColor">@color/theme_color3</item>
+	</style>
+    <style name="LoginDetailTextView" parent="android:Widget.TextView">
+  		<item name="android:textSize">12sp</item>
+  		<item name="android:textStyle">italic</item>
+  		<item name="android:textColor">@color/black</item>
+	</style>        
+     
      
      <!-- Following styles are for group list view but feel free to use them anywhere, but do not modify them. -->
     <style name="ListHeadTextView" parent="android:Widget.TextView">

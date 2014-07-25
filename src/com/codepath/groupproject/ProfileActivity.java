@@ -30,6 +30,7 @@ import android.view.View.OnKeyListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
@@ -37,6 +38,8 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 public class ProfileActivity extends ActionBarActivity {
+	
+	private ProgressBar pbLoading;
 	
 	private ProfilePictureView ivProfileImage;
 	private FloatLabeledEditText etFirstName;
@@ -75,6 +78,8 @@ public class ProfileActivity extends ActionBarActivity {
 
 		setupViews();
 		
+		pbLoading.setVisibility(ProgressBar.VISIBLE);
+
 		oneAddressVerifDoneFlag = 0;
 		State_GeoCodeTask = 2;
 		doDoneEditProfileTasks();
@@ -93,6 +98,10 @@ public class ProfileActivity extends ActionBarActivity {
 		
 		btnVerifyEmail = (BootstrapButton) findViewById(R.id.btnVerifyEmail);
 		//btnGoHome      = (Button) findViewById(R.id.btnDone);
+		
+		pbLoading = (ProgressBar) findViewById(R.id.pbLoading);
+		pbLoading.setVisibility(ProgressBar.INVISIBLE);
+
 
 		//btnVerifyEmail.setEnabled(false);
 		
@@ -189,6 +198,7 @@ public class ProfileActivity extends ActionBarActivity {
 		etPersonalEmail.setBackgroundResource(0);
 		etEmail.setBackgroundResource(0);
 		
+		pbLoading.setVisibility(ProgressBar.INVISIBLE);
 
 	}
 	

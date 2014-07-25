@@ -29,11 +29,14 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
 public final class SavingsFragment extends Fragment {
+	
+	private ProgressBar pbLoading;
 
 	private LinearLayout llCarbonMask;
 	private LinearLayout llDollarsMask;
@@ -117,6 +120,8 @@ public final class SavingsFragment extends Fragment {
         
 
         setupViews(v);
+		pbLoading.setVisibility(ProgressBar.VISIBLE);
+
         
         calculateSavings();
 		//updateSavings();
@@ -152,6 +157,8 @@ public final class SavingsFragment extends Fragment {
 	    tvCarbonContribution.setTypeface(robotoBoldCondensedItalic);
 	    tvDollarsSpent.setTypeface(robotoBoldCondensedItalic);
 	    
+		pbLoading = (ProgressBar) view.findViewById(R.id.pbLoading);
+		pbLoading.setVisibility(ProgressBar.INVISIBLE);
 	}
     
 	public void calculateSavings() {
@@ -235,9 +242,12 @@ public final class SavingsFragment extends Fragment {
 		        		//Toast.makeText(getActivity(), "maxCarbonContribution" + maxCarbonContribution, Toast.LENGTH_SHORT).show();
 		        		//Toast.makeText(getActivity(), "actualDollarsSpent" + actualDollarsSpent, Toast.LENGTH_SHORT).show();
 		        		//Toast.makeText(getActivity(), "maxDollarsSpent" + maxDollarsSpent, Toast.LENGTH_SHORT).show();
+		        		
+		        		pbLoading.setVisibility(ProgressBar.INVISIBLE);
 
 		        	} else {
 		        		Toast.makeText(getActivity(), "No group found.", Toast.LENGTH_SHORT).show();
+		        		pbLoading.setVisibility(ProgressBar.INVISIBLE);
 		        	}
 		        } else {
 		            Log.d("item", "Error: " + e.getMessage());

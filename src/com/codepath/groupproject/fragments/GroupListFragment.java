@@ -37,7 +37,7 @@ public abstract class GroupListFragment extends Fragment {
 	private ListView lvGroups;
 
 	public TextView tvPageTitle;
-	private ProgressBar pbLoading;
+	public ProgressBar pbLoading;
 	
 	public int page;
 	public String title;
@@ -48,8 +48,7 @@ public abstract class GroupListFragment extends Fragment {
 		//Non-view initialization
 		groups = new ArrayList<Group>();
 		aGroups = new GroupArrayAdapter(getActivity(), groups);
-				
-		populateGroups();
+		
 	}
 
 	@Override
@@ -76,6 +75,11 @@ public abstract class GroupListFragment extends Fragment {
 		
 		//tvPageTitle = (TextView) v.findViewById(R.id.tvPageTitle);
 		pbLoading = (ProgressBar) v.findViewById(R.id.pbLoading);
+		pbLoading.setVisibility(ProgressBar.VISIBLE);
+
+		
+		populateGroups();
+
 		
 		//tvPageTitle.setText(title);
 

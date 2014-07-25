@@ -164,13 +164,13 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
 		if (mapFragment != null) {
 			map = mapFragment.getMap();
 			if (map != null) {
-				Toast.makeText(this, "Map Fragment was loaded properly!", Toast.LENGTH_SHORT).show();
+				//Toast.makeText(this, "Map Fragment was loaded properly!", Toast.LENGTH_SHORT).show();
 				map.setMyLocationEnabled(true);
 			} else {
-				Toast.makeText(this, "Error - Map was null!!", Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, "Error loading maps!!", Toast.LENGTH_SHORT).show();
 			}
 		} else {
-			Toast.makeText(this, "Error - Map Fragment was null!!", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "Error loading maps!!", Toast.LENGTH_SHORT).show();
 		}
 	
 		

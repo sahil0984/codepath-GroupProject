@@ -8,6 +8,8 @@
     android:layout_height="match_parent" 
     android:background="@color/button_blue">
 
+
+    
    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -35,7 +37,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="8dp"
             android:text="" />
         
         <com.wrapp.floatlabelededittext.FloatLabeledEditText
@@ -144,7 +146,15 @@
             android:layout_height="1dp"
             android:layout_alignParentBottom="true"
             />
+        
+     <ProgressBar 
+        android:id="@+id/pbLoading"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerInParent="true"/>
 
     </RelativeLayout>
+    
+
 
 </ScrollView>

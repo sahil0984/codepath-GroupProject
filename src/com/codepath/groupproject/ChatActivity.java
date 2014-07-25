@@ -19,6 +19,7 @@ import com.codepath.groupproject.models.Group;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
+import com.parse.ParseInstallation;
 import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -134,6 +135,16 @@ public class ChatActivity extends Activity {
 							//push.setMessage(newGroup.getName() + "has been updated");
 							push.setData(obj);
 							push.sendInBackground();
+							
+//							ParseQuery<ParseInstallation> pushQuery = ParseInstallation.getQuery();
+//							pushQuery.whereEqualTo("channels", "channel_" + currentGroup.getObjectId());
+//							pushQuery.whereNotEqualTo("userObjectId", ParseUser.getCurrentUser().getObjectId());
+//							
+//							ParsePush push = new ParsePush();
+//							push.setQuery(pushQuery);
+//							push.setData(obj);
+//							push.sendInBackground();
+							
 						} catch (JSONException e) {
 							e.printStackTrace();
 						}
@@ -248,7 +259,7 @@ public class ChatActivity extends Activity {
 
 	    @Override
 	    public void onReceive(Context context, Intent intent) {        	
-	        	Toast.makeText(getApplicationContext(), "onReceive invoked!", Toast.LENGTH_LONG).show();
+	        	//Toast.makeText(getApplicationContext(), "onReceive invoked!", Toast.LENGTH_LONG).show();
 	        	populateExistingChat(currentGroup.getObjectId());
 	    }
     };

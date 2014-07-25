@@ -99,9 +99,7 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
 	private final int REQUEST_CODE = 20;
 	ArrayList<User> groupMembers;
 	
-	private TextView tvPageTitleLeft;
-	private TextView tvPageTitle;
-	private TextView tvPageTitleRight;
+
 		
 	int animationDone;
 	
@@ -171,9 +169,9 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
 				//		ParseUser.getCurrentUser().getObjectId())) {
 					String objectId = getIntent().getStringExtra("groupsObjectId");
 	
-					Toast.makeText(getApplicationContext(),
-							"Home called from MyCustomReceiver", Toast.LENGTH_SHORT)
-							.show();
+					//Toast.makeText(getApplicationContext(),
+					//		"Home called from MyCustomReceiver", Toast.LENGTH_SHORT)
+					//		.show();
 	
 					ParseQuery<Group> queryGroup = ParseQuery.getQuery(Group.class);
 					queryGroup.include("members");
@@ -198,9 +196,9 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
 	
 				//}
 			} else if (getIntent().getStringExtra("customdata").equals("UpdateToGroup")) {
-				Toast.makeText(getApplicationContext(),
-						"Group updated.",
-						Toast.LENGTH_SHORT).show();
+				//Toast.makeText(getApplicationContext(),
+				//		"Group updated.",
+				//		Toast.LENGTH_SHORT).show();
 			}
 		}
 
@@ -276,7 +274,7 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
 
         @Override
         public void onReceive(Context context, Intent intent) {        	
-        	Toast.makeText(getApplicationContext(), "onReceive invoked!", Toast.LENGTH_LONG).show();
+        	//Toast.makeText(getApplicationContext(), "onReceive invoked!", Toast.LENGTH_LONG).show();
         }
     };
     
@@ -471,7 +469,7 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
 				push.setData(obj);
 				push.sendInBackground();
 			}
-			Toast.makeText(getApplicationContext(), "Num members: " + newGroup.getMembers(), Toast.LENGTH_SHORT).show();
+			//Toast.makeText(getApplicationContext(), "Num members: " + newGroup.getMembers(), Toast.LENGTH_SHORT).show();
 			// Push the notification to Android users
 			//query.whereEqualTo("deviceType", "android");
 			//push.setQuery(query);

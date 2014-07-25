@@ -1,5 +1,11 @@
 package com.codepath.groupproject;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -7,12 +13,38 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.IntentSender;
+import android.content.ServiceConnection;
+import android.content.SharedPreferences;
+import android.content.IntentSender.SendIntentException;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.AssetManager;
+import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.content.res.Resources.Theme;
+import android.database.DatabaseErrorHandler;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteDatabase.CursorFactory;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.UserHandle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Display;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -29,6 +61,7 @@ import com.facebook.model.GraphUser;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.LogInCallback;
+import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseInstallation;
@@ -40,6 +73,10 @@ import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
 public class LoginActivity extends ActionBarActivity {
+	
+	TextView tvWelcome;
+	TextView tvAppTitle;
+	TextView tvTagline;
 	
 	ProgressBar pbLoading;
 	
@@ -56,8 +93,30 @@ public class LoginActivity extends ActionBarActivity {
         if(actionBarTitleView != null){
             actionBarTitleView.setTypeface(robotoBoldCondensedItalic);
         }
+        
+		// Parse Analytics enabled
+		ParseAnalytics.trackAppOpened(getIntent());
 		
 		pbLoading = (ProgressBar) findViewById(R.id.pbLoading);
+		
+		tvWelcome = (TextView) findViewById(R.id.tvWelcome);
+		tvAppTitle = (TextView) findViewById(R.id.tvAppTitle);
+		tvTagline = (TextView) findViewById(R.id.tvTagline);
+		
+        Typeface robotoBold = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Bold.ttf");
+        Typeface fontAwesome = Typeface.createFromAsset(getAssets(), "fonts/fontawesome-webfont.ttf");
+        
+        tvWelcome.setTypeface(robotoBoldCondensedItalic);
+        tvWelcome.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
+        
+        tvAppTitle.setTypeface(robotoBoldCondensedItalic);
+        tvAppTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP,30);
+        tvAppTitle.setTextColor(getResources().getColor(R.color.theme_color3));
+        
+        tvTagline.setTypeface(fontAwesome);
+        tvTagline.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
+        tvTagline.setTypeface(fontAwesome, Typeface.ITALIC);
+		
 		
 		pbLoading.setVisibility(ProgressBar.INVISIBLE);
 		
@@ -327,9 +386,9 @@ public class LoginActivity extends ActionBarActivity {
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-	  super.onActivityResult(requestCode, resultCode, data);
 	  ParseFacebookUtils.finishAuthentication(requestCode, resultCode, data);
-	  
+	  super.onActivityResult(requestCode, resultCode, data);
+
 	  //BOZO: Need to handle faliure result here.
 	}
 

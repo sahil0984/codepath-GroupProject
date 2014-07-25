@@ -160,7 +160,7 @@ public class GroupDetailCard extends Card {
         setOnClickListener(new OnCardClickListener() {
             @Override
             public void onClick(Card card, View view) {
-                Toast.makeText(getContext(), "Click Listener card", Toast.LENGTH_LONG).show();
+                //Toast.makeText(getContext(), "Click Listener card", Toast.LENGTH_LONG).show();
             }
         });
 

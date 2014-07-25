@@ -8,6 +8,7 @@ import com.codepath.groupproject.models.Group;
 import com.codepath.groupproject.models.Installation;
 import com.codepath.groupproject.models.User;
 import com.parse.Parse;
+import com.parse.ParseAnalytics;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
