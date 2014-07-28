@@ -82,16 +82,23 @@
         android:text="Get started with," />
 
     
-    <com.facebook.widget.LoginButton
-        android:id="@+id/authButton"
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/loginButton"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvChoose"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true"
-        android:onClick="onLoginWithFacebook" 
-        android:alpha="0.7"/>
+        android:alpha="0.7"
+        android:drawableStart="@drawable/com_facebook_inverse_icon"
+        android:background="#9f6d84b4"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"        
+        android:textColor="@color/white"
+        android:text="Log in with Facebook"/>
     
     
     <ProgressBar 

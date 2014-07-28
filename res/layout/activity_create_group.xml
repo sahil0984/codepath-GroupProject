@@ -1,6 +1,6 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:float="http://schemas.android.com/apk/res-auto"
-    xmlns:app="http://schemas.android.com/apk/res/com.codepath.groupproject"
+    xmlns:app="http://schemas.android.com/apk/res/com.codepath.rideso"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:bootstrapbutton="http://schemas.android.com/apk/res-auto"
     xmlns:fontawesometext="http://schemas.android.com/apk/res-auto"
