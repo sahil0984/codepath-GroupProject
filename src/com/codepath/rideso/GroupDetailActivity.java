@@ -25,15 +25,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -49,6 +52,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -62,7 +67,11 @@ import com.codepath.rideso.models.Group;
 import com.codepath.rideso.models.User;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.fourmob.datetimepicker.date.DatePickerDialog.OnDateSetListener;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -92,7 +101,9 @@ import com.sleepbot.datetimepicker.time.TimePickerDialog;
 public class GroupDetailActivity extends FragmentActivity implements OnActionSelectedListenerCreateGroup,
 																	 OnDataPass,
 																	 OnDateSetListener,
-																	 TimePickerDialog.OnTimeSetListener {
+																	 TimePickerDialog.OnTimeSetListener,
+																	 GooglePlayServicesClient.ConnectionCallbacks,
+																     GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 
 	private LocationClient mLocationClient;
 	private SupportMapFragment mapFragment;
@@ -101,33 +112,61 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
 	private TextView tvOnwardLocation;
 	private TextView tvReturnLocation;
 	private CardView cardView;
+	private boolean mLiveLocation;
+	private Switch liveSwitch;
 	
+
+	
+	
+    private final static int
+    CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+    
+    // Milliseconds per second
+    private static final int MILLISECONDS_PER_SECOND = 1000;
+    // Update frequency in seconds
+    public static final int UPDATE_INTERVAL_IN_SECONDS = 5;
+    // Update frequency in milliseconds
+    private static final long UPDATE_INTERVAL =
+            MILLISECONDS_PER_SECOND * UPDATE_INTERVAL_IN_SECONDS;
+    // The fastest update frequency, in seconds
+    private static final int FASTEST_INTERVAL_IN_SECONDS = 5;
+    // A fast frequency ceiling in milliseconds
+    private static final long FASTEST_INTERVAL =
+            MILLISECONDS_PER_SECOND * FASTEST_INTERVAL_IN_SECONDS;
+    
+    // Define an object that holds accuracy and frequency parameters
+    LocationRequest mLocationRequest;
+    
 	ArrayList<Marker> markers ;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_group_detail);
         //Setting the Title text typeface - Use same format for all activities
-        int actionBarTitle = Resources.getSystem().getIdentifier("action_bar_title", "id", "android");
-        TextView actionBarTitleView = (TextView) getWindow().findViewById(actionBarTitle);
-        Typeface robotoBoldCondensedItalic = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Light.ttf");
-        if(actionBarTitleView != null){
-            actionBarTitleView.setTypeface(robotoBoldCondensedItalic);
-        }
+		
+		//By Default LiveMode is off.
+		setupLocationSystem();
+
+
+		setActionBarTitleView();
+
 		
 		String groupObjectId = getIntent().getStringExtra("group");
-		
-        //Create a Card
-         
-        //Create a Card
-        Card card2 = new Card(this,R.layout.carddemo_example_inner_content);
+		       
+        //Create mapCard
+        Card mapCard = new Card(this,R.layout.carddemo_example_inner_content);
+        mapCard.setTitle("Map");
+        
+        CardView mapCardView = (CardView)findViewById(R.id.carddemo2);
         cardView = (CardView) findViewById(R.id.carddemo);
-        //Set the card inner text
-        card2.setTitle("Map");
-
-        //Set card in the cardView
-        CardView cardView2 = (CardView)findViewById(R.id.carddemo2);
-        cardView2.setCard(card2);
+        
+        mapCardView.setCard(mapCard);
+        
+		setupSwitch();
+		
+		if (liveSwitch.isChecked())
+			mLiveLocation = true;
 		
         View transparentImageView = (View) findViewById(R.id.View1);
         final ScrollView mainScrollView = (ScrollView) findViewById(R.id.main_scrollview);
@@ -172,7 +211,9 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
 		} else {
 			Toast.makeText(this, "Error loading maps!!", Toast.LENGTH_SHORT).show();
 		}
-	
+		
+		//resetMap();
+
 		
         ParseQuery<Group> queryGroup = ParseQuery.getQuery(Group.class);
         queryGroup.include("members");
@@ -201,8 +242,11 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
 		            ft.commit();
 		            
 		    		setTitle(group.getName());
-		    		addMarkers();
-		    		addRoute();
+		    		if (mLiveLocation == false)
+		    		{
+		    			addMarkers();
+		    			addRoute();
+		    		}
 		    		
 		    		//Added by Sahil: Dont show edit option if the user is not the owner of the group
 		    		if (!currentGroup.getUser().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())) {
@@ -227,12 +271,141 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
 		        Log.d("MyApp", "oops");
 		    }
 		  }
-		});
-
-
-         
+		}); 
+		
 	
 	}
+	private void setupSwitch() {
+		liveSwitch = (Switch) findViewById(R.id.swLive);
+		liveSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				Log.d("MyApp",Boolean.toString(isChecked));
+				resetMap();
+				if (!isChecked)
+				{
+
+					mLocationClient.removeLocationUpdates(GroupDetailActivity.this);
+					mLiveLocation = false;
+	    			addMarkers();
+	    			addRoute();
+					
+				}
+				else
+				{
+					if (mLocationClient.isConnected())
+					{
+						addLiveMarkers();
+						mLocationClient.requestLocationUpdates(mLocationRequest, GroupDetailActivity.this);
+						mLiveLocation = true;
+					}
+				}
+				
+			}
+		});
+        
+		
+	}
+	protected void addLiveMarkers() {
+		markers.clear();
+		ArrayList<User> groupMembers = (ArrayList<User>) currentGroup.getMembers();
+		int i;
+		for (i = 0; i < groupMembers.size(); i++)
+		{
+			User user = groupMembers.get(i);
+			ParseGeoPoint geoPoint = user.getParseGeoPoint("currentPosition");
+			if (geoPoint == null)
+				geoPoint = user.getParseGeoPoint("homeAdd");
+			else
+				Log.d("MyApp", "Current pos: " + Double.toString(geoPoint.getLatitude()) + "," + Double.toString(geoPoint.getLongitude()));
+			
+	
+			Marker m = map.addMarker(new MarkerOptions()
+							.position(new LatLng(geoPoint.getLatitude(), geoPoint.getLongitude()))
+							.title(user.getFirstName()));
+							//.icon(BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(bmap, 40, 40, false))));	
+			markers.add(m);
+			new MarkerImageDownloadTask(markers.size()-1).execute((String)user.get("fbId"));		
+		}
+		LatLngBounds.Builder builder = new LatLngBounds.Builder();
+		for (Marker marker : markers) {
+		    builder.include(marker.getPosition());
+		}
+		LatLngBounds bounds = builder.build();
+		int padding = 100; // offset from edges of the map in pixels
+		CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+		map.animateCamera(cu);
+		
+	}
+	protected void resetMap() {
+		map.clear();
+		
+	}
+	private void setActionBarTitleView() {
+        int actionBarTitle = Resources.getSystem().getIdentifier("action_bar_title", "id", "android");
+        TextView actionBarTitleView = (TextView) getWindow().findViewById(actionBarTitle);
+        Typeface robotoBoldCondensedItalic = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Light.ttf");
+        if(actionBarTitleView != null){
+            actionBarTitleView.setTypeface(robotoBoldCondensedItalic);
+        }
+		
+	}
+	private void setupLocationSystem() {
+		// TODO Auto-generated method stub
+		mLocationClient = new LocationClient(this, this,this);
+		
+        // Create the LocationRequest object
+        mLocationRequest = LocationRequest.create();
+        // Use high accuracy
+        mLocationRequest.setPriority(
+                LocationRequest.PRIORITY_HIGH_ACCURACY);
+        // Set the update interval to 5 seconds
+        mLocationRequest.setInterval(UPDATE_INTERVAL);
+        // Set the fastest update interval to 1 second
+        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+	}
+	@Override
+	protected void onStart() {
+	    super.onStart();
+	    // Connect the client.
+	    mLocationClient.connect();
+	}
+	
+	@Override
+    protected void onStop() {
+        // If the client is connected
+        if (mLocationClient.isConnected()) {
+            /*
+             * Remove location updates for a listener.
+             * The current Activity is the listener, so
+             * the argument is "this".
+             */
+            mLocationClient.removeLocationUpdates(this);
+        }
+        /*
+         * After disconnect() is called, the client is
+         * considered "dead".
+         */
+        mLocationClient.disconnect();
+        super.onStop();
+    }
+	
+	@Override
+	public void onConnected(Bundle dataBundle) {
+	    Location mCurrentLocation = mLocationClient.getLastLocation();
+	    if (mCurrentLocation != null)
+	    {
+	    	Toast.makeText(this, "current location: " + mCurrentLocation.toString(), Toast.LENGTH_SHORT).show();
+	    	LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+	    }
+	}
+	@Override
+	public void onDisconnected() {
+	    // Display the connection status
+	    Toast.makeText(this, "Disconnected. Please re-connect.", Toast.LENGTH_SHORT).show();
+	}
+	
 
 	public void addMarkers() {
 		// TODO Auto-generated method stub
@@ -278,7 +451,7 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
 		}
 		LatLngBounds bounds = builder.build();
 		
-		int padding = 0; // offset from edges of the map in pixels
+		int padding = 100; // offset from edges of the map in pixels
 		CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
 		map.animateCamera(cu);
 		
@@ -355,6 +528,7 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
 		}
 
 	}
+	
 	private List<LatLng> decodePoly(String encoded) {
 
 	    List<LatLng> poly = new ArrayList<LatLng>();
@@ -789,5 +963,74 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
 
 	    // Return the file target for the photo based on filename
 	    return Uri.fromFile(new File(mediaStorageDir.getPath() + File.separator + fileName));
+	}
+	@Override
+	public void onConnectionFailed(ConnectionResult connectionResult) {
+		 if (connectionResult.hasResolution()) {
+	            try {
+	                // Start an Activity that tries to resolve the error
+	                connectionResult.startResolutionForResult(
+	                        this,
+	                        CONNECTION_FAILURE_RESOLUTION_REQUEST);
+	                /*
+	                * Thrown if Google Play services canceled the original
+	                * PendingIntent
+	                 	*/
+	            } catch (IntentSender.SendIntentException e) {
+	                // Log the error
+	                e.printStackTrace();
+	            }
+	        } else {
+	            /*
+	             * If no resolution is available, display a dialog to the
+	             * user with the error.
+	             */
+	            Toast.makeText(this, connectionResult.getErrorCode(), Toast.LENGTH_SHORT).show();
+	        }
+		
+	}
+	public void onLocationChanged(Location location) {
+	    // Report to the UI that the location was updated
+	    String msg = "Updated Location: " +
+	        Double.toString(location.getLatitude()) + "," +
+	        Double.toString(location.getLongitude());
+	    ParseGeoPoint currentPos = new ParseGeoPoint(location.getLatitude(), location.getLongitude());
+	    ParseUser.getCurrentUser().put("currentPosition", currentPos);
+	    ParseUser.getCurrentUser().saveInBackground();
+	    
+	    updateMarkerLocations();
+	
+	    //Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+		    
+	}
+	private void updateMarkerLocations() {
+		int i;
+		ArrayList<User> groupMembers = (ArrayList<User>) currentGroup.getMembers();
+		
+		for (i = 0; i < markers.size(); i++)
+		{
+			String userId = groupMembers.get(i).getObjectId();
+			final Marker m = markers.get(i);
+			ParseQuery<User> queryUsers = ParseQuery.getQuery(User.class);
+		
+			queryUsers.getInBackground(userId, new GetCallback<User>() {
+			  public void done(User user, ParseException e) {
+			    if (e == null) {
+
+					ParseGeoPoint geoPoint = user.getParseGeoPoint("currentPosition");
+					
+					if (geoPoint != null)
+						m.setPosition(new LatLng(geoPoint.getLatitude(), geoPoint.getLongitude()));
+		        		Log.d("MyApp", user.toString());
+	        		
+			    } else {
+			        Log.d("MyApp", "oops");
+			    }
+			  }
+			});
+
+			
+		}
+		
 	}
 }

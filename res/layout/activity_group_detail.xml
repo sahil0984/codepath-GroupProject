@@ -3,46 +3,45 @@
     xmlns:card="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_grey"    
+    android:background="@color/background_grey"
     tools:context="${packageName}.${activityClass}" >
 
-
-
-    
- <ScrollView
+    <ScrollView
         android:id="@+id/main_scrollview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent" >
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
 
-		   <it.gmariotti.cardslib.library.view.CardView
-		       android:id="@+id/carddemo"
-		       android:layout_width="match_parent"
-		       android:layout_height="wrap_content"
-		       android:layout_marginLeft="12dp"
-		       android:layout_marginRight="12dp"
-		 	   card:card_layout_resourceID="@layout/card_thumbnail_layout"
-		       android:layout_marginTop="12dp"/>
-		   
-		      <it.gmariotti.cardslib.library.view.CardView
-		       android:id="@+id/carddemo2"
-		       android:layout_width="match_parent"
-		       android:layout_height="wrap_content"
-		       android:layout_marginLeft="12dp"
-		       android:layout_marginRight="12dp"
-		 	   card:card_layout_resourceID="@layout/card_thumbnail_layout"
-		       android:layout_marginTop="12dp"/>
-		</LinearLayout>	
+            <it.gmariotti.cardslib.library.view.CardView
+                android:id="@+id/carddemo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_marginTop="12dp"
+                card:card_layout_resourceID="@layout/card_thumbnail_layout" />
+
+
+
+            <it.gmariotti.cardslib.library.view.CardView
+                android:id="@+id/carddemo2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_marginTop="12dp"
+                card:card_layout_resourceID="@layout/card_thumbnail_layout" />
+        </LinearLayout>
     </ScrollView>
 
     <FrameLayout
-       android:id="@+id/flCreateGroup"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:layout_alignParentTop="true"/>
-    
+        android:id="@+id/flCreateGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true" />
+
 </RelativeLayout>

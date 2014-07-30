@@ -114,6 +114,9 @@
             android:name=".ChatActivity"
             android:label="@string/title_activity_chat" >
         </activity>
+        <service
+          android:name=".services.LiveLocationService"
+          android:exported="false"/>        
     </application>
 
 </manifest>
