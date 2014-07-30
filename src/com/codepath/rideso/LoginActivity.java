@@ -11,6 +11,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -105,21 +106,21 @@ public class LoginActivity extends ActionBarActivity {
         }
         
         
-        // Add code to print out the key hash
-        try {
-            PackageInfo info = getPackageManager().getPackageInfo(
-                    "com.codepath.rideso", 
-                    PackageManager.GET_SIGNATURES);
-            for (Signature signature : info.signatures) {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-                }
-        } catch (NameNotFoundException e) {
-
-        } catch (NoSuchAlgorithmException e) {
-
-        }
+//        // Add code to print out the key hash
+//        try {
+//            PackageInfo info = getPackageManager().getPackageInfo(
+//                    "com.codepath.rideso", 
+//                    PackageManager.GET_SIGNATURES);
+//            for (Signature signature : info.signatures) {
+//                MessageDigest md = MessageDigest.getInstance("SHA");
+//                md.update(signature.toByteArray());
+//                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+//                }
+//        } catch (NameNotFoundException e) {
+//
+//        } catch (NoSuchAlgorithmException e) {
+//
+//        }
         
         
         
@@ -167,8 +168,10 @@ public class LoginActivity extends ActionBarActivity {
     	ParseUser currentUser = ParseUser.getCurrentUser();
     	if (currentUser != null && ParseFacebookUtils.isLinked(currentUser)) {
     		// do stuff with the user
-    		getFacebookDetailsInBackground();
     		pbLoading.setVisibility(ProgressBar.VISIBLE);
+    		getFacebookDetailsInBackground();
+    	} else {
+    		userType = "newUser";
     	}
     	
 	}
@@ -233,6 +236,7 @@ public class LoginActivity extends ActionBarActivity {
 			      if (user != null) {
 			          ParseUser.getCurrentUser().put("fbId", user.getId());
 			          ParseUser.getCurrentUser().put("firstName", user.getFirstName());
+			          ParseUser.getCurrentUser().put("lowerFirstName", user.getFirstName().toLowerCase(Locale.ENGLISH));
 			          ParseUser.getCurrentUser().put("lastName", user.getLastName());
 			          //ParseUser.getCurrentUser().put("username", user.getUsername());  In v2.0, there is no username.
 			          ParseUser.getCurrentUser().put("personalEmail", user.asMap().get("email"));

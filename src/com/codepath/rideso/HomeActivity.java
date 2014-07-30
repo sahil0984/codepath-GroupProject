@@ -143,19 +143,19 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
 		TitlePageIndicator mIndicator = (TitlePageIndicator)findViewById(R.id.indicator);
         mIndicator.setViewPager(vpPager);
         
-        mIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-            }
-
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-        });
+//        mIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+//            @Override
+//            public void onPageSelected(int position) {
+//            }
+//
+//            @Override
+//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//            }
+//
+//            @Override
+//            public void onPageScrollStateChanged(int state) {
+//            }
+//        });
 		
 
         
