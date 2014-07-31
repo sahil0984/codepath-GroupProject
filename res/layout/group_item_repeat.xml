@@ -34,32 +34,15 @@
         style="@style/ListHeadTextView"
         android:text="Group Name" />
 
-    <LinearLayout 
-        android:id="@+id/llDateTime"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+	<LinearLayout
+	    android:id="@+id/llPlaceHolder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"	    
         android:layout_toRightOf="@+id/ivGroupImage"
-        android:layout_marginBottom="5dp"
-        android:layout_marginRight="8dp"
-        android:weightSum="0.99"
-        android:layout_below="@+id/tvName">
-    
-
-	    <TextView
-	        android:id="@+id/tvOnwardTime"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_weight="0.33"	
-	        android:gravity="left"	                
-        	style="@style/ListSubHeadTextView"
-	        android:text="9:00am" />
+        android:layout_below="@+id/tvName"
+        android:layout_marginBottom="4dp" >
 	    
-	    <LinearLayout 
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_gravity="center"
-	        android:layout_weight="0.33">
-	        
+	    
 	  	    <TextView 
 		        android:id="@+id/tvMon"
 		        android:layout_width="wrap_content"
@@ -109,7 +92,29 @@
 		        android:background="@drawable/choice_shape"
 	        	style="@style/ListSubHeadTextView"
 		        android:text="S"/>
-	    </LinearLayout>
+	    
+		    
+    </LinearLayout>
+    
+    <LinearLayout 
+        android:id="@+id/llDateTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/ivGroupImage"
+        android:layout_toLeftOf="@+id/llButtons"
+        android:layout_below="@+id/llPlaceHolder"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="8dp"
+        android:weightSum="0.99" >
+    
+	    <TextView
+	        android:id="@+id/tvOnwardTime"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="0.33"	
+	        android:gravity="left"	                
+        	style="@style/ListSubHeadTextView"
+	        android:text="9:00am" />
 	    	    	    	    
 	    <TextView
 	        android:id="@+id/tvReturnTime"
@@ -117,7 +122,7 @@
 	        android:layout_height="wrap_content"
 	        android:layout_weight="0.33"
 	        android:gravity="right"
-	        style="@style/ListSubHeadTextView"
+        	style="@style/ListSubHeadTextView"
 	        android:text="6:00pm" />
     
     </LinearLayout>
@@ -134,8 +139,33 @@
       	style="@style/ListDetailTextView"
         android:text="Jack, Tom, Joe, Jill..." />
 
+    <LinearLayout 
+        android:id="@+id/llButtons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+	    android:layout_marginRight="5dp"
+	    android:layout_marginTop="4dp"
+	    android:layout_marginBottom="8dp"
+	    android:layout_centerVertical="true"
+	    android:gravity="center_vertical"
+        android:orientation="vertical">
+		<ImageButton 
+		    android:id="@+id/ibChat"
+		    android:layout_width="40dp"
+		    android:layout_height="40dp"
+		    android:src="@drawable/ic_create_group"/>
+		
+		<ImageButton 
+		    android:id="@+id/ibMap"
+		    android:layout_width="40dp"
+		    android:layout_height="40dp"
+		    android:src="@drawable/ic_savings"/>
+	</LinearLayout>
+    
     </RelativeLayout>
     
+
 
     <RelativeLayout
         android:layout_width="match_parent"

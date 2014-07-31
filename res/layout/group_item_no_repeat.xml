@@ -34,16 +34,34 @@
         style="@style/ListHeadTextView"
         android:text="Group Name" />
 
-
+	<LinearLayout
+	    android:id="@+id/llPlaceHolder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"	    
+        android:layout_toRightOf="@+id/ivGroupImage"
+        android:layout_below="@+id/tvName"
+        android:layout_marginBottom="4dp" >
+	    
+		    <TextView
+		        android:id="@+id/tvDate"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		       	style="@style/ListSubHeadTextView"
+		        android:text="01/01/3001"
+		        />
+		    
+    </LinearLayout>
+    
     <LinearLayout 
         android:id="@+id/llDateTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/ivGroupImage"
+        android:layout_toLeftOf="@+id/llButtons"
+        android:layout_below="@+id/llPlaceHolder"
         android:layout_marginBottom="5dp"
         android:layout_marginRight="8dp"
-        android:weightSum="0.99"
-        android:layout_below="@+id/tvName">
+        android:weightSum="0.99" >
     
 	    <TextView
 	        android:id="@+id/tvOnwardTime"
@@ -53,16 +71,6 @@
 	        android:gravity="left"	                
         	style="@style/ListSubHeadTextView"
 	        android:text="9:00am" />
-	
-	    <TextView
-	        android:id="@+id/tvDate"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_weight="0.33"
-	        android:gravity="center"	                
-        	style="@style/ListSubHeadTextView"
-	        android:text="01/01/3001"
-	        />
 	    	    	    	    
 	    <TextView
 	        android:id="@+id/tvReturnTime"
@@ -87,8 +95,33 @@
       	style="@style/ListDetailTextView"
         android:text="Jack, Tom, Joe, Jill..." />
 
+    <LinearLayout 
+        android:id="@+id/llButtons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+	    android:layout_marginRight="5dp"
+	    android:layout_marginTop="4dp"
+	    android:layout_marginBottom="8dp"
+	    android:layout_centerVertical="true"
+	    android:gravity="center_vertical"
+        android:orientation="vertical">
+		<ImageButton 
+		    android:id="@+id/ibChat"
+		    android:layout_width="40dp"
+		    android:layout_height="40dp"
+		    android:src="@drawable/ic_create_group"/>
+		
+		<ImageButton 
+		    android:id="@+id/ibMap"
+		    android:layout_width="40dp"
+		    android:layout_height="40dp"
+		    android:src="@drawable/ic_savings"/>
+	</LinearLayout>
+    
     </RelativeLayout>
     
+
 
     <RelativeLayout
         android:layout_width="match_parent"

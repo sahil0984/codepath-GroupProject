@@ -6,16 +6,21 @@ import java.util.List;
 import java.util.Locale;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.codepath.rideso.ChatActivity;
+import com.codepath.rideso.GroupDetailActivity;
 import com.codepath.rideso.R;
 import com.codepath.rideso.models.Group;
 import com.codepath.rideso.models.User;
@@ -50,9 +55,9 @@ public class GroupArrayAdapter extends ArrayAdapter<Group> {
 	}
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(final int position, View convertView, ViewGroup parent) {
 		//Get the data item for this position
-		Group group = getItem(position);
+		final Group group = getItem(position);
 		ViewHolder holder;
 		
        // Check if an existing view is being reused, otherwise inflate the view
@@ -77,6 +82,8 @@ public class GroupArrayAdapter extends ArrayAdapter<Group> {
   	    holder.tvReturnTime = (TextView) convertView.findViewById(R.id.tvReturnTime);
   	    holder.tvMembersList = (TextView) convertView.findViewById(R.id.tvMembersList);
   	    
+  	    holder.ibChat = (ImageButton) convertView.findViewById(R.id.ibChat); 
+  	    holder.ibMap = (ImageButton) convertView.findViewById(R.id.ibMap); 
 
   	    holder.tvMon = (TextView) convertView.findViewById(R.id.tvMon);
   	    holder.tvTue = (TextView) convertView.findViewById(R.id.tvTue);
@@ -202,6 +209,38 @@ public class GroupArrayAdapter extends ArrayAdapter<Group> {
            }
        }
        holder.tvMembersList.setText(membersList);
+       
+       
+       
+       
+       convertView.setOnClickListener(new OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               Intent i = new Intent(context,GroupDetailActivity.class);
+               i.putExtra("group",group.getObjectId());
+               Log.d("MyApp", "My objectId before sending in is:" + group.getObjectId());
+               //Use the Request Code to send the index of the list (pos)
+               context.startActivity(i);	
+           }
+       });
+       
+       holder.ibChat.setOnClickListener(new OnClickListener() {
+    	   @Override
+    	   public void onClick(View v) {
+    	        Intent i = new Intent(context,ChatActivity.class);
+    	        i.putExtra("customdata", "fromGroupDetailActivity");
+    	        i.putExtra("groupObjectId", group.getObjectId());
+    	        //Use the Request Code to send the index of the list (pos)
+    	        context.startActivity(i);
+    	   }
+       });
+       
+       holder.ibMap.setOnClickListener(new OnClickListener() {
+    	   @Override
+    	   public void onClick(View v) {
+    		   //NEAL, Add the code to open full screen map here....
+    	   }
+       });
 		
 		// Return the completed view to render on screen
 	    return convertView;
@@ -216,6 +255,9 @@ public class GroupArrayAdapter extends ArrayAdapter<Group> {
 		TextView tvDate;
 		TextView tvReturnTime;
 		TextView tvMembersList;
+		
+		ImageButton ibChat;
+		ImageButton ibMap;
 		
 		TextView tvMon;
 		TextView tvTue;

@@ -59,19 +59,19 @@ public abstract class GroupListFragment extends Fragment {
 		//Assign our view references
 		lvGroups = (ListView) v.findViewById(R.id.lvGroups);
 		lvGroups.setAdapter(aGroups);
-		lvGroups.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int pos, long id) {
-                Intent i = new Intent(getActivity(),GroupDetailActivity.class);
-                i.putExtra("group",groups.get(pos).getObjectId());
-                Log.d("MyApp", "My objectId before sending in is:" + groups.get(pos).getObjectId());
-                //Use the Request Code to send the index of the list (pos)
-                startActivityForResult(i,pos);				
-			}
-			
-		});
+//		lvGroups.setOnItemClickListener(new OnItemClickListener() {
+//
+//			@Override
+//			public void onItemClick(AdapterView<?> parent, View view,
+//					int pos, long id) {
+//                Intent i = new Intent(getActivity(),GroupDetailActivity.class);
+//                i.putExtra("group",groups.get(pos).getObjectId());
+//                Log.d("MyApp", "My objectId before sending in is:" + groups.get(pos).getObjectId());
+//                //Use the Request Code to send the index of the list (pos)
+//                startActivityForResult(i,pos);				
+//			}
+//			
+//		});
 		
 		//tvPageTitle = (TextView) v.findViewById(R.id.tvPageTitle);
 		pbLoading = (ProgressBar) v.findViewById(R.id.pbLoading);

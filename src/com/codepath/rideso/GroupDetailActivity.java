@@ -249,11 +249,10 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
 		    		}
 		    		
 		    		//Added by Sahil: Dont show edit option if the user is not the owner of the group
-		    		if (!currentGroup.getUser().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())) {
-		    			hideMenuOption(R.id.miEdit);
+		    		if (currentGroup.getUser().getObjectId().equals(ParseUser.getCurrentUser().getObjectId())) {
+		    			showMenuOption(R.id.miEdit);
 		    		}
 		    		
-		    		hideMenuOption(R.id.miChat);
 		    		boolean isMember = false;
 		    		for (int i=0; i<currentGroup.getMembers().size(); i++) {
 		    			if (currentGroup.getMembers().get(i).getObjectId().equals(ParseUser.getCurrentUser().getObjectId())) {
@@ -262,7 +261,6 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
 		    				break;
 		    			}
 		    		}
-	    			hideMenuOption(R.id.miRequest);
 		    		if (!isMember) {
 		    			showMenuOption(R.id.miRequest);
 		    		}
@@ -626,6 +624,10 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
         mOptionsMenu = menu;
         
         animationDone = 0;
+        
+        hideMenuOption(R.id.miChat);
+        hideMenuOption(R.id.miEdit);
+        hideMenuOption(R.id.miRequest);
 
         return true;
     }

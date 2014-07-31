@@ -1,26 +1,37 @@
 package com.codepath.rideso;
 
+import org.apache.http.Header;
+import org.json.JSONObject;
+
 import com.codepath.rideso.models.User;
 import com.facebook.widget.ProfilePictureView;
+import com.loopj.android.http.AsyncHttpClient;
 import com.parse.GetCallback;
 import com.parse.ParseException;
+import com.parse.ParseFacebookUtils;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.squareup.picasso.Picasso;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ViewProfileActivity extends Activity {
 	
 	private Menu mOptionsMenu;
 
+	private ImageView ivCoverPhoto;
 	private ProfilePictureView ivProfileImage;
 
 	User currUser;
@@ -54,17 +65,40 @@ public class ViewProfileActivity extends Activity {
 					if (user.getObjectId().equals(ParseUser.getCurrentUser().getObjectId())) {
 						showOption(R.id.miEdit);
 					}
+					
+			        String URL = "https://graph.facebook.com/" + currUser.getFbId() + "?fields=cover&access_token=" + ParseFacebookUtils.getSession().getAccessToken();
+			        Toast.makeText(getApplicationContext(), URL, Toast.LENGTH_SHORT).show();
+					//new FbCoverPhotoTask().execute(URL);
+			        
+				    AsyncHttpClient client = new AsyncHttpClient();
+				    client.get(URL, null, new FbCoverPhotoResponseHandler(getApplicationContext()) {
+
+						@Override
+						public void onSuccess(int statusCode, Header[] headers,
+								JSONObject response) {
+							super.onSuccess(statusCode, headers, response);
+							String coverPhotoUrl = getConverPhotoUrl();
+							
+							if (!coverPhotoUrl.equals("")) {
+								Picasso.with(getApplicationContext()).load(coverPhotoUrl).into(ivCoverPhoto);
+							}
+							
+						}
+				    	
+				    });
 
 			    } else {
 			        Log.d("MyApp", "Can't find User.");
 			    }
-				}
+			}
 			
 		});
 		
 	}
 	
 	private void setupViews() {
+		ivCoverPhoto = (ImageView) findViewById(R.id.ivCoverPhoto);
+		
 		ivProfileImage  = (ProfilePictureView) findViewById(R.id.ivProfileImage);
 		ivProfileImage.setProfileId((String) currUser.get("fbId"));
 		
@@ -100,14 +134,15 @@ public class ViewProfileActivity extends Activity {
 		startActivity(i);
     }
 	
-  private void hideOption(int id)
-  {
-      MenuItem item = mOptionsMenu.findItem(id);
-      item.setVisible(false);
-  }
+    private void hideOption(int id)
+    {
+    	MenuItem item = mOptionsMenu.findItem(id);
+    	item.setVisible(false);
+    }
 	private void showOption(int id)
 	{
 	    MenuItem item = mOptionsMenu.findItem(id);
 	    item.setVisible(true);
 	}
+	
 }

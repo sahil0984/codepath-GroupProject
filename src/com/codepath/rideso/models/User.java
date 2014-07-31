@@ -69,6 +69,9 @@ public class User extends ParseUser {
 	public String getPhone() {
 		return getString("phone");
 	}
+	public String getFbId() {
+		return getString("fbId");
+	}
 	public String getFbFriendsCount() {
 		return getString("fbFriendsCount");
 	}
@@ -113,6 +116,9 @@ public class User extends ParseUser {
 	}
 	public void setPhone(String value) {
 		put("phone", value);
+	}
+	public void setFbId(String value) {
+		put("fbId", value);
 	}
 	public void setFbFriendsCount(int value) {
 		put("fbFriendsCount", value);

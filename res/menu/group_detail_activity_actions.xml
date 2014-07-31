@@ -5,21 +5,21 @@
     <item
         android:id="@+id/miEdit"
         android:icon="@drawable/ic_edit_profile"
-        myapp:showAsAction="always"
+        android:showAsAction="always"
         android:title="Edit Group">
     </item>
     
     <item
         android:id="@+id/miChat"
         android:icon="@drawable/ic_create_group"
-        myapp:showAsAction="always"
+        android:showAsAction="always"
         android:title="Chat">
     </item>
     
     <item
         android:id="@+id/miRequest"
-        android:icon="@drawable/ic_done_edit_profile"
-        myapp:showAsAction="always"
+        android:icon="@drawable/ic_action_add"
+        android:showAsAction="always"
         android:title="Request to add">
     </item>
 </menu>
