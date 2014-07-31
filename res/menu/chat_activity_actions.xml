@@ -4,8 +4,8 @@
     
     <item
         android:id="@+id/miGroupDetails"
-        android:icon="@drawable/ic_edit_profile"
-        myapp:showAsAction="always"
+        android:icon="@drawable/ic_create_group"
+        android:showAsAction="always"
         android:title="View Group">
     </item>
     

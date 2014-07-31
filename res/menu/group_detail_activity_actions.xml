@@ -11,7 +11,7 @@
     
     <item
         android:id="@+id/miChat"
-        android:icon="@drawable/ic_create_group"
+        android:icon="@drawable/ic_action_chat"
         android:showAsAction="always"
         android:title="Chat">
     </item>
