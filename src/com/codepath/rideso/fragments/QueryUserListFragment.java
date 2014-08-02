@@ -12,23 +12,21 @@ import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 
-public class AddUserListFragment extends UserListFragment {
+public class QueryUserListFragment extends UserListFragment {
 	
 	private OnItemSelectedListener listener;
-	private ArrayList<User> addedUsers;
+
 
 	public interface OnItemSelectedListener {
-		public void onAddedUserClick(User user);
+		public void onUserClick(User user);
 	}
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stu
+		
 		super.onCreate(savedInstanceState);
-		initializeUsers(R.layout.user_item_delete);
-		addedUsers = new ArrayList<User>();
-		populateUsersByObjectId(getArguments().getStringArrayList("currentMembers"));
-		
-		
+		initializeUsers(R.layout.user_item_add);
+		//populateUsersByObjectId(getArguments().getStringArrayList("currentMembers"));		
 	}
 	@Override
 	public void onAttach(Activity activity) {
@@ -44,38 +42,34 @@ public class AddUserListFragment extends UserListFragment {
 
 	}
 
-    public static AddUserListFragment newInstance(ArrayList<String> currentMembers)
+    public static QueryUserListFragment newInstance(ArrayList<String> currentMembers)
     {
-	    AddUserListFragment fragmentUser = new AddUserListFragment();
+	    QueryUserListFragment fragmentUser = new QueryUserListFragment();
 	    Bundle args = new Bundle();
 	    args.putStringArrayList("currentMembers", currentMembers);	
 	    fragmentUser.setArguments(args);
 	    return fragmentUser;
     }
+    
 	@Override
 	public void onUserClick(User user) {
-		addedUsers.remove(user);
-		removeUser(user);
-		listener.onAddedUserClick(user);
-				
+		
+		//if (!addedUsers.contains(user))
+		//{
+			//addedUsers.add(user);
+		//	clearList();
+			//addAll(addedUsers);
+			listener.onUserClick(user);
+		//}				
 	}
-	
-	public boolean addUser(User user)
-	{
-		if (!addedUsers.contains(user))
-		{
-			addedUsers.add(user);
-			appendUser(user);
-			return true;
-		}	
-		return false;
-	}
+	/*
 	public void populateListwithAddedUsers()
 	{
 		clearList();
 		if (addedUsers != null)
 			addAll(addedUsers);
 	}
+	*/
 	public void populateUsersByObjectId(ArrayList<String> users)
 	{
 		//ArrayList<User> userList = new ArrayList<User>();
@@ -97,8 +91,8 @@ public class AddUserListFragment extends UserListFragment {
 			    if (e == null) {
 		        		// Access the array of results here
 			    		//Adding member to the group adapter
-			    		addedUsers.add(user);
-			    		appendUser(user);
+			    		//addedUsers.add(user);
+			    		//appendUser(user);
 		        		Log.d("MyApp", user.toString());
 	        		
 			    } else {

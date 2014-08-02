@@ -77,6 +77,7 @@
         </activity>
         <activity
             android:name=".AddUsersActivity"
+            android:windowSoftInputMode="adjustPan"
             android:label="@string/title_activity_add_users" >
         </activity>
 

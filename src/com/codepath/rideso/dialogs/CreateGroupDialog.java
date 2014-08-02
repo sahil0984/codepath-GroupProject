@@ -748,6 +748,7 @@ public class CreateGroupDialog extends MyFragment {
 	public void createUserListfromObjectId(ArrayList<String> userListStr) {
 		int i;
 		// ArrayList<User> userList = new ArrayList<User>();
+		groupMembers.clear();
 		final int userListSize = userListStr.size();
 		queriesReturned = 0;
 		for (i = 0; i < userListSize; i++) {

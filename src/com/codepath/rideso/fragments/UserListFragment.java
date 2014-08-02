@@ -21,6 +21,9 @@ import com.codepath.rideso.R;
 import com.codepath.rideso.adapters.UserArrayAdapter;
 import com.codepath.rideso.models.Group;
 import com.codepath.rideso.models.User;
+import com.nhaarman.listviewanimations.swinginadapters.AnimationAdapter;
+import com.nhaarman.listviewanimations.swinginadapters.prepared.AlphaInAnimationAdapter;
+import com.nhaarman.listviewanimations.swinginadapters.prepared.SwingRightInAnimationAdapter;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -31,21 +34,29 @@ import dev.dworks.libs.astickyheader.SimpleSectionedListAdapter.Section;
 
 public abstract class UserListFragment extends Fragment {
 	private ArrayList<User> users;
-	private ArrayAdapter<User> aUsers;
+	private UserArrayAdapter aUsers;
 	private ListView lvUsers;
 	private ProgressBar pbLoading;
+	AnimationAdapter alphaInAnimationAdapter;
 
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		//Non-view initialization
-		users = new ArrayList<User>();
-		aUsers = new UserArrayAdapter(getActivity(), users);
-	
+
+		
 
 
 		//populateUsers(getArguments().getString("group"));
+	}
+	
+	public void initializeUsers(int layoutItem)
+	{
+		users = new ArrayList<User>();
+		aUsers = new UserArrayAdapter(getActivity(), users, layoutItem);
+		alphaInAnimationAdapter = new AlphaInAnimationAdapter(aUsers);
+
 	}
 
 	public void appendUser(User newUser) {
@@ -60,6 +71,11 @@ public abstract class UserListFragment extends Fragment {
 	{
 		aUsers.clear();
 	}
+	
+	public void removeUser(User user)
+	{
+		aUsers.remove(user);
+	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -67,7 +83,10 @@ public abstract class UserListFragment extends Fragment {
 		View v = inflater.inflate(R.layout.fragment_users_list, container, false);
 		//Assign our view references
 		lvUsers = (ListView) v.findViewById(R.id.lvUsers);
-		lvUsers.setAdapter(aUsers);
+		alphaInAnimationAdapter.setAbsListView(lvUsers);
+		
+		lvUsers.setAdapter(alphaInAnimationAdapter);
+		
 		lvUsers.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
@@ -114,3 +133,5 @@ public abstract class UserListFragment extends Fragment {
 		
 	}
 }
+
+

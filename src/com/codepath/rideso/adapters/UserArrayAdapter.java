@@ -22,12 +22,14 @@ import com.codepath.rideso.models.User;
 import com.facebook.widget.ProfilePictureView;
 import com.squareup.picasso.Picasso;
 
-public class UserArrayAdapter extends ArrayAdapter<User> {
+public class UserArrayAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<User> {
 	private Context context;
+	private int layout_item;
 	
-	public UserArrayAdapter(Context context,List<User> objects) {
-		super(context, R.layout.group_item_no_repeat, objects);
+	public UserArrayAdapter(Context context,List<User> objects, int layout_item) {
+		super(objects);
 		this.context = context;
+		this.layout_item = layout_item;
 	}
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
@@ -38,8 +40,8 @@ public class UserArrayAdapter extends ArrayAdapter<User> {
        // Check if an existing view is being reused, otherwise inflate the view
        if (convertView == null) {
     	   
-  		LayoutInflater inflater = LayoutInflater.from(getContext());
-  		convertView = inflater.inflate(R.layout.user_item, parent, false);
+  		LayoutInflater inflater = LayoutInflater.from(context);
+  		convertView = inflater.inflate(layout_item, parent, false);
   	    holder = new ViewHolder();
   	    
   	    holder.ivProfileImage = (ProfilePictureView) convertView.findViewById(R.id.ivProfileImage);

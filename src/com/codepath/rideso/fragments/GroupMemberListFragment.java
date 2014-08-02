@@ -27,6 +27,7 @@ public class GroupMemberListFragment extends UserListFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		initializeUsers(R.layout.user_item);
 		String groupObjectId = getArguments().getString("group");
 		populateGroupMembers(groupObjectId);
 		

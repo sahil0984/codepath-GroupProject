@@ -1,36 +1,44 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:bootstrapbutton="http://schemas.android.com/apk/res-auto"
     xmlns:fontawesometext="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="${relativePackage}.${activityClass}" >
+    android:orientation="vertical"
+    tools:context="${relativePackage}.${activityClass}" xmlns:app="http://schemas.android.com/apk/res/com.codepath.rideso">
 
     <FrameLayout
         android:id="@+id/flAddUserList"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp" 
+        android:layout_weight="1">
+    </FrameLayout>
+    
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-		android:layout_above="@+id/btnDoneAddUsers"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true" >
+        android:gravity="center"
+        android:text="ADDED USERS" />
+    <FrameLayout
+        android:id="@+id/flAddedUsersList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
 
     </FrameLayout>
 
 
-
     <com.beardedhen.androidbootstrap.BootstrapButton
         android:id="@+id/btnDoneAddUsers"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.2"
+        android:textAlignment="center"
         android:onClick="onDoneClick"
         android:text="Done"
-		bootstrapbutton:bb_type="primary"
-		bootstrapbutton:bb_size="small" /> 
+        fontawesometext:bb_size="small"
+        fontawesometext:bb_type="primary" >
+    </com.beardedhen.androidbootstrap.BootstrapButton>
     
-
-    
-</RelativeLayout>
+</LinearLayout>

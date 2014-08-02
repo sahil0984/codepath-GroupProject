@@ -29,7 +29,7 @@
          You can popolate your element with CardHeader#setupInnerViewElements() method -->
 
     <ImageView
-        android:id="@+id/imageView1"
+        android:id="@+id/imgAdd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
@@ -37,20 +37,20 @@
         android:src="@drawable/ic_marker" />
 
     <ImageView
-        android:id="@+id/ImageView01"
+        android:id="@+id/imgMinus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/imageView1"
+        android:layout_below="@+id/imgAdd"
         android:src="@drawable/ic_marker" />
 
     <RelativeLayout
         android:id="@+id/llOnward"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/imageView1"
-       	android:layout_alignBottom="@+id/imageView1"        
-        android:layout_toRightOf="@+id/imageView1"
+        android:layout_alignTop="@+id/imgAdd"
+       	android:layout_alignBottom="@+id/imgAdd"        
+        android:layout_toRightOf="@+id/imgAdd"
         android:gravity="center_vertical"       
 		>
 
@@ -79,9 +79,9 @@
         android:id="@+id/llReturn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/ImageView01"
-       	android:layout_alignBottom="@+id/ImageView01"        
-        android:layout_toRightOf="@+id/ImageView01"
+        android:layout_alignTop="@+id/imgMinus"
+       	android:layout_alignBottom="@+id/imgMinus"        
+        android:layout_toRightOf="@+id/imgMinus"
         android:gravity="center_vertical"       
 		>
 

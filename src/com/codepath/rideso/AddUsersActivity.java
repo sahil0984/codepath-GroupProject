@@ -3,6 +3,7 @@ package com.codepath.rideso;
 import java.util.ArrayList;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Typeface;
@@ -14,18 +15,24 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.Toast;
 
 import com.codepath.rideso.fragments.AddUserListFragment;
+import com.codepath.rideso.fragments.QueryUserListFragment;
 import com.codepath.rideso.models.User;
+import com.google.android.gms.identity.intents.AddressConstants;
 import com.parse.ParseUser;
+import com.parse.ParseQueryAdapter.QueryFactory;
 
-public class AddUsersActivity extends FragmentActivity implements AddUserListFragment.OnItemSelectedListener {
+public class AddUsersActivity extends FragmentActivity implements QueryUserListFragment.OnItemSelectedListener, AddUserListFragment.OnItemSelectedListener{
 	private SearchView searchView;
-	AddUserListFragment utF;
+	QueryUserListFragment utF;
+	AddUserListFragment atF;
+	
 	private ArrayList<String> toAddUsers;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +45,7 @@ public class AddUsersActivity extends FragmentActivity implements AddUserListFra
         if(actionBarTitleView != null){
             actionBarTitleView.setTypeface(robotoBoldCondensedItalic);
         }
-		
-		
+				
 		toAddUsers = getIntent().getStringArrayListExtra("currentGroupMembers");
 		
 		if (toAddUsers == null)
@@ -47,22 +53,28 @@ public class AddUsersActivity extends FragmentActivity implements AddUserListFra
 			toAddUsers = new ArrayList<String>();
 		}
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        utF = AddUserListFragment.newInstance(toAddUsers);
+        utF = QueryUserListFragment.newInstance(toAddUsers);
         ft.replace(R.id.flAddUserList, utF);
         ft.commit();
+        
+        FragmentTransaction ft_a = getSupportFragmentManager().beginTransaction();
+        atF = AddUserListFragment.newInstance(toAddUsers);
+        ft_a.replace(R.id.flAddedUsersList, atF);
+        ft_a.commit();
         
 	}
 	@Override
 	public void onUserClick(User user)
 	{
-	
-		if (user != null)
+		if (atF.addUser(user))
 		{
-			Toast.makeText(this,"Added User: " + user.getFirstName(),Toast.LENGTH_SHORT).show();
 			toAddUsers.add(user.getObjectId());
+			utF.clearList();
+			InputMethodManager imm = (InputMethodManager)getSystemService(
+					Context.INPUT_METHOD_SERVICE);
+					imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
 		}
-		else
-			Log.d("MyApp", "Added User is null");
+		
 		//Add User to List of Added Users
 	}
 	public void onDoneClick(View v) {
@@ -85,34 +97,29 @@ public class AddUsersActivity extends FragmentActivity implements AddUserListFra
 	    searchView.setOnQueryTextListener(new OnQueryTextListener() {
 	       @Override
 	       public boolean onQueryTextSubmit(String query) {
-	            Toast.makeText(getApplicationContext(), "Searching for" + query, Toast.LENGTH_SHORT).show();
-		    	   if (query.equals(""))
-		    	   {
-		    		   utF.populateListwithAddedUsers();
-		    	   }
-		    	   else
-		    	   {
-			    	   Log.d("MyApp", "Query: " + query);
-		    		   utF.populateUserByName(query);
-		    	   }
+	            //Toast.makeText(getApplicationContext(), "Searching for" + query, Toast.LENGTH_SHORT).show()
+	            Log.d("MyApp", "Query: " + query);
+	            if (!query.equals(""))
+	            	utF.populateUserByName(query);
+	            else
+	            	utF.clearList();
 	            return true;
 	       }
 
 	       @Override
 	       public boolean onQueryTextChange(String newText) {
-
-	    	   if (newText.equals(""))
-	    	   {
-	    		   utF.populateListwithAddedUsers();
-	    	   }
-	    	   else
-	    	   {
-		    	   Log.d("MyApp", "Query: " + newText);
+	    	   Log.d("MyApp", "Query: " + newText);
+	    	   if (!newText.equals(""))
 	    		   utF.populateUserByName(newText);
-	    	   }
-	           return true;
+	    	   else
+	    		   utF.clearList();
+    		   return true;
 	       }
 	   });
 		return super.onCreateOptionsMenu(menu);
+	}
+	@Override
+	public void onAddedUserClick(User user) {
+		toAddUsers.remove(user.getObjectId());	
 	}
 }
