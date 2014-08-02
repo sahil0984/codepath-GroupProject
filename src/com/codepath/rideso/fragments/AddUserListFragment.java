@@ -1,6 +1,8 @@
 package com.codepath.rideso.fragments;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -82,6 +84,7 @@ public class AddUserListFragment extends UserListFragment {
 		final int userListSize = users.size();
 		int i;
 		
+		//BOZO: Add Sort 
 		for (i = 0; i < userListSize; i++)
 		{
 			ParseQuery<User> queryUsers = ParseQuery.getQuery(User.class);

@@ -44,6 +44,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -201,6 +203,9 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
 				//		Toast.LENGTH_SHORT).show();
 			}
 		}
+		
+		
+
 
 	}
 	
@@ -322,6 +327,22 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
     private void openCreateGroupDialog() {
     	getActionBar().hide();
     	
+		RelativeLayout view = (RelativeLayout)findViewById(R.id.rlHomeActivity);
+
+		view.setDrawingCacheEnabled(true);
+
+		view.buildDrawingCache();
+
+		Bitmap bm = view.getDrawingCache();
+		Bitmap blurbm = Utils.fastblur(bm,10);
+		
+		ImageView imgBlur = (ImageView) findViewById(R.id.imgBlur);
+		FrameLayout flBlur = (FrameLayout) findViewById(R.id.flBlur);
+		
+	
+		imgBlur.setImageBitmap(blurbm);
+		flBlur.setVisibility(View.VISIBLE);
+		
     	FrameLayout flCreateGroup = (FrameLayout)  findViewById(R.id.flCreateGroup);
     	flCreateGroup.setVisibility(View.VISIBLE);
     	
