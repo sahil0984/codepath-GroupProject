@@ -474,10 +474,7 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
 	{
 		AsyncHttpClient client = new AsyncHttpClient();
 		String directionsUrl = makeURL(markers);
-		
-		Intent intent = new Intent(android.content.Intent.ACTION_VIEW, 
-				Uri.parse("https://maps.google.com/maps?saddr=San+Francisco,+CA&daddr=Los+Angeles,+CA+to:Phoenix,+AZ+to:Houston,+TX+to:Jacksonville,+FL+to:New+York,+NY+to:Buffalo,+NY+to:Chicago,+IL+to:Seattle,+WA+to:San+Jose,+CA"));
-				startActivity(intent);
+	
 		Log.d("MyApp", directionsUrl);
 		client.get(directionsUrl,
 			new JsonHttpResponseHandler(){
