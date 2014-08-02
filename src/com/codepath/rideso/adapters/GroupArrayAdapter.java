@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.codepath.rideso.ChatActivity;
 import com.codepath.rideso.GroupDetailActivity;
 import com.codepath.rideso.R;
+import com.codepath.rideso.Utils;
 import com.codepath.rideso.models.Group;
 import com.codepath.rideso.models.User;
 import com.parse.GetDataCallback;
@@ -147,9 +148,9 @@ public class GroupArrayAdapter extends ArrayAdapter<Group> {
        holder.tvGroupName.setText(group.getName());
        
        String[] formattedOnwardDateTime = new String[2];
-       formattedOnwardDateTime = stringToDateTime(group.getOnwardTime());
+       formattedOnwardDateTime = Utils.stringToDateTime(group.getOnwardTime());
        String[] formattedReturnDateTime = new String[2];
-       formattedReturnDateTime = stringToDateTime(group.getOnwardTime());      
+       formattedReturnDateTime = Utils.stringToDateTime(group.getOnwardTime());      
               
  		if (getItemViewType(position) == 0) {
  			holder.tvDate.setText(formattedOnwardDateTime[0]);
@@ -266,63 +267,6 @@ public class GroupArrayAdapter extends ArrayAdapter<Group> {
 		TextView tvFri;
 		TextView tvSat;
 		TextView tvSun;	
-	}
-	
-	public String[] stringToDateTime(String dateTime) {
-		
-		String date = "";
-		String time = "";
-		
-		date = dateTime.replaceAll(" .*:.*", "");
-		time = dateTime.replaceAll(".*/.*/.* ", "");
-
-		//Toast.makeText(context, date, Toast.LENGTH_SHORT).show();
-		
-		if (date.equals("01/01/3001")) {
-			date = "";
-		}
-		if (time.equals("25:25")) {
-			time = "";
-		} else {
-			String hr = time.replaceAll(":.*", "");
-			String min = time.replaceAll(".*:", "");
-			if (Integer.parseInt(hr)>12) {
-				time = (Integer.parseInt(hr)-12) + ":" + min + "pm";
-			} else {
-				time = hr + ":" + min + "am";
-			}
-		}
-				
-		//Toast.makeText(context, date, Toast.LENGTH_SHORT).show();
-
-		String[] dateTimeQualified = new String[2];
-		
-		dateTimeQualified[0] = date;
-		dateTimeQualified[1] = time;
-		
-		return dateTimeQualified;
-	}
-	
-	public String stringToDateTimeRelative(String dateTime) {
-		
-		long dateMillis;
-		String relativeDate = "";
-		
-		// Add Recurring parameter.(repeat/or not) absolute or relative depending on Ans.
-		try {
-			dateMillis = new SimpleDateFormat("MM/dd/yyyy hh:mm", Locale.ENGLISH).parse(dateTime).getTime();
-			//dateMillis = new SimpleDateFormat("MM/dd/yyyy'T'hh:mm", Locale.ENGLISH).parse(dateTime).getTime();
-			relativeDate = DateUtils.getRelativeTimeSpanString(dateMillis,
-					System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS).toString();
-			
-			relativeDate = (String) DateUtils.getRelativeDateTimeString(context, dateMillis, DateUtils.SECOND_IN_MILLIS,
-						DateUtils.WEEK_IN_MILLIS, 0);
-		} catch (java.text.ParseException e) {
-			dateMillis = 0;
-			e.printStackTrace();
-		}
-		
-		return relativeDate;
 	}
 	
 }

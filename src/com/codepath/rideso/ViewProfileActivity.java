@@ -3,6 +3,7 @@ package com.codepath.rideso;
 import org.apache.http.Header;
 import org.json.JSONObject;
 
+import com.codepath.rideso.fragments.UserActionFragment;
 import com.codepath.rideso.models.User;
 import com.facebook.widget.ProfilePictureView;
 import com.loopj.android.http.AsyncHttpClient;
@@ -13,13 +14,15 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.squareup.picasso.Picasso;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,7 +30,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ViewProfileActivity extends Activity {
+public class ViewProfileActivity extends ActionBarActivity {
 	
 	private Menu mOptionsMenu;
 
@@ -67,7 +70,7 @@ public class ViewProfileActivity extends Activity {
 					}
 					
 			        String URL = "https://graph.facebook.com/" + currUser.getFbId() + "?fields=cover&access_token=" + ParseFacebookUtils.getSession().getAccessToken();
-			        Toast.makeText(getApplicationContext(), URL, Toast.LENGTH_SHORT).show();
+			        //Toast.makeText(getApplicationContext(), URL, Toast.LENGTH_SHORT).show();
 					//new FbCoverPhotoTask().execute(URL);
 			        
 				    AsyncHttpClient client = new AsyncHttpClient();
@@ -105,6 +108,14 @@ public class ViewProfileActivity extends Activity {
 		String firstName = (String) currUser.get("firstName");
 		String lastName = (String) currUser.get("lastName");
 		getActionBar().setTitle(firstName + " " + lastName);
+		
+		// Begin the transaction
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		// Replace the container with the new fragment
+		ft.replace(R.id.flUserActions, new UserActionFragment());
+		// or ft.add(R.id.your_placeholder, new FooFragment());
+		// Execute the changes specified
+		ft.commit();
 	}
 	
     @Override

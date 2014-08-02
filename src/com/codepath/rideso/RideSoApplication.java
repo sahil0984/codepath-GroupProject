@@ -7,6 +7,7 @@ import com.codepath.rideso.models.Chat;
 import com.codepath.rideso.models.Group;
 import com.codepath.rideso.models.Installation;
 import com.codepath.rideso.models.User;
+import com.codepath.rideso.models.UserAction;
 import com.parse.Parse;
 import com.parse.ParseAnalytics;
 import com.parse.ParseFacebookUtils;
@@ -27,6 +28,7 @@ public class RideSoApplication extends Application {
 	    ParseObject.registerSubclass(User.class);
 	    ParseObject.registerSubclass(Group.class);
 	    ParseObject.registerSubclass(Chat.class);
+	    ParseObject.registerSubclass(UserAction.class);
 	    ParseObject.registerSubclass(Installation.class);
 		
 
