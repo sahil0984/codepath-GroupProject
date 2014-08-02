@@ -156,6 +156,7 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
 
 		
 		String groupObjectId = getIntent().getStringExtra("group");
+        boolean isFullMapView = getIntent().getBooleanExtra("fullMap", false);
 		       
         //Create mapCard
         Card mapCard = new Card(this,R.layout.carddemo_example_inner_content);
@@ -164,15 +165,22 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
         CardView mapCardView = (CardView)findViewById(R.id.carddemo2);
         cardView = (CardView) findViewById(R.id.carddemo);
         
-        //LayoutParams params = cardView.getLayoutParams();
-        //params.height = 0;
-        //cardView.setLayoutParams(params);    
+
         
-        //cardView.setVisibility(View.INVISIBLE);
-        
-        //LayoutParams params2 = mapCardView.getLayoutParams();
-       // params2.height = LayoutParams.MATCH_PARENT;
-        //mapCardView.setLayoutParams(params2);
+        if (isFullMapView)
+        {	
+	        LayoutParams params = cardView.getLayoutParams();
+	        params.height = 0;
+	        cardView.setLayoutParams(params); 
+	        cardView.setPadding(0, 0, 0, 0);
+	        cardView.setVisibility(View.INVISIBLE);
+	        
+	        params = mapCardView.getLayoutParams();
+	        params.height = LayoutParams.MATCH_PARENT;
+	        cardView.setPadding(0,0, 0,0);
+	        mapCardView.setLayoutParams(params);
+        }
+
   
         mapCardView.setCard(mapCard);
         
@@ -213,6 +221,16 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
 		tvReturnLocation = (TextView) findViewById(R.id.tvOnward);
 		
 		mapFragment = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map));
+		
+		if (isFullMapView)
+		{
+	        
+	        LayoutParams params2 = mapFragment.getView().getLayoutParams();
+	        params2.height = LayoutParams.MATCH_PARENT;
+	        mapFragment.getView().setLayoutParams(params2);        
+
+		}
+		
 		if (mapFragment != null) {
 			map = mapFragment.getMap();
 			if (map != null) {
@@ -224,7 +242,7 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
 		} else {
 			Toast.makeText(this, "Error loading maps!!", Toast.LENGTH_SHORT).show();
 		}
-		
+
 		//resetMap();
 
 		
@@ -257,6 +275,8 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
 		            ft.commit();
 		    	
 		    		setTitle(group.getName());
+		    		//String uri = "geo:0,0?q="+ ParseUser.getCurrentUser().getParseGeoPoint("homeAdd").getLatitude() + "," + ParseUser.getCurrentUser().getParseGeoPoint("homeAdd").getLongitude() + " (" + "Sahil" + ")";
+		    		//startActivity(new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri)));
 		    		if (mLiveLocation == false)
 		    		{
 		    			addMarkers();
@@ -474,7 +494,8 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
 	{
 		AsyncHttpClient client = new AsyncHttpClient();
 		String directionsUrl = makeURL(markers);
-	
+		
+
 		Log.d("MyApp", directionsUrl);
 		client.get(directionsUrl,
 			new JsonHttpResponseHandler(){

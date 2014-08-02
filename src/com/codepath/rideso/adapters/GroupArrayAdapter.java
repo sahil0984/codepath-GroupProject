@@ -239,7 +239,11 @@ public class GroupArrayAdapter extends ArrayAdapter<Group> {
        holder.ibMap.setOnClickListener(new OnClickListener() {
     	   @Override
     	   public void onClick(View v) {
-    		   //NEAL, Add the code to open full screen map here....
+               Intent i = new Intent(context,GroupDetailActivity.class);
+               i.putExtra("group",group.getObjectId());
+               i.putExtra("fullMap",true);
+               //Use the Request Code to send the index of the list (pos)
+               context.startActivity(i);
     	   }
        });
 		
