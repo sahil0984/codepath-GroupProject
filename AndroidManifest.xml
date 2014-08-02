@@ -77,8 +77,8 @@
         </activity>
         <activity
             android:name=".AddUsersActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:label="@string/title_activity_add_users" >
+            android:label="@string/title_activity_add_users"
+            android:windowSoftInputMode="adjustPan" >
         </activity>
 
         <service android:name="com.parse.PushService" />
@@ -115,9 +115,15 @@
             android:name=".ChatActivity"
             android:label="@string/title_activity_chat" >
         </activity>
+
         <service
-          android:name=".services.LiveLocationService"
-          android:exported="false"/>        
+            android:name=".services.LiveLocationService"
+            android:exported="false" />
+
+        <activity
+            android:name=".MapActivity"
+            android:label="@string/title_activity_map" >
+        </activity>
     </application>
 
 </manifest>

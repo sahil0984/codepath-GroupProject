@@ -41,6 +41,7 @@ import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.DisplayMetrics;
 import android.util.Log;
 
 import android.view.MotionEvent;
@@ -50,9 +51,11 @@ import android.widget.ScrollView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
 
 import android.widget.CompoundButton;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -161,6 +164,16 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
         CardView mapCardView = (CardView)findViewById(R.id.carddemo2);
         cardView = (CardView) findViewById(R.id.carddemo);
         
+        //LayoutParams params = cardView.getLayoutParams();
+        //params.height = 0;
+        //cardView.setLayoutParams(params);    
+        
+        //cardView.setVisibility(View.INVISIBLE);
+        
+        //LayoutParams params2 = mapCardView.getLayoutParams();
+       // params2.height = LayoutParams.MATCH_PARENT;
+        //mapCardView.setLayoutParams(params2);
+  
         mapCardView.setCard(mapCard);
         
 		setupSwitch();
@@ -229,18 +242,20 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
 		    		Log.d("MyApp","Loading: " + group.getName());	 
 		    		currentGroup = group;
 		    		
+
 		            GroupDetailCard card = new GroupDetailCard(getApplicationContext(),currentGroup);
 		            card.setId("myId");
 
 		            //Set card in the cardView
 		            
 		            cardView.setCard(card);
-		            
+		    		
+		    		
 		    		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		    		GroupMemberListFragment gmlF = GroupMemberListFragment.newInstance(currentGroup.getObjectId());
 		            ft.replace(R.id.flUserList, gmlF);
 		            ft.commit();
-		            
+		    	
 		    		setTitle(group.getName());
 		    		if (mLiveLocation == false)
 		    		{
@@ -459,6 +474,10 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
 	{
 		AsyncHttpClient client = new AsyncHttpClient();
 		String directionsUrl = makeURL(markers);
+		
+		Intent intent = new Intent(android.content.Intent.ACTION_VIEW, 
+				Uri.parse("https://maps.google.com/maps?saddr=San+Francisco,+CA&daddr=Los+Angeles,+CA+to:Phoenix,+AZ+to:Houston,+TX+to:Jacksonville,+FL+to:New+York,+NY+to:Buffalo,+NY+to:Chicago,+IL+to:Seattle,+WA+to:San+Jose,+CA"));
+				startActivity(intent);
 		Log.d("MyApp", directionsUrl);
 		client.get(directionsUrl,
 			new JsonHttpResponseHandler(){
