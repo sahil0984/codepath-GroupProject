@@ -82,7 +82,7 @@
 	            android:layout_weight="0.5"
 	            float:fletFloatingHint="@string/home_address_hint" />
 	
-	        <View style="@style/VericalDivider"/>
+	        <View style="@style/VerticalDivider"/>
 	        
 	        <com.wrapp.floatlabelededittext.FloatLabeledEditText
 	            android:id="@+id/etWorkAdd"

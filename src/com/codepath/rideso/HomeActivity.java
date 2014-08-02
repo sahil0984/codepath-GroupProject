@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import net.simonvt.menudrawer.MenuDrawer;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -109,6 +111,7 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
     //private SmartFragmentStatePagerAdapter adapterViewPager;
     
     private GroupPagerAdapter adapterViewPager;
+    
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -156,9 +159,6 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
 //            public void onPageScrollStateChanged(int state) {
 //            }
 //        });
-		
-
-        
 
 		
 		String classFrom = getIntent().getStringExtra("classFrom");

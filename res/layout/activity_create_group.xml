@@ -60,7 +60,7 @@
                 android:gravity="center"
                 android:hint="Onward Time" />
             
-            <View style="@style/VericalDivider"/>
+            <View style="@style/VerticalDivider"/>
          
 
             <TextView
@@ -187,7 +187,7 @@
 	            android:layout_weight="0.5"
 	            float:fletFloatingHint="Start Address" />
 	
-	        <View style="@style/VericalDivider"/>
+	        <View style="@style/VerticalDivider"/>
 	        
 	        <com.wrapp.floatlabelededittext.FloatLabeledEditText
 	            android:id="@+id/etReturnLocation"
