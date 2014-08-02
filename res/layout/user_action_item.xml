@@ -2,21 +2,59 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
     android:background="@color/white"
      >    
 
     <TextView
+        android:id="@+id/tvStartTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="20dp"
+		android:text="start time" />
+    
+    <ImageView 
+        android:id="@+id/ivCar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/tvDistance"
+        android:layout_alignTop="@+id/tvDistance"
+        android:layout_marginTop="-8sp"
+        android:src="@drawable/ic_car"
+        />
+    
+    <TextView
         android:id="@+id/tvDistance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="20dp"
+        android:layout_centerHorizontal="true"
         android:text="dist" />
+    
+    <RelativeLayout 
+        android:id="@+id/rlDivider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/tvDistance"
+        android:layout_toLeftOf="@+id/tvTime"
+		android:layout_alignBottom="@+id/tvDistance"
+		android:layout_marginBottom="5sp"
+		android:layout_marginLeft="5dp"
+		android:layout_marginRight="5dp" >		
+		<View 
+	    	style="@style/HorizontalDivider" />
+		        
+    </RelativeLayout>
+
+
 
     <TextView
         android:id="@+id/tvTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/tvDistance"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
 		android:text="time" />
 
 </RelativeLayout>

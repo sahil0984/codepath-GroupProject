@@ -17,9 +17,9 @@ public class UserAction extends ParseObject {
 	}
 
 	// Add a constructor that contains core properties
-	public UserAction(ParseUser currUser) {
+	public UserAction(String userObjectId) {
 		super();
-		setOwner(currUser);
+		setUserObjectId(userObjectId);
 	}
 	
 	@Override
@@ -31,8 +31,8 @@ public class UserAction extends ParseObject {
 	//	return getString("objectId");
 	//}
 	// Get the user for this item
-	public ParseUser getUser()  {
-		return getParseUser("owner");
+	public String getUserObjectId()  {
+		return getString("userObjectId");
 	}
 	public String getDistance() {
 		return getString("distance");
@@ -53,8 +53,8 @@ public class UserAction extends ParseObject {
 	//	put("objectId", value);
 	//}
 	// Associate each item with a user
-	public void setOwner(ParseUser user) {
-		put("owner", user);
+	public void setUserObjectId(String value) {
+		put("userObjectId", value);
 	}
 	public void setDistance(String value) {
 		put("distance", value);

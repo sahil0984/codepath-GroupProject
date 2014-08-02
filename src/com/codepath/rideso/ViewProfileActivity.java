@@ -111,11 +111,14 @@ public class ViewProfileActivity extends ActionBarActivity {
 		
 		// Begin the transaction
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		UserActionFragment userActionFragment = UserActionFragment.newInstance(currUser.getObjectId());
 		// Replace the container with the new fragment
-		ft.replace(R.id.flUserActions, new UserActionFragment());
+		ft.replace(R.id.flUserActions, userActionFragment);
 		// or ft.add(R.id.your_placeholder, new FooFragment());
 		// Execute the changes specified
 		ft.commit();
+		
+	
 	}
 	
     @Override
