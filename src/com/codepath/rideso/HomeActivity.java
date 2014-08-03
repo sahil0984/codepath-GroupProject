@@ -2,6 +2,7 @@ package com.codepath.rideso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -14,6 +15,8 @@ import java.util.Locale;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +27,9 @@ import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -73,6 +79,7 @@ import com.codepath.rideso.fragments.SavingsFragment;
 import com.codepath.rideso.listeners.SupportFragmentTabListener;
 import com.codepath.rideso.models.Group;
 import com.codepath.rideso.models.User;
+import com.codepath.rideso.models.UserAction;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.fourmob.datetimepicker.date.DatePickerDialog.OnDateSetListener;
 import com.nineoldandroids.animation.AnimatorSet;
@@ -131,7 +138,8 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
         if(actionBarTitleView != null){
             actionBarTitleView.setTypeface(robotoBoldCondensedItalic);
         }
-        
+                
+        getUpdatedLocation();
 		
 		groupMembers = new ArrayList<User>();
 		//setupTabs();
@@ -215,8 +223,95 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
 	}
 	
 	
-	
-	
+	private int drivingBufferCount;
+	private double totalDistance;
+	private ParseGeoPoint currLoc;
+	private String startDrivingTime;
+	private void getUpdatedLocation() {
+		// Acquire a reference to the system Location Manager
+		LocationManager locationManager = (LocationManager) this
+				.getSystemService(Context.LOCATION_SERVICE);
+
+		// Define a listener that responds to location updates
+		LocationListener locationListener = new LocationListener() {
+			public void onLocationChanged(Location location) {
+				// Called when a new location is found by the network location
+				// provider.
+				// makeUseOfNewLocation(location);
+				
+				if (location.getSpeed() > 6.7) { //15miles/hr = 6.7meters/sec
+					Toast.makeText(getApplicationContext(),
+							"Driving.",
+							Toast.LENGTH_SHORT).show();
+					
+					if (drivingBufferCount == 0) {
+						//Beginning of driving session
+						totalDistance = 0;
+						drivingBufferCount = 15;
+						
+						DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm", Locale.getDefault());
+						Calendar cal = Calendar.getInstance();
+						startDrivingTime = dateFormat.format(cal.getTime());
+						
+						currLoc = new ParseGeoPoint(location.getLatitude(), location.getLongitude());
+						
+					}					
+					if (drivingBufferCount < 15) {
+						drivingBufferCount++;
+						
+						ParseGeoPoint lastLoc = currLoc;
+						
+						ParseGeoPoint currLoc = new ParseGeoPoint(location.getLatitude(), location.getLongitude());
+						
+						totalDistance = totalDistance + currLoc.distanceInMilesTo(lastLoc);	
+						
+					}
+					
+				} else {		
+					Toast.makeText(getApplicationContext(),
+							"Not Driving.",
+							Toast.LENGTH_SHORT).show();
+					if (drivingBufferCount == 1) {
+						//End of driving session
+												
+						DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm", Locale.getDefault());
+						Calendar cal = Calendar.getInstance();
+						String endDrivingTime = dateFormat.format(cal.getTime());
+						
+						
+						// Now save startDrivingTime, endDrivingTime and totalDistance to Parse
+						UserAction newUserAction = new UserAction(ParseUser.getCurrentUser().getObjectId());
+						newUserAction.setDistance(Double.toString(Math.round(totalDistance * 100.0) / 100.0));
+						newUserAction.setStartTime(startDrivingTime);
+						newUserAction.setStartTime(endDrivingTime);
+						newUserAction.saveInBackground();
+					}
+					if (drivingBufferCount > 0) {
+						drivingBufferCount--;
+					}
+				}
+
+			}
+
+			public void onStatusChanged(String provider, int status,
+					Bundle extras) {
+			}
+
+			public void onProviderEnabled(String provider) {
+			}
+
+			public void onProviderDisabled(String provider) {
+			}
+		};
+
+		// Register the listener with the Location Manager to receive location updates
+		// min millisec and min meters for 2nd and 3rd parameters
+		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, locationListener);
+
+	}
+
+
 	
 	static class GroupPagerAdapter extends SmartFragmentStatePagerAdapter {
     	//private static int NUM_ITEMS = 3;
