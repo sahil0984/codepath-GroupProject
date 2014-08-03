@@ -200,6 +200,9 @@ public class GroupArrayAdapter extends ArrayAdapter<Group> {
     	   e.printStackTrace();
        }
               
+       
+	   holder.ibChat.setVisibility(View.INVISIBLE);
+	   holder.ibMap.setVisibility(View.INVISIBLE);
        String membersList = "";
        for (int i=0; i<groupMembersCount; i++) {
     	   //Toast.makeText(context, group.getMembers().get(i).toString(), Toast.LENGTH_LONG).show();
@@ -209,8 +212,10 @@ public class GroupArrayAdapter extends ArrayAdapter<Group> {
         	 membersList = membersList + ", ";
            }
            
-           
-//           userIsMember = 
+           if (group.getMembers().get(i).getObjectId().equals(ParseUser.getCurrentUser().getObjectId())) {
+        	   holder.ibChat.setVisibility(View.VISIBLE);
+        	   holder.ibMap.setVisibility(View.VISIBLE);
+           }
        }
        holder.tvMembersList.setText(membersList);
        

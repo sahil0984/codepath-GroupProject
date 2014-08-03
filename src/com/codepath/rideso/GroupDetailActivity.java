@@ -690,6 +690,16 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
        MenuItem item = mOptionsMenu.findItem(id);
        item.setVisible(true);
    }
+   private void disableMenuOption(int id)
+   {
+       MenuItem item = mOptionsMenu.findItem(id);
+       item.setEnabled(false);
+   }
+   private void enableMenuOption(int id)
+   {
+       MenuItem item = mOptionsMenu.findItem(id);
+       item.setEnabled(true);
+   } 
    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -764,6 +774,8 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
     	//Create the existing group object and pass it to dialog and populate in there.
     	
     	//getActionBar().hide();
+    	disableMenuOption(R.id.miEdit);
+    	
     	//fadeInBlur();
     	View v = findViewById(R.id.rlGroupDetailActivity);
     	
@@ -918,6 +930,8 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
 	}
 	
 	public void exitFragment() {
+    	enableMenuOption(R.id.miEdit);
+		
     	// Begin the transaction
     	FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
     	ft.setCustomAnimations(R.anim.hide, R.anim.slide_up);

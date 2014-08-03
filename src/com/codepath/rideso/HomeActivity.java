@@ -306,8 +306,8 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
 
 		// Register the listener with the Location Manager to receive location updates
 		// min millisec and min meters for 2nd and 3rd parameters
-		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, locationListener);
+		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 0, locationListener);
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 	 10000, 0, locationListener);
 
 	}
 
@@ -397,10 +397,14 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
         LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver, new IntentFilter(MyCustomReceiver.intentAction));
     }
 	
+	private Menu mOptionsMenu;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.home_activity_actions, menu); //BOZO: This is a placeholder. change it for this activity.
+        getMenuInflater().inflate(R.menu.home_activity_actions, menu);
+        mOptionsMenu = menu;
+
         return true;
     }
 
@@ -424,9 +428,20 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
         return super.onOptionsItemSelected(item);
     }
 
+    private void disableMenuOption(int id)
+    {
+        MenuItem item = mOptionsMenu.findItem(id);
+        item.setEnabled(false);
+    }
+    private void enableMenuOption(int id)
+    {
+        MenuItem item = mOptionsMenu.findItem(id);
+        item.setEnabled(true);
+    }    
+    
     private void openCreateGroupDialog() {
     	//getActionBar().hide();
- 
+    	disableMenuOption(R.id.miCreateGroup);
 		
 		fadeInBlur();
 		
@@ -563,6 +578,8 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
 	}
 	
 	public void exitFragment() {
+    	enableMenuOption(R.id.miCreateGroup);
+		
     	// Begin the transaction
     	FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
     	ft.setCustomAnimations(R.anim.hide, R.anim.slide_up);
