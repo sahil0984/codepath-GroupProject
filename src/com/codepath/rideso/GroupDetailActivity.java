@@ -441,7 +441,7 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
 	    Location mCurrentLocation = mLocationClient.getLastLocation();
 	    if (mCurrentLocation != null)
 	    {
-	    	Toast.makeText(this, "current location: " + mCurrentLocation.toString(), Toast.LENGTH_SHORT).show();
+	    	//Toast.makeText(this, "current location: " + mCurrentLocation.toString(), Toast.LENGTH_SHORT).show();
 	    	LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
 	    }
 	}

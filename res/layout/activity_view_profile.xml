@@ -15,7 +15,8 @@
     	    android:layout_height="150dp"
     	    android:layout_alignParentTop="true"
     	    android:layout_centerHorizontal="true"
-    	    android:scaleType="centerCrop"/>
+    	    android:scaleType="centerCrop"
+    	    android:background="@color/grey"/>
     
         <com.facebook.widget.ProfilePictureView
             android:id="@+id/ivProfileImage"

@@ -240,9 +240,9 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
 				// makeUseOfNewLocation(location);
 				
 				if (location.getSpeed() > 6.7) { //15miles/hr = 6.7meters/sec
-					Toast.makeText(getApplicationContext(),
-							"Driving.",
-							Toast.LENGTH_SHORT).show();
+					//Toast.makeText(getApplicationContext(),
+					//		"Driving.",
+					//		Toast.LENGTH_SHORT).show();
 					
 					if (drivingBufferCount == 0) {
 						//Beginning of driving session
@@ -268,9 +268,9 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
 					}
 					
 				} else {		
-					Toast.makeText(getApplicationContext(),
-							"Not Driving.",
-							Toast.LENGTH_SHORT).show();
+					//Toast.makeText(getApplicationContext(),
+					//		"Not Driving.",
+					//		Toast.LENGTH_SHORT).show();
 					if (drivingBufferCount == 1) {
 						//End of driving session
 												
@@ -467,22 +467,15 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
 			
 			@Override
 			public void onAnimationStart(Animation animation) {
-				// TODO Auto-generated method stub
 				imgBlur.setVisibility(View.VISIBLE);
 			}
 			
-			
 			@Override
-			public void onAnimationEnd(Animation animation) {
-				// TODO Auto-generated method stub
-				
+			public void onAnimationEnd(Animation animation) {				
 			}
 
-
 			@Override
-			public void onAnimationRepeat(Animation animation) {
-				// TODO Auto-generated method stub
-				
+			public void onAnimationRepeat(Animation animation) {				
 			}
 		});
 		

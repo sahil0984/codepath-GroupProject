@@ -208,6 +208,9 @@ public class GroupArrayAdapter extends ArrayAdapter<Group> {
            if (i != groupMembersCount-1) {
         	 membersList = membersList + ", ";
            }
+           
+           
+//           userIsMember = 
        }
        holder.tvMembersList.setText(membersList);
        

@@ -108,6 +108,7 @@ public class UserActionFragment extends Fragment {
 
 		        	} else {
 		        		Toast.makeText(getActivity(), "No user activity found.", Toast.LENGTH_SHORT).show();
+		        		pbLoading.setVisibility(ProgressBar.INVISIBLE);
 		        	}
 		        }  else {
 		        	Log.d("item", "Error: " + e.getMessage());

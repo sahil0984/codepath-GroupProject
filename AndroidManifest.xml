@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.codepath.rideso"
-    android:versionCode="1"
-    android:versionName="1.0.0" >
+    android:versionCode="2"
+    android:versionName="1.1.0" >
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -65,7 +65,9 @@
         </activity>
         <activity
             android:name=".HomeActivity"
-            android:label="@string/title_activity_home" >
+            android:label="@string/title_activity_home" 
+            android:windowSoftInputMode="adjustPan" >
+            
         </activity>
         <activity
             android:name=".CreateGroupActivity"
@@ -73,7 +75,8 @@
         </activity>
         <activity
             android:name=".GroupDetailActivity"
-            android:label="@string/title_activity_group_detail" >
+            android:label="@string/title_activity_group_detail"
+            android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
             android:name=".AddUsersActivity"
