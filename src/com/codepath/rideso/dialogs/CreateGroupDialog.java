@@ -49,6 +49,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Animation.AnimationListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -440,6 +444,7 @@ public class CreateGroupDialog extends MyFragment {
 			public void onClick(View v) {
 				oneAddressVerifDoneFlag = 0;
 				State_GeoCodeTask = 0;
+				fadeOutBlur();
 				onAddGroupTasks();
 			}
 		});
@@ -450,6 +455,8 @@ public class CreateGroupDialog extends MyFragment {
 			@Override
 			public void onClick(View v) {
 				listener.onActionSelectedCreateGroup(null, "cancel");
+				fadeOutBlur();
+
 			}
 		});
 		
@@ -507,6 +514,40 @@ public class CreateGroupDialog extends MyFragment {
 	}
 	
 	
+	protected void fadeOutBlur() {
+		// TODO Auto-generated method stub
+		final ImageView imgBlur = (ImageView) getActivity().findViewById(R.id.imgBlur);
+;
+		
+		Animation fadeIn = new AlphaAnimation(1,0);
+		fadeIn.setInterpolator(new DecelerateInterpolator());
+		fadeIn.setDuration(1000);
+		
+		imgBlur.setAnimation(fadeIn);
+		
+		fadeIn.setAnimationListener(new AnimationListener() {
+			
+			@Override
+			public void onAnimationStart(Animation animation) {
+				// TODO Auto-generated method stub
+			}
+			
+			
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				imgBlur.setVisibility(View.INVISIBLE);
+				
+			}
+
+
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+	}
+
 	private void updateIsPublicIcon() {
 		if (isPublic) {
 			cbIsPublic.setText(getResources().getString(R.string.icon_microphone) + " Public Group");
@@ -605,6 +646,9 @@ public class CreateGroupDialog extends MyFragment {
 					
 					oneAddressVerifDoneFlag = 0;
 					State_GeoCodeTask = 2;
+					ImageView imgBlur = (ImageView) getActivity().findViewById(R.id.imgBlur);
+					imgBlur.setVisibility(View.INVISIBLE);
+					
 					onAddGroupTasks();
 				} else {
 			    	oneAddressVerifDoneFlag = oneAddressVerifDoneFlag + 1;

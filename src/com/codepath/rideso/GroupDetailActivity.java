@@ -29,8 +29,13 @@ import android.content.IntentSender;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -43,6 +48,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 
 import android.view.MotionEvent;
 import android.view.View;
@@ -52,9 +58,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Animation.AnimationListener;
 import android.widget.FrameLayout;
 
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -78,6 +89,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.SnapshotReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -117,7 +129,7 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
 	private CardView cardView;
 	private boolean mLiveLocation;
 	private Switch liveSwitch;
-	
+	private CardView mapCardView;
 
 	
 	
@@ -162,7 +174,7 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
         Card mapCard = new Card(this,R.layout.carddemo_example_inner_content);
         mapCard.setTitle("Map");
         
-        CardView mapCardView = (CardView)findViewById(R.id.carddemo2);
+        mapCardView = (CardView)findViewById(R.id.carddemo2);
         cardView = (CardView) findViewById(R.id.carddemo);
         
 
@@ -751,8 +763,11 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
     	
     	//Create the existing group object and pass it to dialog and populate in there.
     	
-    	getActionBar().hide();
+    	//getActionBar().hide();
+    	//fadeInBlur();
+    	View v = findViewById(R.id.rlGroupDetailActivity);
     	
+    	captureMapScreen(v);
     	FrameLayout flCreateGroup = (FrameLayout)  findViewById(R.id.flCreateGroup);
     	flCreateGroup.setVisibility(View.VISIBLE);
     	
@@ -767,6 +782,80 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
 
 	}
     
+    public void captureMapScreen(final View mView) {
+        SnapshotReadyCallback callback = new SnapshotReadyCallback() {
+
+            @Override
+            public void onSnapshotReady(Bitmap snapshot) {
+                try {
+                    Bitmap backBitmap = Utils.getBitmapFromView(mView);
+                    Bitmap bmOverlay = Bitmap.createBitmap(
+                            backBitmap.getWidth(), backBitmap.getHeight(),
+                            backBitmap.getConfig());
+                    Canvas canvas = new Canvas(bmOverlay);
+  
+                    Rect r = new Rect();
+                    Point c =  new Point();
+                    mapFragment.getView().getGlobalVisibleRect(r,c);
+                    
+                    Resources res = getResources();
+                    float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 73, res.getDisplayMetrics());
+                    
+                    canvas.drawBitmap(snapshot,c.x,c.y - px,null) ;
+                    canvas.drawBitmap(backBitmap, 0, 0, null);
+                  
+
+                    fadeInBlur(bmOverlay);
+                    
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        map.snapshot(callback);
+
+    }
+	private void fadeInBlur(Bitmap bm) {
+		
+		Bitmap blurbm = Utils.fastblur(bm,20);
+		//Bitmap blurbm = bm;
+
+		final ImageView imgBlur = (ImageView) findViewById(R.id.imgBlur);
+		//FrameLayout flBlur = (FrameLayout) findViewById(R.id.flBlur);
+		
+	
+		imgBlur.setImageBitmap(blurbm);
+		Animation fadeIn = new AlphaAnimation(0,1);
+		fadeIn.setInterpolator(new DecelerateInterpolator());
+		fadeIn.setDuration(1000);
+		
+		imgBlur.setAnimation(fadeIn);
+		
+		fadeIn.setAnimationListener(new AnimationListener() {
+			
+			@Override
+			public void onAnimationStart(Animation animation) {
+				// TODO Auto-generated method stub
+				imgBlur.setVisibility(View.VISIBLE);
+			}
+			
+			
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				// TODO Auto-generated method stub
+				
+			}
+
+
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+	}
 	@Override
 	public void onActionSelectedCreateGroup(Group newGroup, String action) {
 		if (action.equals("choosePhoto")) {

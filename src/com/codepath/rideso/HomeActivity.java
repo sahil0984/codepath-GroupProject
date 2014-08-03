@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import net.simonvt.menudrawer.MenuDrawer;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,6 +20,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -45,6 +46,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -323,25 +328,12 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
         }
         return super.onOptionsItemSelected(item);
     }
-    
+
     private void openCreateGroupDialog() {
-    	getActionBar().hide();
-    	
-		RelativeLayout view = (RelativeLayout)findViewById(R.id.rlHomeActivity);
-
-		view.setDrawingCacheEnabled(true);
-
-		view.buildDrawingCache();
-
-		Bitmap bm = view.getDrawingCache();
-		Bitmap blurbm = Utils.fastblur(bm,10);
+    	//getActionBar().hide();
+ 
 		
-		ImageView imgBlur = (ImageView) findViewById(R.id.imgBlur);
-		FrameLayout flBlur = (FrameLayout) findViewById(R.id.flBlur);
-		
-	
-		imgBlur.setImageBitmap(blurbm);
-		flBlur.setVisibility(View.VISIBLE);
+		fadeInBlur();
 		
     	FrameLayout flCreateGroup = (FrameLayout)  findViewById(R.id.flCreateGroup);
     	flCreateGroup.setVisibility(View.VISIBLE);
@@ -355,6 +347,50 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
     	// Execute the changes specified
     	ft.commit();
     	
+	}
+
+	private void fadeInBlur() {
+		
+		View v = (View) getWindow().getDecorView().findViewById(R.id.rlHomeActivity);
+		
+		Bitmap bm = Utils.getBitmapFromView(v);
+		Bitmap blurbm = Utils.fastblur(bm,25);
+	   
+
+		final ImageView imgBlur = (ImageView) v.findViewById(R.id.imgBlur);
+		//FrameLayout flBlur = (FrameLayout) findViewById(R.id.flBlur);
+		
+	
+		imgBlur.setImageBitmap(blurbm);
+		Animation fadeIn = new AlphaAnimation(0,1);
+		fadeIn.setInterpolator(new DecelerateInterpolator());
+		fadeIn.setDuration(1000);
+		
+		imgBlur.setAnimation(fadeIn);
+		
+		fadeIn.setAnimationListener(new AnimationListener() {
+			
+			@Override
+			public void onAnimationStart(Animation animation) {
+				// TODO Auto-generated method stub
+				imgBlur.setVisibility(View.VISIBLE);
+			}
+			
+			
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				// TODO Auto-generated method stub
+				
+			}
+
+
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
 	}
 
 	public void gotoProfileActivity() {

@@ -6,8 +6,12 @@ import java.util.Date;
 import java.util.Locale;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.text.format.DateUtils;
 import android.util.Log;
+import android.view.View;
 
 public class Utils {   
 
@@ -277,6 +281,17 @@ public class Utils {
 
         return (bitmap);
     }
+	public static Bitmap getBitmapFromView(View view) {
+	    Bitmap returnedBitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(),Bitmap.Config.ARGB_8888);
+	    Canvas canvas = new Canvas(returnedBitmap);
+	    Drawable bgDrawable =view.getBackground();
+	    if (bgDrawable!=null) 
+	        bgDrawable.draw(canvas);
+	    else 
+	        canvas.drawColor(Color.parseColor("#C7C7C7"));
+	    view.draw(canvas);
+	    return returnedBitmap;
+	}
 	public static String getDiffInDateTime(String dateTimeStart, String dateTimeEnd) {
 		
 
