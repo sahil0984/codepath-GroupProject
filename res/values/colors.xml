@@ -24,6 +24,7 @@
    <color name="theme_color3">#FF5DA6A6</color>
    <color name="theme_color4">#FFA9D9CB</color>
    <color name="theme_color5">#FFF2EAD0</color>
+   <color name="theme_lightred">#FFF78981</color>
    
    
 </resources>

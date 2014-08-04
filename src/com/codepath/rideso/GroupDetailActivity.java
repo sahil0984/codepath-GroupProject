@@ -287,8 +287,7 @@ public class GroupDetailActivity extends FragmentActivity implements OnActionSel
 		            ft.commit();
 		    	
 		    		setTitle(group.getName());
-		    		//String uri = "geo:0,0?q="+ ParseUser.getCurrentUser().getParseGeoPoint("homeAdd").getLatitude() + "," + ParseUser.getCurrentUser().getParseGeoPoint("homeAdd").getLongitude() + " (" + "Sahil" + ")";
-		    		//startActivity(new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri)));
+
 		    		if (mLiveLocation == false)
 		    		{
 		    			addMarkers();

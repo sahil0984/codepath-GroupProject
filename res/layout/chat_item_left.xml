@@ -17,7 +17,7 @@
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		    android:layout_alignParentLeft="true"
-		    android:layout_marginBottom="5dp"
+		    android:layout_marginBottom="2dp"
 		    style="@style/ListSubHeadTextView"
 		    android:text="sender"/>
 		
@@ -27,7 +27,7 @@
 		    android:layout_height="wrap_content"
 		    android:layout_alignParentLeft="true"
 		    android:layout_below="@+id/tvSender"
-		    android:layout_marginBottom="5dp"
+		    android:layout_marginBottom="2dp"
 		    style="@style/ListHeadTextView"
 		    android:text="message"/>
 		
@@ -37,7 +37,7 @@
 		    android:layout_height="wrap_content"
 		    android:layout_alignParentLeft="true"
 		    android:layout_below="@+id/tvMessage"
-		    android:layout_marginBottom="5dp"
+		    android:layout_marginBottom="2dp"
 		    style="@style/ListDetailTextView"
 		    android:text="timestamp"/>
     </RelativeLayout>

@@ -12,7 +12,7 @@
         android:layout_margin="0dp"
         android:contentDescription="Background Image"
         android:scaleType="centerCrop"
-        android:src="@drawable/earth_curve" />
+        android:src="@drawable/world2" />
     
     <RelativeLayout 
         android:id="@+id/rlTitleText"
@@ -20,85 +20,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="70dp"
         android:layout_centerHorizontal="true" >
-    
-	    <TextView 
-	        android:id="@+id/tvWelcome"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-			android:layout_alignParentLeft="true"
-			android:paddingLeft="10dp"
-			android:paddingTop="10dp"
-			android:paddingBottom="10dp"
-	        android:textColor="@color/white"
-	        android:background="#af000000"
-	        android:textSize="20sp"
-	        android:textStyle="normal"
-	        style="@style/LoginSubHeadTextView"
-	        android:text="Welcome to "/>
-	    
-	    <TextView 
-	        android:id="@+id/tvAppTitle"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_toRightOf="@+id/tvWelcome"
-	        android:layout_alignBaseline="@+id/tvWelcome"
-	        android:paddingRight="10dp"
-			android:paddingTop="10dp"
-			android:paddingBottom="10dp"
-	        android:textColor="@color/white"
-	        android:background="#af000000"
-	        android:textSize="25sp"
-	        android:textStyle="bold"
-	        style="@style/LoginHeadTextView"
-	        android:drawableRight="@drawable/ic_launcher_new"
-	        android:text="RideSo"/>
-	    
-	    <TextView 
-	        android:id="@+id/tvTagline"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_below="@+id/tvAppTitle"
-	        android:layout_alignLeft="@+id/tvAppTitle"
-	        android:layout_marginLeft="-20dp"
-	        android:padding="5dp"
-	        android:textColor="@color/black"
-	        android:background="#afffffff"
-	        android:textSize="12sp"
-	        android:textStyle="italic"
-	        style="@style/LoginDetailTextView"
-	        android:text="Your one stop for finding and managing in-network and out-of-network rides."/>
 
     </RelativeLayout>
-    
-    <TextView
-        android:id="@+id/tvChoose"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/rlTitleText"
-        android:layout_marginTop="130dp"
-        android:textColor="@color/white"
-        android:textStyle="italic"
-        android:text="Get started with," />
-
-    
-    <Button
-        android:id="@+id/loginButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tvChoose"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp"
-        android:layout_centerHorizontal="true"
-        android:alpha="0.7"
-        android:drawableStart="@drawable/com_facebook_inverse_icon"
-        android:background="#9f6d84b4"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"        
-        android:textColor="@color/white"
-        android:text="Log in with Facebook"/>
     
     
     <ProgressBar 
@@ -106,5 +29,51 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_centerInParent="true"/>
+
+    <Button
+        android:id="@+id/loginButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="28dp"
+        android:alpha="1.0"
+        android:background="#9f6d84b4"
+        android:drawableStart="@drawable/com_facebook_inverse_icon"
+        android:paddingBottom="5dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="5dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:text="Log in with Facebook"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/loginButton"
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/loginButton"
+        android:layout_marginTop="12dp"
+        android:paddingTop="10dp"
+        android:text="RideSo "
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="48sp" />
+
+    <TextView
+        android:id="@+id/tvWelcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:text="welcome to"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/white" />
 
 </RelativeLayout>

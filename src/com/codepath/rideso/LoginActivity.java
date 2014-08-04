@@ -92,6 +92,7 @@ public class LoginActivity extends ActionBarActivity {
 	ProgressBar pbLoading;
 	
 	String userType;
+	private TextView tvTitle;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -129,12 +130,20 @@ public class LoginActivity extends ActionBarActivity {
 		
 		pbLoading = (ProgressBar) findViewById(R.id.pbLoading);
 		
+        Typeface robotoBold = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Bold.ttf");
+        Typeface fontAwesome = Typeface.createFromAsset(getAssets(), "fonts/fontawesome-webfont.ttf");
+        
+        tvTitle = (TextView) findViewById(R.id.tvTitle);
+        tvTitle.setTypeface(robotoBold);
+        
+		
 		tvWelcome = (TextView) findViewById(R.id.tvWelcome);
+		tvWelcome.setTypeface(robotoBoldCondensedItalic);
+		/*
 		tvAppTitle = (TextView) findViewById(R.id.tvAppTitle);
 		tvTagline = (TextView) findViewById(R.id.tvTagline);
 		
-        Typeface robotoBold = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Bold.ttf");
-        Typeface fontAwesome = Typeface.createFromAsset(getAssets(), "fonts/fontawesome-webfont.ttf");
+
         
         tvWelcome.setTypeface(robotoBoldCondensedItalic);
         tvWelcome.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
@@ -146,7 +155,7 @@ public class LoginActivity extends ActionBarActivity {
         tvTagline.setTypeface(fontAwesome);
         tvTagline.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
         tvTagline.setTypeface(fontAwesome, Typeface.ITALIC);
-		
+		*/
 		
 		pbLoading.setVisibility(ProgressBar.INVISIBLE);
 		

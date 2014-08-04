@@ -6,6 +6,7 @@ import java.util.Collections;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 
 import com.codepath.rideso.R;

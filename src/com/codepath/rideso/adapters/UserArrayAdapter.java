@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -20,6 +21,7 @@ import com.codepath.rideso.adapters.GroupArrayAdapter.ViewHolder;
 import com.codepath.rideso.models.Group;
 import com.codepath.rideso.models.User;
 import com.facebook.widget.ProfilePictureView;
+import com.parse.ParseGeoPoint;
 import com.squareup.picasso.Picasso;
 
 public class UserArrayAdapter extends com.nhaarman.listviewanimations.ArrayAdapter<User> {
@@ -31,10 +33,16 @@ public class UserArrayAdapter extends com.nhaarman.listviewanimations.ArrayAdapt
 		this.context = context;
 		this.layout_item = layout_item;
 	}
+    @Override
+    public long getItemId(final int position) {
+        return getItem(position).hashCode();
+    }
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		//Get the data item for this position
 		final User user = getItem(position);
+		ImageView ivNavigate;
+		
 		ViewHolder holder;
 		
        // Check if an existing view is being reused, otherwise inflate the view
@@ -64,8 +72,24 @@ public class UserArrayAdapter extends com.nhaarman.listviewanimations.ArrayAdapt
 				  context.startActivity(i); 
 			}
 		});
-
-  	    
+  		ivNavigate = (ImageView) convertView.findViewById(R.id.ivNavigate);
+  		
+  		if (ivNavigate != null)
+  		{
+  			ivNavigate.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					ParseGeoPoint homeGeoPoint = user.getParseGeoPoint("homeAdd");
+					
+					//Send Intent to Google Maps to Navigate to Addresss
+		    		String uri = "geo:0,0?q="+ homeGeoPoint.getLatitude() + "," + homeGeoPoint.getLongitude() + " (" + user.getFirstName() + ")";
+		    		context.startActivity(new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri)));
+					
+				}
+			});
+  		}
+  		 	    
        } else {
     	   
     	   holder = (ViewHolder) convertView.getTag();

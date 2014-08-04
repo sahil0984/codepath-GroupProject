@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:bootstrapbutton="http://schemas.android.com/apk/res-auto"
     xmlns:fontawesometext="http://schemas.android.com/apk/res-auto"
+    xmlns:fbutton="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     
@@ -213,42 +214,53 @@
             android:text="" />
         
 
-        
-        
-        <com.beardedhen.androidbootstrap.BootstrapButton
-            android:id="@+id/btnCreate"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-            android:layout_below="@+id/tvIsPublic"
-            android:layout_toRightOf="@+id/btnAddUsers"
-            android:text="Create" 
-		    bootstrapbutton:bb_type="success"
-		    bootstrapbutton:bb_size="xsmall" />
 
         
-        <com.beardedhen.androidbootstrap.BootstrapButton
+        <info.hoang8f.widget.FButton
+            android:id="@+id/btnCreate"
+		    android:layout_width="wrap_content"
+		    android:layout_height="30dp"
+            android:layout_below="@+id/tvIsPublic"
+            android:layout_toRightOf="@+id/btnAddUsers"
+            fbutton:cornerRadius="0dp"
+            fbutton:shadowHeight="2dp"
+            fbutton:buttonColor="@color/theme_color3"
+            android:text="Create" 
+
+            android:textColor="@color/white"
+            android:textSize="12sp"/>
+
+        
+        <info.hoang8f.widget.FButton
             android:id="@+id/btnAddUsers"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="30dp"
             android:layout_below="@+id/tvIsPublic"
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             android:text="Members (1)" 
-		    bootstrapbutton:bb_type="primary"
-		    bootstrapbutton:bb_roundedCorners="true"
-		    bootstrapbutton:bb_size="xsmall" />        
+            fbutton:cornerRadius="0dp"
+            fbutton:shadowHeight="2dp"        
+            fbutton:buttonColor="@color/theme_color4"            
+            android:textColor="@color/black"
+            android:textSize="12sp"/>        
         
         
-        <com.beardedhen.androidbootstrap.BootstrapButton
+        <info.hoang8f.widget.FButton
             android:id="@+id/btnCancel"
 		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
+		    android:layout_height="30dp"
             android:layout_below="@+id/tvIsPublic"
             android:layout_toLeftOf="@+id/btnAddUsers"
+            fbutton:cornerRadius="0dp"
+            fbutton:shadowHeight="2dp"
+            fbutton:buttonColor="@color/theme_lightred"
             android:text="Cancel" 
-		    bootstrapbutton:bb_type="danger"
-		    bootstrapbutton:bb_size="xsmall" /> 
+            android:textColor="@color/white"
+            android:textSize="12sp"/> 
 
         
     </RelativeLayout>

@@ -89,9 +89,9 @@ public class CreateGroupDialog extends MyFragment {
 	private TextView cbIsPublic;
 	private boolean isPublic;
 	
-	private BootstrapButton btnAddUsers;
-	private BootstrapButton btnCreate;
-	private BootstrapButton btnCancel;
+	private Button btnAddUsers;
+	private Button btnCreate;
+	private Button btnCancel;
 	
 	private String onwardTime;
 	private String returnTime;
@@ -326,6 +326,8 @@ public class CreateGroupDialog extends MyFragment {
 	}
 
 	private void setupViews(View v) {
+		Typeface robotoBoldCondensedItalic = Typeface.createFromAsset(getActivity().getAssets(), "fonts/fontawesome-webfont.ttf");
+		
 		ivGroupPhoto = (ParseImageView) v.findViewById(R.id.ivGroupPhoto);
 		etGroupName = (FloatLabeledEditText) v.findViewById(R.id.etGroupName);
 		tvOnwardTime = (TextView) v.findViewById(R.id.tvOnwardTime);
@@ -352,10 +354,13 @@ public class CreateGroupDialog extends MyFragment {
 		
 		cbIsPublic = (TextView) v.findViewById(R.id.tvIsPublic);
 		
-		btnAddUsers = (BootstrapButton) v.findViewById(R.id.btnAddUsers);
-		btnCreate = (BootstrapButton) v.findViewById(R.id.btnCreate);
-		btnCancel = (BootstrapButton) v.findViewById(R.id.btnCancel);
-						
+		btnAddUsers = (Button) v.findViewById(R.id.btnAddUsers);
+		btnCreate = (Button) v.findViewById(R.id.btnCreate);
+		btnCancel = (Button) v.findViewById(R.id.btnCancel);
+		
+		btnCreate.setTypeface(robotoBoldCondensedItalic);
+		btnAddUsers.setTypeface(robotoBoldCondensedItalic);
+		btnCancel.setTypeface(robotoBoldCondensedItalic);
 		
         Typeface fontAwesome = Typeface.createFromAsset(getActivity().getAssets(), "fonts/fontawesome-webfont.ttf");
         tvIsRecurring.setTypeface(fontAwesome);

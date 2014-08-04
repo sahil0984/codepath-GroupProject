@@ -58,7 +58,7 @@ public class ChatActivity extends Activity {
 	private ListView lvChat;
 	
 	private EditText etNewMsg;
-	private BootstrapButton btnSendMsg;
+	private Button btnSendMsg;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -81,8 +81,9 @@ public class ChatActivity extends Activity {
 		lvChat.setAdapter(aChats);
 		
 		etNewMsg = (EditText) findViewById(R.id.etNewMsg);
-		btnSendMsg = (BootstrapButton) findViewById(R.id.btnSendMsg);
+		btnSendMsg = (Button) findViewById(R.id.btnSendMsg);
 		
+		btnSendMsg.setTypeface(robotoBoldCondensedItalic);
         //Typeface robotoBoldCondensedItalic = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Light.ttf");
         etNewMsg.setTypeface(robotoBoldCondensedItalic);
 		
