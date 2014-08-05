@@ -91,7 +91,7 @@ public class ChatActivity extends Activity {
 			
 			@Override
 			public void onClick(View arg0) {
-				DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.US);
+				DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm", Locale.US);
 				Calendar cal = Calendar.getInstance();
 				
 				newChat = new Chat();
@@ -117,7 +117,7 @@ public class ChatActivity extends Activity {
 							
 							
 							// Sending Parse Push
-							DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.US);
+							DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm", Locale.US);
 							Calendar cal = Calendar.getInstance();
 							
 							obj = new JSONObject();
@@ -209,7 +209,7 @@ public class ChatActivity extends Activity {
 		        		lvChat.setSelection(aChats.getCount() - 1);
 		        		
 		        	} else {
-		        		Toast.makeText(getApplicationContext(), "Empty Chat.", Toast.LENGTH_SHORT).show();
+		        		//Toast.makeText(getApplicationContext(), "Empty Chat.", Toast.LENGTH_SHORT).show();
 		        	}
 		        } else {
 		        	Log.d("item", "Error: " + e.getMessage());

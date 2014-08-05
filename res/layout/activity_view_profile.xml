@@ -29,21 +29,40 @@
             android:layout_marginBottom="-20dp" />
         
         <TextView 
-            android:id="@+id/tvCarbonFootprint"
+            android:id="@+id/tvCarbonBadge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/ivProfileImage"/>
-    </RelativeLayout>
+            android:layout_toRightOf="@+id/ivProfileImage"
+            android:layout_toEndOf="@+id/ivProfileImage"
+            android:layout_alignBottom="@+id/ivProfileImage"
+            android:text=""/>
+        <TextView 
+            android:id="@+id/tvDollarBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/tvCarbonBadge"
+            android:layout_toEndOf="@+id/tvCarbonBadge"
+            android:layout_alignBottom="@+id/ivProfileImage"
+            android:text=""/>
+        
+	</RelativeLayout>
         
 
-        
-        <FrameLayout 
-            android:id="@+id/flUserActions"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="15dp"
-            android:layout_below="@+id/rlHeader"
-            
-            />
-
+    <RelativeLayout 
+        android:id="@+id/rlBody"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+    	android:layout_below="@+id/rlHeader" 
+    	android:layout_marginTop="5dp"
+    	android:background="@color/theme_color3"    
+        >
+	</RelativeLayout>
+	
+    <FrameLayout 
+    android:id="@+id/flUserActions"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_below="@+id/rlBody"     
+    />
+	
 </RelativeLayout>

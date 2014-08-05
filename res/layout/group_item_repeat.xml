@@ -154,12 +154,14 @@
 		    android:id="@+id/ibChat"
 		    android:layout_width="40dp"
 		    android:layout_height="40dp"
+		    android:background="@color/white"
 		    android:src="@drawable/ic_action_chat"/>
 		
 		<ImageButton 
 		    android:id="@+id/ibMap"
 		    android:layout_width="40dp"
 		    android:layout_height="40dp"
+		    android:background="@color/white"
 		    android:src="@drawable/ic_action_map"/>
 	</LinearLayout>
     

@@ -58,6 +58,7 @@ import android.view.animation.Animation.AnimationListener;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -227,7 +228,11 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
 	private double totalDistance;
 	private ParseGeoPoint currLoc;
 	private String startDrivingTime;
+	private String endDrivingTime;
 	private void getUpdatedLocation() {
+		totalDistance = 0;
+		drivingBufferCount = 0;
+		
 		// Acquire a reference to the system Location Manager
 		LocationManager locationManager = (LocationManager) this
 				.getSystemService(Context.LOCATION_SERVICE);
@@ -276,15 +281,17 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
 												
 						DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm", Locale.getDefault());
 						Calendar cal = Calendar.getInstance();
-						String endDrivingTime = dateFormat.format(cal.getTime());
+						endDrivingTime = dateFormat.format(cal.getTime());
+						
+						mapActionToGroup(startDrivingTime, endDrivingTime);
 						
 						
-						// Now save startDrivingTime, endDrivingTime and totalDistance to Parse
-						UserAction newUserAction = new UserAction(ParseUser.getCurrentUser().getObjectId());
-						newUserAction.setDistance(Double.toString(Math.round(totalDistance * 100.0) / 100.0));
-						newUserAction.setStartTime(startDrivingTime);
-						newUserAction.setStartTime(endDrivingTime);
-						newUserAction.saveInBackground();
+//						// Now save startDrivingTime, endDrivingTime and totalDistance to Parse + membersCount
+//						UserAction newUserAction = new UserAction(ParseUser.getCurrentUser().getObjectId());
+//						newUserAction.setDistance(Double.toString(Math.round(totalDistance * 100.0) / 100.0));
+//						newUserAction.setStartTime(startDrivingTime);
+//						newUserAction.setEndTime(endDrivingTime);
+//						newUserAction.saveInBackground();
 					}
 					if (drivingBufferCount > 0) {
 						drivingBufferCount--;
@@ -309,6 +316,62 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
 		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 0, locationListener);
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 	 10000, 0, locationListener);
 
+	}
+	
+	public void mapActionToGroup(final String startDrivingTime, final String endDrivingTime) {
+		
+		//Get all the groups that ParseUser belongs to
+		ParseQuery<User> innerUserQuery = ParseQuery.getQuery(User.class);
+		innerUserQuery.whereEqualTo("objectId", ParseUser.getCurrentUser().getObjectId());
+		
+		
+		ParseQuery<Group> queryGroup = ParseQuery.getQuery(Group.class);
+		queryGroup.include("members");
+		queryGroup.whereMatchesQuery("members", innerUserQuery);
+		queryGroup.findInBackground(new FindCallback<Group>() {
+
+			@Override
+			public void done(List<Group> groupList, ParseException e) {
+				int memberCount = 1;
+				String groupObjectId = "0";
+		        if (e == null) {
+		        	if (groupList.size()!=0) {
+		        		
+		        		for (int i=0; i<groupList.size(); i++) {
+		        			String diffOnwardTime = Utils.getDiffInDateTime(startDrivingTime, groupList.get(i).getOnwardTime());
+		        			String diffReturnTime = Utils.getDiffInDateTime(startDrivingTime, groupList.get(i).getReturnTime());
+		        			
+		        			if (!diffOnwardTime.matches(".*d.*") && !diffOnwardTime.matches(".*h.*") &&  diffOnwardTime.matches(".*m")) {
+		        				memberCount = groupList.get(i).getMembers().size();
+		        				groupObjectId = groupList.get(i).getObjectId();
+		        				break;
+		        			}
+		        			if (!diffReturnTime.matches(".*d.*") && !diffReturnTime.matches(".*h.*") &&  diffReturnTime.matches(".*m")) {
+		        				memberCount = groupList.get(i).getMembers().size();
+		        				groupObjectId = groupList.get(i).getObjectId();
+		        				break;
+		        			}
+		        			
+		        		}
+		        		
+		        	} else {
+		        		memberCount = 1;
+		        		groupObjectId = "0";
+		        	}
+		        	
+					// Now save startDrivingTime, endDrivingTime and totalDistance to Parse + membersCount
+					UserAction newUserAction = new UserAction(ParseUser.getCurrentUser().getObjectId());
+					newUserAction.setDistance(Double.toString(Math.round(totalDistance * 100.0) / 100.0));
+					newUserAction.setStartTime(startDrivingTime);
+					newUserAction.setEndTime(endDrivingTime);
+					newUserAction.setMemberCount(Integer.toString(memberCount));
+					newUserAction.setGroupObjectId(groupObjectId);
+					newUserAction.saveInBackground();
+		        } else {
+		        	Log.d("item", "Error: " + e.getMessage());
+		        }
+			}
+		});
 	}
 
 
@@ -497,8 +560,14 @@ public class HomeActivity extends ActionBarActivity implements OnActionSelectedL
 	}
 
 	public void gotoProfileActivity() {
-		Intent i = new Intent(getApplicationContext(), ProfileActivity.class);
-		startActivity(i);
+//		Intent i = new Intent(getApplicationContext(), ProfileActivity.class);
+//		startActivity(i);
+		
+		Intent i = new Intent(this, ViewProfileActivity.class);
+		// put "extras" into the bundle for access in the second activity
+		i.putExtra("objectId", ParseUser.getCurrentUser().getObjectId()); 
+		// brings up the second activity
+		startActivity(i); 
 	}
 	
 //	public void gotoCreateGroupActivity() {

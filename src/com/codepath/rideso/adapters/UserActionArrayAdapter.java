@@ -113,7 +113,7 @@ public class UserActionArrayAdapter extends ArrayAdapter<UserAction> {
 	       
 	 	   String diffDateTime;
 	 	   diffDateTime = Utils.getDiffInDateTime(userAction.getStartTime(), userAction.getEndTime());
-	       holder.tvTime.setText(diffDateTime);
+	       holder.tvTime.setText("+ " + diffDateTime);
 	       
 	       holder.tvDistance.setText(userAction.getDistance() + " miles");
 	   } else {

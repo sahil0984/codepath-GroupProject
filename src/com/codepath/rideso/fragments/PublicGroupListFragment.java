@@ -69,7 +69,7 @@ public class PublicGroupListFragment extends GroupListFragment {
 		        		addAllGroups(groupList);
 		        		pbLoading.setVisibility(ProgressBar.INVISIBLE);
 		        	} else {
-		        		Toast.makeText(getActivity(), "No groups found.", Toast.LENGTH_SHORT).show();
+		        		//Toast.makeText(getActivity(), "No groups found.", Toast.LENGTH_SHORT).show();
 		        	}
 		        } else {
 		        	Log.d("item", "Error: " + e.getMessage());

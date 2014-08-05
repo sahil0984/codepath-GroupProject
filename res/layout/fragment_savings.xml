@@ -10,147 +10,68 @@
         android:id="@+id/tvCarbonContribution"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="70dp"
+		android:layout_toLeftOf="@+id/rlCarbon"
+		android:layout_toStartOf="@+id/rlCarbon"
+		android:layout_alignTop="@+id/rlCarbon"
 		style="@style/SavingsSubTextView"
         android:text="CO2"/>
         
-    <TextView 
-        android:id="@+id/tvCarbonMax"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="70dp"
-        android:layout_alignParentRight="true"
-        style="@style/SavingsMaxTextView"
-        android:text="MAX."/>
     
 	<RelativeLayout 
 	    android:id="@+id/rlCarbon"
-	    android:layout_width="match_parent"
+	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-		android:layout_below="@+id/tvCarbonContribution"	    >
-	    <LinearLayout
-	        android:id="@+id/llCarbonBox"
-	        android:layout_width="match_parent"
-	        android:layout_height="24dp"
-	        android:layout_marginLeft="18dp"
-	        android:layout_marginRight="18dp"
-	        android:layout_marginBottom="8dp"
-	        android:layout_marginTop="8dp"
-	        android:background="@drawable/shape_border"
-	        android:orientation="horizontal" >
-	    </LinearLayout>
-	    
-	    <Button
-	        android:id="@+id/btnCarbonBar"
-	        android:layout_width="match_parent"
-	        android:layout_height="20dp"
-	        android:layout_marginLeft="20dp"
-	        android:layout_marginRight="20dp"
-	        android:layout_marginBottom="10dp"
-	        android:layout_marginTop="10dp"
-	        android:background="@drawable/gradient_shape_carbon"
-	        android:orientation="horizontal" >
-	    </Button>
-	    
-	    <LinearLayout
-	        android:id="@+id/llCarbonMask"
-	        android:layout_width="match_parent"
-	        android:layout_height="20dp"
-	        android:layout_marginLeft="20dp"
-	        android:layout_marginRight="20dp"
-	        android:layout_marginBottom="10dp"
-	        android:layout_marginTop="10dp"
-	        android:background="@color/white"
-	        android:orientation="horizontal" >
-	    </LinearLayout>
+	    android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp" >
+	    <com.echo.holographlibrary.PieGraph
+	        android:id="@+id/pgDollar"
+	        android:layout_width="150dp"
+	        android:layout_height="150dp" />
+	    <TextView 
+	        android:id="@+id/tvCarbonSavings"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+			android:layout_centerInParent="true"
+			android:gravity="center_horizontal"
+			style="@style/SavingsMainTextView"
+	        android:text="CO2"/>
     </RelativeLayout>
     
-    <TextView 
-        android:id="@+id/tvCarbonSavings"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/rlCarbon"
-		android:layout_centerHorizontal="true"
-		android:layout_marginTop="20dp"
-		android:layout_marginBottom="60dp"
-		style="@style/SavingsMainTextView"
-        android:text="CO2"/>
+
 	
     <TextView 
         android:id="@+id/tvDollarsSpent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/rlDollars"
-        android:layout_marginLeft="20dp"
+		android:layout_toLeftOf="@+id/rlDollars"
+		android:layout_toStartOf="@+id/rlDollars"
+		android:layout_alignTop="@+id/rlDollars"
 		style="@style/SavingsSubTextView"
         android:text="$"/>
-    
-    <TextView 
-        android:id="@+id/tvDollarsMax"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/rlDollars"
-        android:layout_marginRight="20dp"
-        android:layout_alignParentRight="true"
-        style="@style/SavingsMaxTextView"
-        android:text="MAX."/>
+
         
 	<RelativeLayout 
 	    android:id="@+id/rlDollars"
-	    android:layout_width="match_parent"
+	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:layout_below="@+id/tvCarbonSavings">
-	    <LinearLayout
-	        android:id="@+id/llDollarsBox"
-	        android:layout_width="match_parent"
-	        android:layout_height="24dp"
-	        android:layout_marginLeft="18dp"
-	        android:layout_marginRight="18dp"
-	        android:layout_marginBottom="8dp"
-	        android:layout_marginTop="8dp"
-	        android:background="@drawable/shape_border"
-	        android:orientation="horizontal" >
-	    </LinearLayout>
-	    
-	    <Button
-	        android:id="@+id/btnDollarsBar"
-	        android:layout_width="match_parent"
-	        android:layout_height="20dp"
-	        android:layout_marginLeft="20dp"
-	        android:layout_marginRight="20dp"
-	        android:layout_marginBottom="10dp"
-	        android:layout_marginTop="10dp"
-	        android:background="@drawable/gradient_shape_dollars"
-	        android:orientation="horizontal" >
-	    </Button>
-	    
-	    <LinearLayout
-	        android:id="@+id/llDollarsMask"
-	        android:layout_width="match_parent"
-	        android:layout_height="20dp"
-	        android:layout_marginLeft="20dp"
-	        android:layout_marginRight="20dp"
-	        android:layout_marginBottom="10dp"
-	        android:layout_marginTop="10dp"
-	        android:background="@color/white"
-	        android:orientation="horizontal" >
-	    </LinearLayout>
+	    android:layout_centerHorizontal="true"
+        android:layout_below="@+id/rlCarbon"
+        android:layout_marginTop="30dp" >
+   	    <com.echo.holographlibrary.PieGraph
+	        android:id="@+id/pgCarbon"
+	        android:layout_width="150dp"
+	        android:layout_height="150dp" />
+	    <TextView 
+	        android:id="@+id/tvDollarSavings"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+			android:layout_centerInParent="true"
+			style="@style/SavingsMainTextView"
+	        android:text="$"/>  	    
     </RelativeLayout>
-    
 
     
-    
-    <TextView 
-        android:id="@+id/tvDollarSavings"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/rlDollars"
-		android:layout_centerHorizontal="true"
-		android:layout_marginTop="20dp"
-		style="@style/SavingsMainTextView"
-        android:text="$"/>
+
 
         
     <TextView 
@@ -169,5 +90,9 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_centerInParent="true"/>
-    
+     
+     
+
+
+     
 </RelativeLayout>

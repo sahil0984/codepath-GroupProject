@@ -114,16 +114,17 @@ public class SavingsDialog extends DialogFragment {
 	    public Fragment getItem(int position) {
 	        switch (position) {
 	        case 0:
-	            return SavingsFragment.newInstance(0, "Weekly");
+	            return SavingsFragment.newInstance(0, "Weekly Savings");
 	        case 1:
-	            return SavingsFragment.newInstance(1, "Monthly");
+	            return SavingsFragment.newInstance(1, "Monthly Savings");
 	        case 2:
-	            return SavingsFragment.newInstance(2, "Annual");
+	            return SavingsFragment.newInstance(2, "Annual Savings");
 	        case 3:
-	            return SavingsFragment.newInstance(3, "Overall");
+	            return SavingsFragment.newInstance(3, "Overall Savings");
 	        default:
 	        	return null;
-            }	    }
+            }	    
+	    }
 
         // Returns total number of pages
         @Override

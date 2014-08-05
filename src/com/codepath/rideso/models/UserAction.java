@@ -43,6 +43,12 @@ public class UserAction extends ParseObject {
 	public String getStartTime() {
 		return getString("startTime");
 	}
+	public String getMemberCount() {
+		return getString("memberCount");
+	}
+	public String getGroupObjectId() {
+		return getString("groupObjectId");
+	}
 //	public ParseGeoPoint getHomeAdd() {
 //		return getParseGeoPoint("homeAdd");
 //	}
@@ -65,6 +71,12 @@ public class UserAction extends ParseObject {
 	public void setStartTime(String value) {
 		put("startTime", value);
 	}
+	public void setMemberCount(String value) {
+		put("memberCount", value);
+	}
+	public void setGroupObjectId(String value) {
+		put("groupObjectId", value);
+	}	
 //	public void setHomeAdd(ParseGeoPoint value) {
 //		put("homeAdd", value);
 //	}
